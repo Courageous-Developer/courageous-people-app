@@ -1,10 +1,16 @@
+import 'package:courageous_people/review/widget/review_tile.dart';
 import 'package:flutter/material.dart';
-import '../constants.dart';
-import '../widget/transparent_app_bar.dart';
+import '../../constants.dart';
+import '../../widget/transparent_app_bar.dart';
 
-class StoreMainScreen extends StatelessWidget {
+class StoreMainScreen extends StatefulWidget {
   const StoreMainScreen({Key? key}) : super(key: key);
 
+  @override
+  _StoreMainScreenState createState() => _StoreMainScreenState();
+}
+
+class _StoreMainScreenState extends State<StoreMainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +22,17 @@ class StoreMainScreen extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              // todo: 즐겨찾기 리스트에 추가
+              setState(() {
+
+              });
+            },
+            icon: Icon(Icons.favorite, color: Colors.grey),
+          )
+        ],
       ),
       body: Container(
           child: Stack(
@@ -66,7 +83,7 @@ class StoreTabWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text('탭'),
+      child: ReviewTile('우현짱짱123', 4.5, '2021.08.21'),
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../widget/transparent_app_bar.dart';
+import '../../widget/transparent_app_bar.dart';
 
 class StoreAddScreen extends StatelessWidget {
   const StoreAddScreen({Key? key}) : super(key: key);

@@ -14,7 +14,6 @@ class SignInSelectScreen extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(30),
               child: GestureDetector(
-                // onTap: (){},
                 onTap: _onTap(context, true),
                 child: Container(
                   decoration: BoxDecoration(
@@ -43,8 +42,7 @@ class SignInSelectScreen extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(30),
               child: GestureDetector(
-                onTap: (){},
-                // onTap: _onTap(context, false),
+                onTap: _onTap(context, false),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -74,11 +72,10 @@ class SignInSelectScreen extends StatelessWidget {
   }
 
   _onTap(BuildContext context, bool isCustomer) {
-    try {
-      Navigator.push(context, MaterialPageRoute(
-        builder: (_) => SignInScreen(),
-      ));
-    }
-    catch ( Exception ) { print('aaa'); }
+    // try {
+    //   Navigator.push(context, MaterialPageRoute(
+    //     builder: (_) => SignInScreen(),
+    //   ));
+    // } catch ( Exception ) {};
   }
 }

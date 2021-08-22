@@ -1,11 +1,12 @@
+import 'package:courageous_people/review/widget/review_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'log_in/log_In_screen.dart';
 import 'sign_in/sign_in_screen.dart';
 import 'sign_in/sign_in_select_screen.dart';
-import 'store/store_add_screen.dart';
-import 'store/store_main_screen.dart';
+import 'store/screen/store_add_screen.dart';
+import 'store/screen/store_main_screen.dart';
 import 'widget/transparent_app_bar.dart';
 
 import 'widget/store_list_tile.dart';
@@ -20,7 +21,7 @@ class Home extends StatelessWidget {
         child: ListView(
           children: [
             UserAccountSection(),
-            ListTile(\
+            ListTile(
               leading: Icon(
                   Icons.home,
                   color: Colors.indigo[600]
