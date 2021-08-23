@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:courageous_people/sign_in/profile_setup.dart';
 
 class SignInScreen extends StatelessWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -8,7 +9,7 @@ class SignInScreen extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text('회원가입'),elevation: 0,),
         body: GestureDetector(
-            onTap:()=>FocusScope.of(context).unfocus(),
+            onTap:(){FocusScope.of(context).unfocus();},
             child:SingleChildScrollView(
               child:Center(
                 child: Container(
@@ -24,18 +25,22 @@ class SignInScreen extends StatelessWidget {
                         SizedBox(
                           width: MediaQuery.of(context).size.width*0.9,
                           child: TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                contentPadding:
-                                EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.zero,
-                                  borderSide: BorderSide(),
-                                ),
-                                hintText: 'Email',
-                                helperText:'현재 사용하고 계신 이메일을 입력해주세요.',
-                              )
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              contentPadding:
+                              EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 15
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.zero)
+                              ,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.zero,
+                                borderSide: BorderSide(),
+                              ),
+                              hintText: 'Email',
+                              helperText:'현재 사용하고 계신 이메일을 입력해주세요.',
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -48,18 +53,17 @@ class SignInScreen extends StatelessWidget {
                         SizedBox(
                           width: MediaQuery.of(context).size.width*0.9,
                           child: TextField(
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                contentPadding:
-                                EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.zero,
-                                  borderSide: BorderSide(),
-                                ),
-                                hintText: 'Password',
-                                helperText: '비밀번호는 영문,숫자를 조합하여 8~16자리로 입력해주세요.',
-                              )
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.zero,
+                                borderSide: BorderSide(),
+                              ),
+                              hintText: 'Password',
+                              helperText: '비밀번호는 영문,숫자를 조합하여 8~16자리로 입력해주세요.',
+                            ),
                           ),
                         ),
 
@@ -70,18 +74,18 @@ class SignInScreen extends StatelessWidget {
                         SizedBox(
                           width: MediaQuery.of(context).size.width*0.9,
                           child: TextField(
-                              obscureText: true,
-                              decoration: InputDecoration(
-                                contentPadding:
-                                EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.zero,
-                                  borderSide: BorderSide(),
-                                ),
-                                hintText: 'Password',
-                                helperText: '확인을 위해 비밀번호를 다시 입력해주세요.',
-                              )
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              contentPadding:
+                              EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.zero,
+                                borderSide: BorderSide(),
+                              ),
+                              hintText: 'Password',
+                              helperText: '확인을 위해 비밀번호를 다시 입력해주세요.',
+                            ),
                           ),
                         ),
                         SizedBox(
@@ -93,7 +97,9 @@ class SignInScreen extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-                              onPressed: ()=>{Navigator.push(context,MaterialPageRoute(builder: (context)=>profile_setup()))},
+                              onPressed: (){
+                                Navigator.push(context,MaterialPageRoute(builder: (context)=>ProfileSetup()));
+                              },
                               child: Text('다음으로')
                           ),
                           width:MediaQuery.of(context).size.width*0.9 ,
