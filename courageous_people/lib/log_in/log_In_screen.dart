@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:courageous-people-app/lib/sign_in/sign_in_select_screen.dart'
+import 'package:courageous_people/sign_in/sign_in_select_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
@@ -45,29 +45,29 @@ class _loginState extends State<LogInScreen> {
               // ),
               SizedBox(height: 30,),
               TextField(
-                  decoration: InputDecoration(
-                    contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide(),
-                    ),
-                    hintText: 'email',
-                  )
+                decoration: InputDecoration(
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
+                    borderSide: BorderSide(),
+                  ),
+                  hintText: 'email',
+                ),
               ),
               TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.zero),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide(),
-                    ),
-                    hintText: 'Password',
-                  )
+                obscureText: true,
+                decoration: InputDecoration(
+                  contentPadding:
+                  EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
+                    borderSide: BorderSide(),
+                  ),
+                  hintText: 'Password',
+                ),
               ),
               SizedBox(
                 child:
@@ -99,9 +99,17 @@ class _loginState extends State<LogInScreen> {
                   ),
                   Text('자동 로그인',style: TextStyle(color: Colors.grey[700]),),
                   Spacer(),
-                  TextButton(onPressed: ()=>{}, child: Text('아이디찾기',style: TextStyle(color: Colors.grey[700]),)),
+                  TextButton(onPressed: (){},
+                      child: Text(
+                        '아이디찾기',
+                        style: TextStyle(color: Colors.grey[700]),)
+                  ),
                   Text(' | ',style: TextStyle(color: Colors.grey[700]),),
-                  TextButton(onPressed: ()=>{}, child: Text('비밀번호찾기',style: TextStyle(color: Colors.grey[700]),)),
+                  TextButton(onPressed: (){},
+                      child: Text(
+                        '비밀번호찾기',
+                        style: TextStyle(color: Colors.grey[700]),)
+                  ),
                 ],
               ),
               SizedBox(
@@ -121,10 +129,11 @@ class _loginState extends State<LogInScreen> {
                   ),),
                 Expanded(
                   child: new Container(
-                      margin: const EdgeInsets.only(left: 10,),
-                      child: Divider(
-                        color: Colors.grey[350],
-                      )),
+                    margin: const EdgeInsets.only(left: 10,),
+                    child: Divider(
+                      color: Colors.grey[350],
+                    ),
+                  ),
                 ),
               ]),
               SizedBox(height: 20,),
@@ -169,15 +178,19 @@ class _loginState extends State<LogInScreen> {
                 children: [
                   Text('처음 사용하신다면?'),
                   TextButton(
-                      onPressed: ()=>{Navigator.push(context,MaterialPageRoute(builder: (context)=>SignInSelectScreen()))},
-                      child: Text(
-                          '회원가입',
-                          style: TextStyle(
-                            color: Color.fromRGBO(6,69,173,1.0),
-                            //decoration: TextDecoration.underline
-                          )
-                      )
-                  )
+                    onPressed: (){
+                      Navigator.push(
+                          context,MaterialPageRoute(builder: (context)=>SignInSelectScreen())
+                      );
+                    },
+                    child: Text(
+                      '회원가입',
+                      style: TextStyle(
+                        color: Color.fromRGBO(6,69,173,1.0),
+                        //decoration: TextDecoration.underline
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ],
