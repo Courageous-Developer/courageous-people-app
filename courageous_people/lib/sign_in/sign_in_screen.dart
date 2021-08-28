@@ -133,7 +133,7 @@ class SignInScreen extends StatelessWidget {
                             ElevatedButton(onPressed: ()=>{},
                               child: SizedBox(
                                   height: 48,
-                                  child: Image.asset('image/kakao_circular.png')
+                                  child: Image.asset('assets/images/kakao_circular.png')
                               ),
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
@@ -143,7 +143,7 @@ class SignInScreen extends StatelessWidget {
                             ElevatedButton(onPressed: ()=>{},
                               child: SizedBox(
                                   height: 48,
-                                  child: Image.asset('image/naver_circular.png')
+                                  child: Image.asset('assets/images/naver_circular.png')
                               ),
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
@@ -153,7 +153,7 @@ class SignInScreen extends StatelessWidget {
                             ElevatedButton(onPressed: ()=>{},
                               child: SizedBox(
                                   height: 48,
-                                  child: Image.asset('image/google_circular.png')
+                                  child: Image.asset('assets/images/google_circular.png')
                               ),
                               style: ElevatedButton.styleFrom(
                                 elevation: 0,
