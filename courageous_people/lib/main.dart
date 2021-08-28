@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'home.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+
 void main () => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

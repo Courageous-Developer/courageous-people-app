@@ -20,7 +20,7 @@ class ProfileSetup extends StatelessWidget {
                   shape: BoxShape.circle,
                   image: new DecorationImage(
                       fit: BoxFit.cover,
-                      image: Image.asset('image/profile.png').image
+                      image: Image.asset('assets/images/profile.png').image
                   ),
                 ),
               ),

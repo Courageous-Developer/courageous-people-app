@@ -19,7 +19,7 @@ class _loginState extends State<LogInScreen> {
           width: MediaQuery.of(context).size.width*0.9,
           child: Column(
             children: [
-              Image.asset('image/logo.png'),//logo
+              Image.asset('assets/images/logo.png'),//logo
               // ToggleButtons(
               //   isSelected: login_selection,
               //   onPressed: (index) {setState(() {
@@ -143,7 +143,7 @@ class _loginState extends State<LogInScreen> {
                   ElevatedButton(onPressed: ()=>{},
                     child: SizedBox(
                         height: 48,
-                        child: Image.asset('image/kakao_circular.png')
+                        child: Image.asset('assets/images/kakao_circular.png')
                     ),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
@@ -153,7 +153,7 @@ class _loginState extends State<LogInScreen> {
                   ElevatedButton(onPressed: ()=>{},
                     child: SizedBox(
                         height: 48,
-                        child: Image.asset('image/naver_circular.png')
+                        child: Image.asset('assets/images/naver_circular.png')
                     ),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
@@ -163,7 +163,7 @@ class _loginState extends State<LogInScreen> {
                   ElevatedButton(onPressed: ()=>{},
                     child: SizedBox(
                         height: 48,
-                        child: Image.asset('image/google_circular.png')
+                        child: Image.asset('assets/images/google_circular.png')
                     ),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
