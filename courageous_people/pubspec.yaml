@@ -28,6 +28,7 @@ dependencies:
   bloc:
   flutter_bloc:
   flutter_rating_bar: ^4.0.0
+  naver_map_plugin: ^0.9.6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -50,7 +51,16 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/
+    - assets/images/container.png
+    - assets/images/google_circular.png
+    - assets/images/kakao_circular.png
+    - assets/images/logo.png
+    - assets/images/logo_notext.png
+    - assets/images/logo_text.png
+    - assets/images/logo_transparent.png
+    - assets/images/naver_circular.png
+    - assets/images/profile.png
+    - assets/images/store.png
     - assets/images/pukka.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

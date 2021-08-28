@@ -275,6 +275,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.0"
+  naver_map_plugin:
+    dependency: "direct main"
+    description:
+      name: naver_map_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.6"
   nested:
     dependency: transitive
     description:

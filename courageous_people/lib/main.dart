@@ -6,6 +6,11 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 void main () => runApp(MyApp());
 
+// Future<void> main() async {
+//   // todo: 가게 목록 받아오기
+//   runApp(MyApp());
+// }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 

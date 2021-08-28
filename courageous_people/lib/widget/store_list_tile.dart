@@ -1,7 +1,19 @@
+import 'package:courageous_people/model/store_data.dart';
 import 'package:flutter/material.dart';
 
 class StoreListTile extends StatelessWidget {
-  StoreListTile({Key? key}) : super(key: key);
+  late String name;
+  late String location;
+  late String businessNumber;
+  late String imageUri;
+  final double farFormMe;
+
+  StoreListTile({Key? key, required Store store, required this.farFormMe}) : super(key: key) {
+    this.name = store.name;
+    this.location = store.location;
+    this.businessNumber = store.businessNumber;
+    this.imageUri = store.imageUri;
+  }
 
   @override
   Widget build(BuildContext context) {

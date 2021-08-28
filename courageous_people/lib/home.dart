@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'constants.dart';
 import 'log_in/log_In_screen.dart';
+import 'model/store_data.dart';
 import 'sign_in/sign_in_screen.dart';
 import 'sign_in/sign_in_select_screen.dart';
 import 'store/screen/store_add_screen.dart';
@@ -20,28 +21,28 @@ class Home extends StatelessWidget {
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountSection(),
-            ListTile(
-              leading: Icon(
-                  Icons.home,
-                  color: Colors.indigo[600]
-              ),
-              title: Text(
-                '홈',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
+            _userAccountSection(context),
             ListTile(
               leading: Icon(
                 Icons.favorite,
                 color: Colors.red,
               ),
               title: Text(
-                '찜',
+                '찜한 가게',
                 style: TextStyle(
-                    fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.settings,
+                color: Colors.grey,
+              ),
+              title: Text(
+                '설정',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -61,7 +62,10 @@ class Home extends StatelessWidget {
       ),
       body: GestureDetector(
         onTap: () => showModalBottomSheet(
-          context: context, builder: (_) => MainPageBottomSheet(),
+          context: context,
+          builder: (_) => MainPageBottomSheet(
+            store: Store('아빠가 만든 스파게티', '무슨무슨길 18', '12345-6789', 'assets/images/pukka.png'),
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -74,30 +78,14 @@ class Home extends StatelessWidget {
       ),
     );
   }
-}
 
-class MainPageBottomSheet extends StatelessWidget {
-  const MainPageBottomSheet({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => StoreMainScreen()));
-      },
-      child: StoreListTile(),
-    );
-  }
-}
-
-class UserAccountSection extends StatelessWidget {
-  const UserAccountSection({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    if(1>0) {
+  Widget _userAccountSection(BuildContext context) {
+    if (1 > 0) {
       return Container(
-        height: MediaQuery.of(context).size.height/5,
+        height: MediaQuery
+            .of(context)
+            .size
+            .height / 5,
         color: THEME_COLOR,
         child: Center(
           child: Column(
@@ -134,6 +122,25 @@ class UserAccountSection extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: THEME_COLOR,
+      ),
+    );
+  }
+}
+
+class MainPageBottomSheet extends StatelessWidget {
+  final Store store;
+  const MainPageBottomSheet({Key? key, required this.store}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => StoreMainScreen(store: store)));
+      },
+      child: StoreListTile(
+        store: store,
+        farFormMe: 2.8,
       ),
     );
   }
