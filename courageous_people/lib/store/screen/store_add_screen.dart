@@ -18,7 +18,16 @@ class StoreAddScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          TextField(),
+          Container(
+            child: Column(
+              children: [
+                // 가게 찾기 섹션
+              ],
+            ),
+          ),
+          TextField(
+
+          ),
           TextField(),
           TextField(),
         ],
