@@ -3,16 +3,14 @@ import 'package:flutter/material.dart';
 
 class StoreListTile extends StatelessWidget {
   late String name;
-  late String location;
   late String businessNumber;
-  late String imageUri;
+  late String intro;
   final double farFormMe;
 
   StoreListTile({Key? key, required Store store, required this.farFormMe}) : super(key: key) {
     this.name = store.name;
-    this.location = store.location;
     this.businessNumber = store.businessNumber;
-    this.imageUri = store.imageUri;
+    this.intro = store.intro;
   }
 
   @override

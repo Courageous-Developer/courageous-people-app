@@ -18,17 +18,22 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   hive: ^2.0.4
-  graphql_flutter:
-  bloc:
-  flutter_bloc:
+  provider: ^6.0.0
+  flutter_provider: ^2.0.0
+  bloc: ^7.1.0
+  flutter_bloc: ^7.2.0
   flutter_rating_bar: ^4.0.0
-  naver_map_plugin: ^0.9.6
+  #  naver_map_plugin: ^0.9.6
+  naver_map_plugin:
+    git:
+      url: https://github.com/LBSTECH/naver_map_plugin.git
+  http: ^0.13.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

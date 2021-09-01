@@ -1,22 +1,45 @@
 import 'package:courageous_people/review/widget/review_tile.dart';
+import 'package:courageous_people/store/cubit/store_cubit.dart';
+import 'package:courageous_people/store/cubit/store_repository.dart';
+import 'package:courageous_people/store/cubit/store_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'constants.dart';
 import 'log_in/log_In_screen.dart';
 import 'model/store_data.dart';
-import 'sign_in/sign_in_screen.dart';
 import 'sign_in/sign_in_select_screen.dart';
 import 'store/screen/store_add_screen.dart';
 import 'store/screen/store_main_screen.dart';
 import 'widget/transparent_app_bar.dart';
-
+import 'classes.dart';
 import 'widget/store_list_tile.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late String myLocation;
+  late List<Store> storeList;
+
+  @override
+  void initState() {
+    super.initState();
+
+    myLocation = '내 위치';
+    storeList = [];
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final storeCubit = StoreCubit.of(context);
+    storeCubit.init();
+
     return Scaffold(
       drawer: Drawer(
         child: ListView(
@@ -60,16 +83,77 @@ class Home extends StatelessWidget {
           ),
         ],
       ),
-      body: GestureDetector(
-        onTap: () => showModalBottomSheet(
-          context: context,
-          builder: (_) => MainPageBottomSheet(
-            store: Store('아빠가 만든 스파게티', '무슨무슨길 18', '12345-6789', 'assets/images/pukka.png'),
-          ),
-        ),
+      body: BlocConsumer<StoreCubit, StoreState>(
+        bloc: storeCubit,
+        listener: (context, state) async {
+          if(state is StoreInitialState)  await storeCubit.getStores();
+        },
+        builder: (_, state) {
+          if(state is StoreLoadingState) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if(state is StoreLoadedState) {
+            storeList = state.storeList;
+
+            return NaverMap(
+              initLocationTrackingMode: LocationTrackingMode.Follow,
+              onMapTap: (latLng) async {
+                print(latLng);
+              },
+              markers: storeList.map(
+                      (store) {
+                    print(store.toString());
+                    return Marker(
+                      markerId: '',
+                      position: LatLng(store.latitude, store.longitude),
+                      onMarkerTab: (a, b) {
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) =>
+                              MainPageBottomSheet(
+                                  store: store
+                              ),
+                        );
+                      }
+                    );
+                  }
+              ).toList(),
+            );
+          }
+
+          return Container();
+          // return Center(
+          //   child: ElevatedButton(
+          //     onPressed: () async { await storeCubit.getStores(); },
+          //     child: Text(''),
+          //   ),
+          // return GestureDetector(
+          //     onTap: () => showModalBottomSheet(
+          //   context: context,
+          //   builder: (_) => MainPageBottomSheet(
+          //     store: Store('아빠가 만든 스파게티', '무슨무슨길 18', '12345-6789', 'assets/images/pukka.png'),
+          //   ),
+          // ),
+          // child: NaverMap(
+          // initLocationTrackingMode: LocationTrackingMode.Face,
+          // onMapTap: (latLng) {
+          // print(latLng);
+          // },
+          // markers: [
+          // Marker(
+          // markerId: 'aa',
+          // position: LatLng(37.53251998113193, 127.14683754900574),
+          // // icon: _marker(context, 'assets/images/container.png'),
+          // ),
+          // ],
+          // );
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
           Navigator.push(context, MaterialPageRoute(
             builder: (_) => StoreAddScreen(),
           ));

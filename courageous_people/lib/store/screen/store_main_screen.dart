@@ -7,16 +7,14 @@ import '../../widget/transparent_app_bar.dart';
 
 class StoreMainScreen extends StatefulWidget {
   late String name;
-  late String location;
   late String businessNumber;
-  late String imageUri;
+  late String intro;
   bool isFavorite = false;
 
   StoreMainScreen({Key? key, required Store store}) : super(key: key) {
     this.name = store.name;
-    this.location = store.location;
     this.businessNumber = store.businessNumber;
-    this.imageUri = store.imageUri;
+    this.intro = store.intro;
   }
 
   @override
