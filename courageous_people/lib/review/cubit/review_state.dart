@@ -1,3 +1,5 @@
+import 'package:courageous_people/model/review_data.dart';
+
 abstract class ReviewState {
   const ReviewState();
 }
@@ -13,6 +15,7 @@ class ReviewErrorState extends ReviewState {
 class ReviewLoadingState extends ReviewState {}
 
 class ReviewLoadedState extends ReviewState {
+  final List<Review> reviewList;
 
-  const ReviewLoadedState();
+  const ReviewLoadedState(this.reviewList);
 }
