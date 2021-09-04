@@ -1,3 +1,5 @@
+import '../../model/user_data.dart';
+
 abstract class LogInState {
   const LogInState();
 }
@@ -12,9 +14,10 @@ class LogInErrorState extends LogInState {
 
 class LogInLoadingState extends LogInState {}
 
-class LogInLoadedState extends LogInState {
-  final String accessToken;
-  final String refreshToken;
+class LogInSuccessState extends LogInState {
+  final User user;
 
-  const LogInLoadedState(this.accessToken, this.refreshToken);
+  const LogInSuccessState(this.user);
 }
+
+class LogInFailedState extends LogInState {}
