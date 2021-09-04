@@ -1,7 +1,7 @@
-import 'package:courageous_people/mock_data.dart';
+import 'package:courageous_people/common/mock_data.dart';
 
 import '../../model/review_data.dart';
-import '../../classes.dart';
+import '../../common/classes.dart';
 
 
 class ReviewRepository {

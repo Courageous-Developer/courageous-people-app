@@ -43,7 +43,7 @@ class StoreListTile extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     width: Size.infinite.width,
                     height: Size.infinite.height,
-                    child: Text('아빠가 만든 스파게티  ',
+                    child: Text(name,
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
