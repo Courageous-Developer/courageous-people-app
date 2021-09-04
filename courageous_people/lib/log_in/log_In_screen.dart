@@ -9,8 +9,7 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _loginState extends State<LogInScreen> {
-  final login_selection=<bool>[true,false];
-  bool? _autologin=false;
+  bool? _autoLogIn=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,30 +18,8 @@ class _loginState extends State<LogInScreen> {
           width: MediaQuery.of(context).size.width*0.9,
           child: Column(
             children: [
-              Image.asset('assets/images/logo.png'),//logo
-              // ToggleButtons(
-              //   isSelected: login_selection,
-              //   onPressed: (index) {setState(() {
-              //     if(index==0){
-              //       login_selection[0]=true;
-              //       login_selection[1]=false;
-              //     }else{
-              //       login_selection[1]=true;
-              //       login_selection[0]=false;
-              //     }
-              //   });
-              //   },
-              //   children: [
-              //     SizedBox(
-              //       width: 150,
-              //       child: Center(child: Text('개인회원'),),
-              //     ),
-              //     SizedBox(
-              //       width: 150,
-              //       child: Center(child: Text('점주'),),
-              //     ),
-              //   ],
-              // ),
+              Image.asset('assets/images/logo_color.png'),//logo
+
               SizedBox(height: 30,),
               TextField(
                 decoration: InputDecoration(
@@ -75,7 +52,7 @@ class _loginState extends State<LogInScreen> {
                     style: ElevatedButton.styleFrom(
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
-                    onPressed: ()=>{},
+                    onPressed: (){},
                     child: Text('로그인')
                 ),
                 width:MediaQuery.of(context).size.width*0.9 ,
@@ -89,10 +66,11 @@ class _loginState extends State<LogInScreen> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0,3,5,0),
                       child: Checkbox(
-                        value: _autologin,
+                        value: _autoLogIn,
                         onChanged: (value) {setState(() {
-                          _autologin=value;
-                        });
+                          _autoLogIn=value;
+                        }
+                        );
                         },
                       ),
                     ),
@@ -126,7 +104,8 @@ class _loginState extends State<LogInScreen> {
                 Text("소셜 로그인",
                   style: TextStyle(
                       color: Colors.grey[350]
-                  ),),
+                  ),
+                ),
                 Expanded(
                   child: new Container(
                     margin: const EdgeInsets.only(left: 10,),
@@ -135,7 +114,8 @@ class _loginState extends State<LogInScreen> {
                     ),
                   ),
                 ),
-              ]),
+              ],
+              ),
               SizedBox(height: 20,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
