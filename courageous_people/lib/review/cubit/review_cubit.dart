@@ -10,4 +10,14 @@ class ReviewCubit extends Cubit<ReviewState> {
   final ReviewRepository repository;
 
   ReviewCubit(this.repository) : super(ReviewInitialState());
+
+  Future<void> getReviews(int storeId) async {
+    emit(ReviewLoadingState());
+    final reviewList = await repository.getReviews(storeId);
+    emit(ReviewLoadedState(reviewList));
+  }
+
+  void init() {
+    emit(ReviewInitialState());
+  }
 }

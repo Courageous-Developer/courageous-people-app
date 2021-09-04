@@ -5,9 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ReviewTile extends StatelessWidget {
-  late String id;
+  late String userName;
   late double grade; // 별점
   late String comment;
+  late String createAt;
   late String? imageUri;
   late String? tags;
 
@@ -15,11 +16,12 @@ class ReviewTile extends StatelessWidget {
     Key? key,
     required Review data
   }): super(key: key) {
-    this.id = data.id;
+    this.userName = 'ㅎㅎㅎ';  //todo: userId로 userName 받아오기
     this.grade = data.grade;
     this.comment = data.comment;
-    this.imageUri = data.imageUri;
-    this.tags = data.tags;
+    this.createAt = data.createAt;
+     this.imageUri = data.imageUri;
+     this.tags = data.tags;
   }
 
   @override
@@ -40,62 +42,56 @@ class ReviewTile extends StatelessWidget {
     );
   }
 
-  Widget _userSection() {
-    return  Container(
-      height: 60,
-      child: Container(
-        child: Row(
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage('assets/images/pukka.png'),
-              ),
-            ),
-            Container(
-              height: 60.0,
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text(
-                    id,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  MyRatingBar(grade),
-                ],
-              ),
-            ),
-            Container(
-              child: Text(
-                '${DateTime.now().toString().split(' ')[0]}',
-                style: TextStyle(),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _commentSection(double imageWidth) {
-    return Container(
-      child: Column(
+  Widget _userSection() => Container(
+    height: 60,
+    child: Container(
+      child: Row(
         children: [
-          if(imageUri != null) Image.asset(
-            imageUri!,
-            width: imageWidth,
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundImage: AssetImage('assets/images/pukka.png'),
+            ),
           ),
-          Text(comment),
+          Container(
+            height: 60.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  userName,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                ),
+                MyRatingBar(grade),
+              ],
+            ),
+          ),
+          Container(
+            child: Text(
+              createAt,
+              style: TextStyle(),
+            ),
+          ),
         ],
       ),
-    );
-  }
+    ),
+  );
 
-  Widget _tagSection() {
-    return Container();
-  }
+  Widget _commentSection(double imageWidth) => Container(
+    child: Column(
+      children: [
+        if(imageUri != null) Image.asset(
+          imageUri!,
+          width: imageWidth,
+        ),
+        Text(comment),
+      ],
+    ),
+  );
+
+  Widget _tagSection() => Container();
 }
