@@ -35,25 +35,33 @@ class UserMockData {
       "id": 1,
       "nickName": "Cho",
       "email": "abc@naver.com",
-      "password": "dngus123!"
+      "password": "dngus123!",
+      "access_token": "access_abcabc123123",
+      "refresh_token": "refresh_abcabc123123"
     },
     {
       "id": 2,
       "nickName": "Park",
       "email": "pyh@naver.com",
-      "password": "dudgns123!"
+      "password": "dudgns123!",
+      "access_token": "access_defdef456456",
+      "refresh_token": "refresh_defdef456456"
     },
     {
       "id": 3,
       "nickName": "Kim",
       "email": "kim@naver.com",
-      "password": "qhgus123!"
+      "password": "qhgus123!",
+      "access_token": "access_ghighi789789",
+      "refresh_token": "refresh_ghighi789789"
     },
     {
       "id": 4,
       "nickName": "Bae",
       "email": "rolling@naver.com",
-      "password": "tjdgh123!"
+      "password": "tjdgh123!",
+      "access_token": "access_jkljkl000000",
+      "refresh_token": "refresh_jkljkl000000"
     },
   ];
 }

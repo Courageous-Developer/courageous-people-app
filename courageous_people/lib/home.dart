@@ -1,28 +1,30 @@
-import 'package:courageous_people/review/widget/review_tile.dart';
+import 'package:courageous_people/common/hive/token_hive.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
-import 'package:courageous_people/store/cubit/store_repository.dart';
 import 'package:courageous_people/store/cubit/store_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
-import 'constants.dart';
+import 'common/constants.dart';
 import 'log_in/log_In_screen.dart';
 import 'model/store_data.dart';
 import 'sign_in/sign_in_select_screen.dart';
-import 'store/screen/store_add_screen.dart';
+import 'register/screen/store_search_screen.dart';
 import 'store/screen/store_main_screen.dart';
 import 'widget/transparent_app_bar.dart';
-import 'classes.dart';
 import 'widget/store_list_tile.dart';
 
 class Home extends StatefulWidget {
+  // todo: naver 지도 처음에 안 뜨는 오류 수정
+  // todo: marker 하나만 나오는 오류 수정
   const Home({Key? key}) : super(key: key);
+
 
   @override
   _HomeState createState() => _HomeState();
 }
 
+// todo: store cubit blocklistener initial state를 반환하지 않는 문제 수정
 class _HomeState extends State<Home> {
   late String myLocation;
   late List<Store> storeList;
@@ -47,7 +49,8 @@ class _HomeState extends State<Home> {
             _userAccountSection(context),
             ListTile(
               leading: Icon(
-                Icons.favorite,
+                Icons.
+                favorite,
                 color: Colors.red,
               ),
               title: Text(
@@ -89,13 +92,13 @@ class _HomeState extends State<Home> {
           if(state is StoreInitialState)  await storeCubit.getStores();
         },
         builder: (_, state) {
-          if(state is StoreLoadingState) {
+          if (state is StoreLoadingState) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          if(state is StoreLoadedState) {
+          if (state is StoreLoadedState) {
             storeList = state.storeList;
 
             return NaverMap(
@@ -104,58 +107,31 @@ class _HomeState extends State<Home> {
                 print(latLng);
               },
               markers: storeList.map(
-                      (store) {
-                    print(store.toString());
-                    return Marker(
-                      markerId: '',
-                      position: LatLng(store.latitude, store.longitude),
-                      onMarkerTab: (a, b) {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (_) =>
-                              MainPageBottomSheet(
-                                  store: store
-                              ),
-                        );
-                      }
-                    );
-                  }
+                      (store) =>
+                      Marker(
+                          markerId: '',
+                          position: LatLng(store.latitude, store.longitude),
+                          onMarkerTab: (a, b) {
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (_) =>
+                                  MainPageBottomSheet(
+                                      store: store
+                                  ),
+                            );
+                          }
+                      )
               ).toList(),
             );
           }
 
           return Container();
-          // return Center(
-          //   child: ElevatedButton(
-          //     onPressed: () async { await storeCubit.getStores(); },
-          //     child: Text(''),
-          //   ),
-          // return GestureDetector(
-          //     onTap: () => showModalBottomSheet(
-          //   context: context,
-          //   builder: (_) => MainPageBottomSheet(
-          //     store: Store('아빠가 만든 스파게티', '무슨무슨길 18', '12345-6789', 'assets/images/pukka.png'),
-          //   ),
-          // ),
-          // child: NaverMap(
-          // initLocationTrackingMode: LocationTrackingMode.Face,
-          // onMapTap: (latLng) {
-          // print(latLng);
-          // },
-          // markers: [
-          // Marker(
-          // markerId: 'aa',
-          // position: LatLng(37.53251998113193, 127.14683754900574),
-          // // icon: _marker(context, 'assets/images/container.png'),
-          // ),
-          // ],
-          // );
-        },
+        }
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           Navigator.push(context, MaterialPageRoute(
-            builder: (_) => StoreAddScreen(),
+            builder: (_) => StoreSearchScreen(),
           ));
         },
         child: Icon(Icons.add),
@@ -209,6 +185,17 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+  //
+  // Future<bool> _isAccessTokenAuthenticated(String? accessToken) async {
+  //   if(accessToken == null) return false;
+  //
+  //   await Future.delayed(Duration(seconds: 1));
+  //   // todo: 여기서 http로 액세스 토큰 검증 로직 실행
+  //
+  //   if()
+  //
+  //   return true;
+  // }
 }
 
 class MainPageBottomSheet extends StatelessWidget {
@@ -219,8 +206,9 @@ class MainPageBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => StoreMainScreen(store: store)));
+        Navigator.push(context, MaterialPageRoute(
+          builder: (_) => StoreMainScreen(store: store),
+        ));
       },
       child: StoreListTile(
         store: store,

@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'store_state.dart';
-import '../../classes.dart';
+import '../../common/classes.dart';
 
 class StoreCubit extends Cubit<StoreState> {
   final StoreRepository repository;

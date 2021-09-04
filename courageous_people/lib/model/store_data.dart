@@ -1,6 +1,7 @@
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 
 class Store {
+  final int id;
   final String name;
   final String businessNumber;
   final String intro;
@@ -8,16 +9,11 @@ class Store {
   final double longitude;
 
   const Store(
+      this.id,
       this.name,
       this.businessNumber,
       this.intro,
       this.latitude,
       this.longitude
       );
-
-  @override
-  String toString() {
-    // TODO: implement toString
-    return '$name $businessNumber $intro $latitude $longitude';
-  }
 }
