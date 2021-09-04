@@ -69,7 +69,9 @@ flutter:
     - assets/images/profile.png
     - assets/images/store.png
     - assets/images/pukka.png
-
+    - assets/images/menu.png
+    - assets/images/picture.png
+    - assets/images/logo_color.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
