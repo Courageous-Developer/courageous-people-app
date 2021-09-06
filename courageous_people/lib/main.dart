@@ -1,6 +1,8 @@
 import 'package:courageous_people/log_in/cubit/log_in_repository.dart';
 import 'package:courageous_people/log_out/cubit/log_out_cubit.dart';
 import 'package:courageous_people/service/token_service.dart';
+import 'package:courageous_people/sign_in/cubit/sign_in_cubit.dart';
+import 'package:courageous_people/sign_in/cubit/sign_in_repository.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_repository.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +45,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<ReviewCubit>(
           create: (_) => ReviewCubit(ReviewRepository()),
         ),
-        // BlocProvider<UserCubit>(
-        //     create: (_) => UserCubit(UserRepository()),
-        // ),
+        BlocProvider<SignInCubit>(
+            create: (_) => SignInCubit(SignInRepository()),
+        ),
         BlocProvider<LogInCubit>(
           create: (_) => LogInCubit(LogInRepository()),
         ),

@@ -26,14 +26,13 @@ class Home extends StatefulWidget {
 
 // todo: store cubit blocklistener initial state를 반환하지 않는 문제 수정
 class _HomeState extends State<Home> {
-  late String myLocation;
   late List<Store> storeList;
+  String myCurrentLocation = '';
 
   @override
   void initState() {
     super.initState();
 
-    myLocation = '내 위치';
     storeList = [];
   }
 
@@ -76,7 +75,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       appBar: TransparentAppBar(
-        title: "서울시 강동구 둔촌동",
+        title: myCurrentLocation,
         actions: [
           IconButton(
             onPressed: () {
