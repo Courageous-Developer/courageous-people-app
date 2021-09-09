@@ -1,3 +1,4 @@
+import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/log_in/cubit/log_in_repository.dart';
 import 'package:courageous_people/log_out/cubit/log_out_cubit.dart';
 import 'package:courageous_people/service/token_service.dart';
@@ -5,8 +6,10 @@ import 'package:courageous_people/sign_in/cubit/sign_in_cubit.dart';
 import 'package:courageous_people/sign_in/cubit/sign_in_repository.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_repository.dart';
+import 'package:courageous_people/utils/user_verification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'common/hive/token_hive.dart';
 import 'home.dart';
 import 'package:provider/provider.dart';
@@ -16,24 +19,29 @@ import 'log_in/cubit/log_in_cubit.dart';
 import 'log_out/cubit/log_out_repository.dart';
 import 'review/cubit/review_cubit.dart';
 import 'review/cubit/review_repository.dart';
+import 'utils/user_verification.dart';
 
 Future<void> main() async {
   await initHiveForFlutter(boxes: [
     HiveStore.defaultBoxName,
     TokenHive.tokenStore,
+    UserHive.userStore,
   ]);
 
-  runApp(MyApp());
+  final bool userVerificationResult = await isUserVerified();
+  final image =
+      await OverlayImage.fromAssetImage(assetName: 'assets/images/container.png');
+
+  runApp(MyApp(isUserVerified: userVerificationResult, image: image));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final bool isUserVerified;
+  final OverlayImage image;
+  const MyApp({Key? key, required this.isUserVerified, required this.image}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String? accessToken = TokenService().accessToken;
-    String? refreshToken = TokenService().refreshToken;
-
     return MultiProvider(
       providers: [
         Provider(
@@ -46,7 +54,7 @@ class MyApp extends StatelessWidget {
           create: (_) => ReviewCubit(ReviewRepository()),
         ),
         BlocProvider<SignInCubit>(
-            create: (_) => SignInCubit(SignInRepository()),
+          create: (_) => SignInCubit(SignInRepository()),
         ),
         BlocProvider<LogInCubit>(
           create: (_) => LogInCubit(LogInRepository()),
@@ -56,7 +64,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: Home(),
+        home: Home(isUserVerified: isUserVerified, image: image),
         debugShowCheckedModeBanner: false,
       ),
     );
