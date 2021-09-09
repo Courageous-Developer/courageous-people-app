@@ -10,12 +10,12 @@ class LogInCubit extends Cubit<LogInState> {
 
   LogInCubit(this.repository) : super(LogInInitialState());
 
-  Future<void> logIn(BuildContext context, String id, String password) async {
+  Future<void> logIn(BuildContext context, String email, String password) async {
     emit(LogInLoadingState());
-    final result = await repository.logIn(context, id, password);
+    final result = await repository.logIn(context, email, password);
 
-    result == null
-      ? emit(LogInFailedState())
-      : emit(LogInSuccessState(result));
+    result
+        ? emit(LogInSuccessState(result))
+        : emit(LogInFailedState());
   }
 }

@@ -1,24 +1,43 @@
+import 'dart:convert';
+
+import 'package:courageous_people/common/hive/token_hive.dart';
 import 'package:courageous_people/common/mock_data.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../../model/user_data.dart';
-import '../../common/classes.dart';
+import '../../common/constants.dart';
+import 'package:http/http.dart' as http;
+import '../../model/token.dart';
 
 class LogInRepository {
-  Future<User?> logIn(BuildContext context, String id, String password) async {
+  Future<bool> logIn(BuildContext context, String email, String password) async {
     final tokenService = context.read<TokenService>();
 
-    // 요청 보내기
-    await Future.delayed(Duration(seconds: 1));
-    for(Json user in UserMockData.userJson) {
-      if(user['email'] == id && user['password'] == password) {
-        await tokenService.setTokens(user['access_token'], user['refresh_token']);
+    http.Response response = await http.post(
+        Uri.parse('$AUTH_RELATED_SERVER_URL/login'),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode({
+          "email": email,
+          "password": password,
+        })
+    );
 
-        return User(user['nickName'], user['email']);
-      }
+    print(response.body);
+    final result = jsonDecode(response.body);
+
+    if(response.statusCode == 200) {
+      await TokenService().setTokens(
+        result['access'],
+        result['refresh'],
+      );
+
+      return true;
     }
 
-    return null;
+    return false;
   }
 }
