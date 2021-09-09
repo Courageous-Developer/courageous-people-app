@@ -4,8 +4,16 @@ class TransparentAppBar extends StatelessWidget with PreferredSizeWidget {
   String? title;   // current location where user is at
   Widget? leading;
   List<Widget>? actions;
+  double? elevation;
 
-  TransparentAppBar({Key? key, this.title, this.leading, this.actions}) : super(key: key);
+
+  TransparentAppBar({
+    Key? key,
+    this.title,
+    this.leading,
+    this.actions,
+    this.elevation,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +31,7 @@ class TransparentAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
       actions: actions,
       backgroundColor: Colors.transparent,
-      elevation: 0,
+      elevation: elevation ?? 0,
     );
   }
 
