@@ -63,6 +63,7 @@ import 'sign_in_screen.dart';
 //                     ),
 //                   ),
 //                 ),
+//                 ),
 //               ),
 //             ),
 //           ),
@@ -70,15 +71,8 @@ import 'sign_in_screen.dart';
 //       ),
 //     );
 //   }
-//
-//   _onTap(BuildContext context, bool isCustomer) {
-//     // try {
-//     //   Navigator.push(context, MaterialPageRoute(
-//     //     builder: (_) => SignInScreen(),
-//     //   ));
-//     // } catch ( Exception ) {};
-//   }
 // }
+
 class SignInSelectScreen extends StatelessWidget {
   const SignInSelectScreen({Key? key}) : super(key: key);
 
@@ -90,70 +84,82 @@ class SignInSelectScreen extends StatelessWidget {
         elevation: 0,
         title: Text('회원가입'),
       ),
-      body:Center(
+      body: Center(
         child:
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            GestureDetector(
-              onTap:() {},//ToDo:회원가입 화면 전환
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color:Colors.lightGreenAccent,width: 5)
+            Container(
+              child: GestureDetector(
+                onTap: () => _onTap(context, 2),//ToDo:회원가입 화면 전환
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color:Colors.lightGreenAccent,width: 5)
+                      ),
+                      height: 230,
+                      width: 190,
                     ),
-                    height: 230,
-                    width: 190,
-                  ),
-                  Positioned.fill(
-                      bottom: 27,
-                      child: Align(alignment: Alignment.bottomCenter,
-                        child: Text('가게회원',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold
-                          ),
+                    Positioned.fill(
+                        bottom: 27,
+                        child: Align(alignment: Alignment.bottomCenter,
+                          child: Text('가게회원',
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold
+                            ),
 
-                        ),
-                      )
-                  ),
-                  Image.asset('assets/images/store.png',width: 190,),
-                ],
+                          ),
+                        )
+                    ),
+                    Image.asset('assets/images/store.png',width: 190,),
+                  ],
+                ),
               ),
             ),
-            SizedBox(width: 10,),
-            GestureDetector(
-              onTap:(){},//ToDo:회원가입 화면 전환
-              child: Stack(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        border: Border.all(color:Colors.lightGreenAccent,width: 5)
+            SizedBox(width: 10),
+            Container(
+              child: GestureDetector(
+                onTap: () => _onTap(context, 1),//ToDo:회원가입 화면 전환
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color:Colors.lightGreenAccent,width: 5)
+                      ),
+                      height: 230,
+                      width: 190,
                     ),
-                    height: 230,
-                    width: 190,
-                  ),
-                  Positioned.fill(
-                      bottom: 27,
-                      child: Align(alignment: Alignment.bottomCenter,
-                        child: Text('일반회원',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold
+                    Positioned.fill(
+                        bottom: 27,
+                        child: Align(alignment: Alignment.bottomCenter,
+                          child: Text('일반회원',
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
-                        ),
-                      )
-                  ),
-                  Image.asset('assets/images/container.png',width: 190,),
-                ],
+                        )
+                    ),
+                    Image.asset('assets/images/container.png', width: 190),
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  _onTap(BuildContext context, int managerFlag) {
+    try {
+      Navigator.push(context, MaterialPageRoute(
+        builder: (_) => SignInScreen(manageType: managerFlag),
+      ));
+    } catch ( Exception ) {};
   }
 }

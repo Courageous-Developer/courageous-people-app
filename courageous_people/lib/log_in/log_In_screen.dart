@@ -216,9 +216,8 @@ class _loginState extends State<LogInScreen> {
     );
   }
 
-  void _logInSuccessCallBack(BuildContext context) {
-    // todo: 액토, 리토 받아 저장 & 메인 화면에 로그인 상태
-
+  bool _logInSuccessCallBack(BuildContext context) {
     Navigator.popUntil(context, (route) => route.isFirst);
+    return true;
   }
 }

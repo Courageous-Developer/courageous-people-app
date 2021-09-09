@@ -1,31 +1,19 @@
+import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/model/store_data.dart';
+import 'package:courageous_people/utils/interpreters.dart';
 import 'package:http/http.dart' as http;
 import '../../common/classes.dart';
 import 'package:courageous_people/common/mock_data.dart';
 
-class StoreRepository {
-  Future<List<Store>> getStores() async {
-    await Future.delayed(Duration(seconds: 1));
-    final result = StoreMockData.storeJson;
+import 'dart:convert';
 
-    final resultMap = result.map(
-            (store) =>
-            Store(
-                store['id'], store['name'], store['biz_num'], store['intro'],
-                store['lat'], store['lng']
-            )
+class StoreRepository {
+  Future<List<Stores>> getStores() async {
+    http.Response response = await http.get(
+      Uri.parse('$NON_AUTH_SERVER_URL/store'),
+      headers: {"Accept": "application/json"},
     );
 
-    return resultMap.toList();
+    return storeInterpret(response.body);
   }
-//
-// Future<String> getStores() async {
-//   http.Response response = await http.get(
-//     Uri.parse('http://223.194.46.212:8757/rest_api/bizareas'),
-//     headers: {"Accept": "application/json"},
-//   );
-//
-//   print(response.body);
-//   return response.body;
-// }
 }

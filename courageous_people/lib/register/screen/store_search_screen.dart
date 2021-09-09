@@ -1,6 +1,7 @@
 import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/register/screen/store_add_screen.dart';
-import 'package:courageous_people/widget/store_list_tile.dart';
+import 'package:courageous_people/widget/my_input_form.dart';
+import 'package:courageous_people/widget/store_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +22,6 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
   late List<dynamic> crawledStoreData;
   late List<bool> isSelectedList = [false, false, false, false, false];
 
-  // late String
-
   @override
   void initState() {
     super.initState();
@@ -36,7 +35,7 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
 
     return Scaffold(
       appBar: TransparentAppBar(
-        title: '가게 추가하기',
+        title: '가게 찾기',
         // todo: ios 스타일 사용 X
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
@@ -45,77 +44,65 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
           },
         ),
       ),
-      body: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.symmetric(horizontal: 25),
+        child: Column(
+          children: [
+            Flexible(
+              child: Container(
+                child: Column(
+                  children: [
+                    MyInputForm(
+                      controller: storeSearchInputController,
+                      additionalButton: ElevatedButton(
+                        onPressed: () async {
+                          String url = 'https://openapi.naver.com/v1/search/local.json';
+                          String queryString =
+                              "?query=${storeSearchInputController
+                              .text}&display=10&start=1&sort=random";
+                          http.Response response = await http.get(
+                            Uri.parse('$url$queryString'),
+                            headers: {
+                              "X-Naver-Client-Id": NAVER_API_CLINET_ID,
+                              "X-Naver-Client-Secret": NAVER_API_CLINET_SECRET
+                            },
+                          );
 
-                        )
+                          setState(() {
+                            crawledStoreData = jsonDecode(response.body)['items'];
+                          });
+                        },
+                        child: Text('검색'),
+                      ),
                     ),
-                  ),
-                  controller: storeSearchInputController,
+                    SizedBox(height: 30),
+                    Expanded(child: NaverMap()),
+                  ],
                 ),
               ),
-              SizedBox(width: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  String url = 'https://openapi.naver.com/v1/search/local.json';
-                  String queryString =
-                      "?query=${storeSearchInputController
-                      .text}&display=10&start=1&sort=random";
-                  http.Response response = await http.get(
-                    Uri.parse('$url$queryString'),
-                    headers: {
-                      "X-Naver-Client-Id": NAVER_API_CLINET_ID,
-                      "X-Naver-Client-Secret": NAVER_API_CLINET_SECRET
-                    },
-                  );
-
-                  setState(() {
-                    crawledStoreData = jsonDecode(response.body)['items'];
-                    print('${crawledStoreData[0]} ${crawledStoreData.length}');
-                  });
-                },
-                child: Text('검색'),
-              ),
-            ],
-          ),
-          SizedBox(height: 30),
-          Container(
-            width: MediaQuery
-                .of(context)
-                .size
-                .width * 0.8,
-            height: MediaQuery
-                .of(context)
-                .size
-                .width * 0.8,
-            child: NaverMap(),
-          ),
-          Expanded(
-            child: Center(
-              child: crawledStoreData.length != 0
-                  ? ListView.separated(
-                itemCount: crawledStoreData.length,
-                itemBuilder:
-                    (context, index) =>
-                    _searchList(
-                      context,
-                      crawledStoreData[index],
-                      index,
-                    ),
-                separatorBuilder: (context, index) => Divider(thickness: 1),
-              )
-                  : Text('검색 결과가 없습니다'),
-              // child: SingleChildScrollView(child: Text('${crawledStoreData.toString()}')),
+              flex: 1,
             ),
-          ),
-        ],
+            Flexible(
+              child: Center(
+                child: crawledStoreData.length != 0
+                    ? ListView.separated(
+                  itemCount: crawledStoreData.length,
+                  itemBuilder:
+                      (context, index) =>
+                      _searchList(
+                        context,
+                        crawledStoreData[index],
+                        index,
+                      ),
+                  separatorBuilder: (context, index) => Divider(thickness: 1),
+                )
+                    : Text('검색 결과가 없습니다'),
+              ),
+              flex: 1,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -179,6 +166,7 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
               ),
               flex: 1,
             ),
+            SizedBox(height: 30),
           ],
         ),
       ),

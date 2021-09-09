@@ -5,14 +5,14 @@ import '../model/user_data.dart';
 import '../model/review_data.dart';
 import '../common/classes.dart';
 
-List<Store> storeInterpret(String source) {
+List<Stores> storeInterpret(String source) {
   final List<dynamic> dataList = jsonDecode(source);
 
   final storeList = dataList.map(
           (data) {
         Json store = data;
 
-        return Store(
+        return Stores(
             1,
             store['store_name'],
             store['address'],
@@ -41,25 +41,23 @@ User userInterpret(String source) {
   );
 }
 
-// List<Review> reviewInterpret(String source) {
-//   final List<dynamic> dataList = jsonDecode(source);
-//
-//   final reviewList = dataList.map(
-//           (data) {
-//         Json store = data;
-//
-//         return Review(
-//             1,
-//             store['store_name'],
-//             store['address'],
-//             store['post'],
-//             double.parse(store['latitude']),
-//             double.parse(store['longitude']),
-//             store['biz_num'],
-//             store['picture']
-//         );
-//       }
-//   ).toList();
-//
-//   return reviewList;
-// }
+List<Review> reviewInterpret(String source) {
+  final List<dynamic> dataList = jsonDecode(source);
+
+  final reviewList = dataList.map(
+          (data) {
+        Json store = data;
+
+        return Review(
+            1,
+            store['store_name'],
+            store['user_nickname'],
+            store['content'],
+            store['biz_num'],
+            store['picture']
+        );
+      }
+  ).toList();
+
+  return reviewList;
+}

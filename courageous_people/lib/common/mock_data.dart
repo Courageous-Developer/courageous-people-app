@@ -70,15 +70,15 @@ class ReviewMockData {
   static final JsonList reviewJson = [
     {
       "id": 1,
-      "store_id": 3,
+      "store_id": 4,
       "user_id": 1,
-      "comment": "너무 맛있네요",
+      "comment": "너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요너무 맛있네요",
       "grade": 4.5,
       "createAt": "2021-08-01",
     },
     {
       "id": 2,
-      "store_id": 2,
+      "store_id": 4,
       "user_id": 4,
       "comment": "진짜 대박",
       "grade": 5.0,
@@ -86,7 +86,7 @@ class ReviewMockData {
     },
     {
       "id": 3,
-      "store_id": 1,
+      "store_id": 4,
       "user_id": 2,
       "comment": "별로에요",
       "grade": 3.0,

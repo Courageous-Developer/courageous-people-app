@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MenuTile extends StatelessWidget {
-  const MenuTile({Key? key}) : super(key: key);//ToDo:이미지랑 메뉴 정보 인자로 받아오기
+  const MenuTile({Key? key}) : super(key: key);
+
+  //ToDo:이미지랑 메뉴 정보 인자로 받아오기
 
   @override
   Widget build(BuildContext context) {

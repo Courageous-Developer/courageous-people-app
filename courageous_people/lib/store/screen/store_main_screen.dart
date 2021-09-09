@@ -1,3 +1,390 @@
+import 'dart:convert';
+
+import 'package:courageous_people/common/constants.dart';
+import 'package:courageous_people/common/hive/token_hive.dart';
+import 'package:courageous_people/model/review_data.dart';
+import 'package:courageous_people/model/store_data.dart';
+import 'package:courageous_people/model/menu_data.dart';
+import 'package:courageous_people/review/cubit/review_cubit.dart';
+import 'package:courageous_people/review/cubit/review_state.dart';
+import 'package:courageous_people/review/screen/add_review_screen.dart';
+import 'package:courageous_people/store/section/review_section.dart';
+import 'package:courageous_people/widget/my_input_form.dart';
+import 'package:courageous_people/widget/review_tile.dart';
+import 'package:courageous_people/widget/menu_tile.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../widget/transparent_app_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+
+
+class StoreMainScreen extends StatefulWidget {
+  final Stores store;
+  final List<Review> reviews;
+  bool isFavorite = false;  // todo: 즐겨찾기이면 반영 (hive)
+
+  StoreMainScreen({Key? key, required this.store, required this.reviews}) : super(key: key);
+
+  @override
+  _StoreMainScreenState createState() => _StoreMainScreenState();
+}
+
+class _StoreMainScreenState extends State<StoreMainScreen> {
+  late List<Review> _reviewList;
+  late List<Menu> _menuList;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _reviewList = [];
+    _menuList = [];
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final _reviewCubit = context.read<ReviewCubit>();
+    final reviewController = TextEditingController();
+    final containerController = TextEditingController();
+    final tagController = TextEditingController();
+
+    return Scaffold(
+      appBar: TransparentAppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              // todo: 즐찾 추가 해제 로직 작성
+              // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
+
+              showDialog(context: context, builder: (_) => ReviewBox());
+
+              // setState(() {
+              //   widget.isFavorite = !(widget.isFavorite);
+              // });
+            },
+            icon: Icon(
+              Icons.favorite,
+              color: widget.isFavorite ? Colors.red : Colors.grey,
+            ),
+          )
+        ],
+      ),
+      body: Container(
+        alignment: Alignment.topCenter,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Center(
+                child: Text(
+                  widget.store.name,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Center(
+                child: Text(
+                  widget.store.intro ?? '한 줄 소개가 없습니다',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal[300],
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '주소',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        '대표 메뉴',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 30),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.store.address,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        '대표 메뉴 정보가 없습니다',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              child: Row(
+                children: [
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 1),
+                          color: Colors.teal.shade50,
+                        ),
+                        margin: EdgeInsets.only(left: 10, right: 5),
+                        padding: EdgeInsets.all(15),
+                        alignment: Alignment.center,
+                        width: Size.infinite.width,
+                        child: Text(
+                          '가게 정보',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black
+                          ),
+                        ),
+                      ),
+                    ),
+                    flex: 1,
+                  ),
+                  Flexible(
+                    child: GestureDetector(
+                      onTap: () async {
+                        await _reviewCubit.getReviews(4);
+
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) => _addReview(
+                            reviewController, containerController, tagController,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 1),
+                          color: Colors.teal.shade50,
+                        ),
+                        margin: EdgeInsets.only(left: 5, right: 10),
+                        padding: EdgeInsets.all(15),
+                        alignment: Alignment.center,
+                        width: Size.infinite.width,
+                        child: Text(
+                          '리뷰 남기기',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    flex: 1,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 20),
+            Divider(thickness: 4),
+            SizedBox(height: 20),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              child: Text(
+                '리뷰 ${_reviewList.length}개',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Flexible(
+              child: BlocListener(
+                bloc: _reviewCubit,
+                listener: (_, state) {
+                  if(state is ReviewLoadedState) {
+                    setState(() {
+                      _reviewList = state.reviewList;
+                    });
+                  }
+                },
+                child: Container(
+                  child: _reviews(),
+                ),
+              ),
+              flex: 8,
+            ),
+            // BlocConsumer(
+            //   bloc: reviewCubit,
+            //   listener: (context, state) async {
+            //     if(state is ReviewInitialState) await reviewCubit.getReviews(widget.store.id);
+            //     if(state is ReviewLoadedState) {
+            //       _reviewList = state.reviewList;
+            //       print(state.reviewList.length);
+            //     }
+            //   },
+            //   builder: (_, state) => Container(
+            //     child: Center(
+            //       child: ElevatedButton(
+            //         child: Text('리뷰보기'),
+            //         onPressed: () {
+            //           showModalBottomSheet(
+            //             context: context,
+            //             enableDrag: true,
+            //             builder: (_) => _reviewSheet(_reviewList),
+            //           );
+            //         },
+            //       ),
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  BoxDecoration _selected() {
+    return BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.all(Radius.circular(7)),
+    );
+  }
+
+  Widget _menus() => ListView.builder(
+    itemBuilder: (context, index) => MenuTile(),
+    itemCount: 10,
+  );
+
+  Widget _reviews() => ListView.builder(
+    itemBuilder: (context, index) =>
+        ReviewTile(data: _reviewList[index]),
+    itemCount: _reviewList.length,
+  );
+
+  Widget _addReview(
+      TextEditingController reviewController,
+      TextEditingController containerController,
+      TextEditingController tagController,
+      ) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(15),
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    border: Border.all(width: 1),
+                    color: Colors.white,
+                  ),
+                  child: Stack(
+                    children: [
+                      Center(child: Icon(Icons.camera_alt_outlined)),
+                      Container(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          "No Image",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text('사진 등록'),
+                ),
+              ],
+            ),
+            SizedBox(height: 25),
+            MyInputForm(
+              title: Text('리뷰'),
+              controller: reviewController,
+            ),
+            SizedBox(height: 25),
+            MyInputForm(
+              title: Text('용기 정보'),
+              controller: containerController,
+            ),
+            SizedBox(height: 25),
+            MyInputForm(
+              title: Text('태그'),
+              controller: tagController,
+            ),
+            SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () async {
+                final http.Response response = await http.post(
+                  Uri.parse('$NON_AUTH_SERVER_URL/review'),
+                  headers: {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer ${TokenHive().accessToken!}"
+                  },
+                  body: jsonEncode({
+                    "content": "${reviewController.text}",
+                    "store": "6",
+                    "user": "5",
+                  }),
+                );
+
+                if(response.statusCode == 201)  print('등록 완료');
+                Navigator.pop(context);
+              },
+              child: Text('리뷰 등록'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+
 // import 'package:courageous_people/model/review_data.dart';
 // import 'package:courageous_people/model/store_data.dart';
 // import 'package:courageous_people/my_rating_bar.dart';
@@ -285,151 +672,3 @@
 //     );
 //   }
 // }
-//
-//
-//
-//
-//
-
-
-
-
-
-import 'package:courageous_people/model/review_data.dart';
-import 'package:courageous_people/model/store_data.dart';
-import 'package:courageous_people/review/cubit/review_cubit.dart';
-import 'package:courageous_people/review/cubit/review_state.dart';
-import 'package:courageous_people/review/widget/review_tile.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../common/constants.dart';
-import '../../widget/transparent_app_bar.dart';
-import 'package:provider/provider.dart';
-
-class StoreMainScreen extends StatefulWidget {
-  late int id;
-  late String name;
-  late String intro;
-  bool isFavorite = false;  // todo: 즐겨찾기이면 반영
-
-  StoreMainScreen({Key? key, required Store store}) : super(key: key) {
-    this.id = store.id;
-    this.name = store.name;
-    this.intro = store.intro;
-  }
-
-  @override
-  _StoreMainScreenState createState() => _StoreMainScreenState();
-}
-
-class _StoreMainScreenState extends State<StoreMainScreen> {
-  late List<Review> _reviewList;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _reviewList = [];
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final reviewCubit = context.read<ReviewCubit>();
-    reviewCubit.init();
-
-    return Scaffold(
-      backgroundColor: THEME_COLOR,
-      appBar: TransparentAppBar(
-        title: widget.name,
-        actions: [
-          IconButton(
-            onPressed: () {
-              // todo: 즐찾 추가 해제 로직 작성
-              // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
-
-              setState(() {
-                widget.isFavorite = !(widget.isFavorite);
-              });
-            },
-            icon: Icon(
-              Icons.favorite,
-              color: widget.isFavorite ? Colors.red : Colors.grey,
-            ),
-          )
-        ],
-      ),
-      body: Container(
-          child: Stack(
-            children: [
-              Container(
-                child: Column(
-                  children: [
-                    Flexible(child: Container(color: Colors.transparent), flex: 2),
-                    Flexible(child: Container(color: Colors.white), flex: 1),
-                    Flexible(child: Container(color: Colors.white), flex: 3),
-                  ],
-                ),
-              ),
-              BlocConsumer(
-                bloc: reviewCubit,
-                listener: (context, state) async {
-                  if(state is ReviewInitialState) await reviewCubit.getReviews(widget.id);
-                  if(state is ReviewLoadedState) {
-                    _reviewList = state.reviewList;
-                    print(state.reviewList.length);
-                  }
-                },
-                builder: (_, state) => Container(
-                  width: MediaQuery.of(context).size.width - 20,
-                  height: MediaQuery.of(context).size.height/3,
-                  margin: EdgeInsets.fromLTRB(10, MediaQuery.of(context).size.height/9 - kToolbarHeight, 10, 0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(30)),
-                  ),
-                  child: Center(
-                    child: ElevatedButton(
-                        child: Text('리뷰보기'),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            enableDrag: true,
-                            builder: (_) => _reviewSheet(_reviewList),
-                          );
-                        }
-                    ),
-                  ),
-                ),
-              )
-            ],
-          )
-      ),
-    );
-  }
-
-  Widget _reviewSheet(List<Review> reviewList)  => ListView.builder(
-    itemBuilder: (context, index) => ReviewTile(
-      data: reviewList[index],
-    ),
-    itemCount: reviewList.length,
-  );
-}
-
-//
-// class StoreIntrodectionWidget extends StatelessWidget {
-//   const StoreIntrodectionWidget({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return
-//   }
-// }
-
-class StoreTabWidget extends StatelessWidget {
-  const StoreTabWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}

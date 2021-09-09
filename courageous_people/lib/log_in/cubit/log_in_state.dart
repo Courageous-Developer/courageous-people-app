@@ -1,4 +1,5 @@
 import '../../model/user_data.dart';
+import '../../model/token.dart';
 
 abstract class LogInState {
   const LogInState();
@@ -15,9 +16,9 @@ class LogInErrorState extends LogInState {
 class LogInLoadingState extends LogInState {}
 
 class LogInSuccessState extends LogInState {
-  final User user;
+  final bool result;
 
-  const LogInSuccessState(this.user);
+  const LogInSuccessState(this.result);
 }
 
 class LogInFailedState extends LogInState {}

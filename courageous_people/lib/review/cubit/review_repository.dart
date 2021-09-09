@@ -1,4 +1,5 @@
 import 'package:courageous_people/common/mock_data.dart';
+import 'package:courageous_people/utils/interpreters.dart';
 
 import '../../model/review_data.dart';
 import '../../common/classes.dart';
@@ -17,6 +18,6 @@ class ReviewRepository {
           review['comment'], review['createAt'], null, null));
     }
 
-    return reviewList;
+    return reviewInterpret();
   }
 }
