@@ -1,10 +1,20 @@
 import 'package:courageous_people/common/hive/token_hive.dart';
 
 class User {
-  final String name;
+  final int id;
+  final String nickname;
   final String email;
-  // final String profileImageUrl;
-  // todo: 즐겨찾기 목록 넣기
+  final String birthDate;
+  final int managerFlag;
+  // final List<int> favorites;
+  // todo: 즐겨찾기 목록 -> user hive에 넣음 (db 저장 x)
 
-  const User(this.name, this.email);
+  const User(
+      this.id,
+      this.nickname,
+      this.email,
+      this.birthDate,
+      this.managerFlag,
+      // this.favorites,
+      );
 }

@@ -1,19 +1,21 @@
-import 'package:naver_map_plugin/naver_map_plugin.dart';
-
-class Store {
+class Stores {
   final int id;
   final String name;
-  final String businessNumber;
-  final String intro;
+  final String address;
+  final String? intro;
   final double latitude;
   final double longitude;
+  final String? businessNumber;
+  final String? image;
 
-  const Store(
+  const Stores(
       this.id,
       this.name,
-      this.businessNumber,
+      this.address,
       this.intro,
       this.latitude,
-      this.longitude
+      this.longitude,
+      this.businessNumber,
+      this.image
       );
 }
