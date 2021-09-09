@@ -9,7 +9,7 @@ class MyRatingBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
-      itemSize: 16,
+      itemSize: 12.5,
       itemCount: 5,
       initialRating: rating,
       minRating: 1,
@@ -17,7 +17,7 @@ class MyRatingBar extends StatelessWidget {
       allowHalfRating: true,
       itemBuilder: (context, _) => Icon(
         Icons.star,
-        color: Colors.yellow,
+        color: Colors.yellow[700],
       ),
       onRatingUpdate: (rating) {
         print(rating);
