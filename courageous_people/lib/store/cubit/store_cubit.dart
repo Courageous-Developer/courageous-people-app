@@ -9,17 +9,18 @@ import '../../common/classes.dart';
 class StoreCubit extends Cubit<StoreState> {
   final StoreRepository repository;
 
-  StoreCubit(this.repository) : super(StoreLoadingState());
+  StoreCubit(this.repository) : super(StoreInitialState()) {
+    emit(StoreInitialState());
+  }
 
   static StoreCubit of(BuildContext context) => context.read<StoreCubit>();
 
   Future<void> getStores() async {
-    emit(StoreLoadingState());
-    List<Store> storeList = await repository.getStores();
+    List<Stores> storeList = await repository.getStores();
     emit(StoreLoadedState(storeList));
   }
 
   void init() {
-    emit(StoreInitialState());
+    emit(StoreLoadingState());
   }
 }
