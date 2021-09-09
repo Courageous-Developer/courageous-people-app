@@ -4,13 +4,14 @@ import 'package:hive/hive.dart';
 class UserHive {
   // Singleton
   static late Box<dynamic> _box;
+  static String userStore = 'USER_HIVE';
 
   static final UserHive _userHive = UserHive._();
   factory UserHive() => _userHive;
 
   UserHive._() {
     // 오리지널 생성자
-    _box = Hive.box('temporary');
+    _box = Hive.box(userStore);
   }
 
   int get userID {
