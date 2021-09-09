@@ -11,13 +11,16 @@ class ReviewRepository {
     final result = ReviewMockData.reviewJson;
     List<Review> reviewList = [];
 
-    for(Json review in result) {
+    for (Json review in result) {
       // todo: imageurl, tags 추후 처리
-      if(review['store_id'] == storeId) reviewList.add(Review(
-          review['store_id'],  review['user_id'],  4.5,
-          review['comment'], review['createAt'], null, null));
+      if (review['store_id'] == storeId) reviewList.add(Review(
+          review['store_id'], review['user_id'], review['comment'],
+          review['createAt'], null, null));
     }
 
-    return reviewInterpret();
+    // return reviewInterpret();
+
+
+    return [];
   }
 }

@@ -8,7 +8,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ReviewTile extends HookWidget {
   late String userName;
-  late double grade; // 별점
   late String comment;
   late String createAt;
   late String? imageUri;
@@ -19,11 +18,9 @@ class ReviewTile extends HookWidget {
     required Review data,
   }) : super(key: key) {
     this.userName = 'ㅎㅎㅎ'; //todo: userId로 userName 받아오기
-    this.grade = data.grade;
     this.comment = data.comment;
     this.createAt = data.createAt;
     this.imageUri = data.imageUri;
-    this.tags = data.tags;
   }
 
   @override
