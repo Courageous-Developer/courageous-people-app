@@ -216,8 +216,7 @@ class _loginState extends State<LogInScreen> {
     );
   }
 
-  bool _logInSuccessCallBack(BuildContext context) {
-    Navigator.popUntil(context, (route) => route.isFirst);
-    return true;
+  void _logInSuccessCallBack(BuildContext context) {
+    Navigator.pop(context, true);
   }
 }

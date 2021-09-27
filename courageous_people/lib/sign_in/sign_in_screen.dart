@@ -11,21 +11,21 @@ class SignInScreen extends HookWidget {
 
   SignInScreen({Key? key, required this.manageType}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     final _signInCubit = context.read<SignInCubit>();
 
-    final nameEditingController = TextEditingController();
-    final nicknameEditingController = TextEditingController();
-    final emailEditingController = TextEditingController();
-    final passwordEditingController = TextEditingController();
-    final password2EditingController = TextEditingController();
-
-    final _emailErrorNotifier = useState<String?>(null);
-    final _passwordErrorNotifier = useState<String?>(null);
-    final _password2ErrorNotifier = useState<String?>(null);
+    final _nicknameEditingController = TextEditingController();
     final _nicknameErrorNotifier = useState<String?>(null);
+
+    final _emailEditingController = TextEditingController();
+    final _emailErrorNotifier = useState<String?>(null);
+
+    final _passwordEditingController = TextEditingController();
+    final _passwordErrorNotifier = useState<String?>(null);
+
+    final _password2EditingController = TextEditingController();
+    final _password2ErrorNotifier = useState<String?>(null);
 
     final _emailNotifier = useState<bool>(false);
     final _nicknameNotifier = useState<bool>(false);
@@ -50,7 +50,7 @@ class SignInScreen extends HookWidget {
                 children: [
                   MyInputForm(
                     title: Text('닉네임'),
-                    controller: nicknameEditingController,
+                    controller: _nicknameEditingController,
                     textInputType: TextInputType.emailAddress,
                     errorText: _nicknameErrorNotifier.value,
                     onChanged: (innerText) {
@@ -73,10 +73,9 @@ class SignInScreen extends HookWidget {
                     ),
                   ),
                   SizedBox(height: 20),
-                  // todo: 생년월일 받기
                   MyInputForm(
                     title: Text('이메일'),
-                    controller: emailEditingController,
+                    controller: _emailEditingController,
                     textInputType: TextInputType.emailAddress,
                     errorText: _emailErrorNotifier.value,
                     onChanged: (innerText) {
@@ -104,7 +103,7 @@ class SignInScreen extends HookWidget {
                   MyInputForm(
                     title: Text('비밀번호'),
                     // hintText: '비밀번호',
-                    controller: passwordEditingController,
+                    controller: _passwordEditingController,
                     textInputType: TextInputType.visiblePassword,
                     errorText: _passwordErrorNotifier.value,
                     obscureText: true,
@@ -118,7 +117,7 @@ class SignInScreen extends HookWidget {
                   SizedBox(height: 20),
                   MyInputForm(
                     title: Text('비밀번호 확인'),
-                    controller: password2EditingController,
+                    controller: _password2EditingController,
                     textInputType: TextInputType.visiblePassword,
                     errorText: _password2ErrorNotifier.value,
                     helperText: _password2HelperNotifier.value,
@@ -130,7 +129,7 @@ class SignInScreen extends HookWidget {
                       else {
                         _password2ErrorNotifier.value = null;
 
-                        if(innerText == passwordEditingController.text) {
+                        if(innerText == _passwordEditingController.text) {
                           _password2HelperNotifier.value = '비밀번호가 일치합니다';
                         }
                       }
@@ -142,21 +141,21 @@ class SignInScreen extends HookWidget {
                       bloc: _signInCubit,
                       listener: (context, state) async {
                         if(state is SignInSuccessState) {
-                          final userId = state.user.id;
-                          final userEmail = state.user.email;
-                          final userNickname = state.user.nickname;
-                          final userBirthDate = state.user.birthDate;
-                          final userManegeFlag = state.user.managerFlag;
+                          // final userId = state.user.id;
+                          // final userEmail = state.user.email;
+                          // final userNickname = state.user.nickname;
+                          // final userBirthDate = state.user.birthDate;
+                          // final userManegeFlag = state.user.managerFlag;
+                          //
+                          // UserHive().setUser(
+                          //   userId,
+                          //   userNickname,
+                          //   userEmail,
+                          //   userBirthDate,
+                          //   userManegeFlag,
+                          // );
 
-                          UserHive().setUser(
-                            userId,
-                            userNickname,
-                            userEmail,
-                            userBirthDate,
-                            userManegeFlag,
-                          );
-
-                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pop(context, (route) => route.isFirst);
                         }
                       },
                       child: ElevatedButton(
@@ -175,9 +174,9 @@ class SignInScreen extends HookWidget {
                         //     ? null
                         onPressed : () async {
                           await _signInCubit.signIn(
-                            nicknameEditingController.text,
-                            emailEditingController.text,
-                            passwordEditingController.text,
+                            _nicknameEditingController.text,
+                            _emailEditingController.text,
+                            _passwordEditingController.text,
                             '1996-08-23',
                             manageType,
                           );

@@ -94,10 +94,13 @@ class StoreAddScreen extends StatelessWidget {
                 );
 
                 print(response.body);
+                print(response.statusCode);
 
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (_) => Home(isUserVerified: true),
-                ));
+                if(response.statusCode == 201) {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => Home(isUserVerified: true),
+                  ));
+                }
               },
               child: Container(
                 height: 50,

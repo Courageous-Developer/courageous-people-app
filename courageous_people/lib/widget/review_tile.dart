@@ -1,38 +1,28 @@
 import 'package:courageous_people/model/review_data.dart';
+import 'package:courageous_people/model/tag_data.dart';
 import 'package:courageous_people/widget/tag_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // todo: 색 반전
 
 class ReviewTile extends HookWidget {
-  late String userName;
-  late String comment;
-  late String createAt;
-  late String? imageUri;
-  late String? tags;
+  final Review review;
 
-  ReviewTile({
-    Key? key,
-    required Review data,
-  }) : super(key: key) {
-    this.userName = 'ㅎㅎㅎ'; //todo: userId로 userName 받아오기
-    this.comment = data.comment;
-    this.createAt = data.createAt;
-    this.imageUri = data.imageUri;
-  }
+  ReviewTile({Key? key, required this.review}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final double SCREEN_WIDTH = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final double SCREEN_HEIGHT = MediaQuery
-        .of(context)
-        .size
-        .height;
+    // final double SCREEN_WIDTH = MediaQuery
+    //     .of(context)
+    //     .size
+    //     .width;
+    // final double SCREEN_HEIGHT = MediaQuery
+    //     .of(context)
+    //     .size
+    //     .height;
     ValueNotifier<bool> isExpandedNotifier = useState<bool>(false);
 
     return Container(
@@ -49,13 +39,13 @@ class ReviewTile extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _userSection(),
-                Container(
-                  child: imageUri != null
-                      ? _imageSection()
-                      : null,
-                ),
+                review.imageUri.length == 0
+                    ? SizedBox(height: 0)
+                    : _imageSection(),
                 _commentSection(),
-                _tagSection(),
+                review.tags.length == 0
+                    ? SizedBox(height: 0)
+                    : _tagSection(),
                 _containerNotifierSection(
                   isExpanded: isExpandedNotifier.value,
                   expansionCallback: (index, isExpanded) {
@@ -72,13 +62,13 @@ class ReviewTile extends HookWidget {
 
   Widget _userSection() =>
       Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.only(left: 10, right: 25),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              userName,
+              review.userNickname,
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
@@ -86,7 +76,7 @@ class ReviewTile extends HookWidget {
             ),
             SizedBox(width: 10),
             Text(
-              createAt,
+              "20201-09-15",
               style: TextStyle(
                 fontSize: 13,
                 color: Colors.grey,
@@ -104,7 +94,7 @@ class ReviewTile extends HookWidget {
       Container(
         alignment: Alignment.centerLeft,
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        child: Text(comment),
+        child: Text(review.comment),
       );
 
   Widget _tagSection() =>
@@ -112,10 +102,10 @@ class ReviewTile extends HookWidget {
         padding: EdgeInsets.fromLTRB(10, 0, 10, 20),
         alignment: Alignment.centerLeft,
         child: Row(
-          children: [
-            TagWidget(content: '꿀맛'),
-            TagWidget(content: '존맛')
-          ],
+          mainAxisSize: MainAxisSize.min,
+          children: review.tags.map(
+                (tag) => TagWidget(tag: tag),
+          ).toList(),
         ),
       );
 
@@ -147,8 +137,7 @@ class ReviewTile extends HookWidget {
             border: Border(top: BorderSide(width: 0.2)),
           ),
           child: TagWidget(
-            content: '500-1000 (ml)',
-            backgroundColor: Colors.grey.shade500,
+            tag: Tag('500-1000 (ml)', 2),
             fontWeight: FontWeight.bold,
           ),
         ),
