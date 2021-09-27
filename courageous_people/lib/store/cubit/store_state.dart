@@ -6,6 +6,8 @@ abstract class StoreState {
 
 class StoreInitialState extends StoreState {}
 
+class MapInitializeState extends StoreState {}
+
 class StoreErrorState extends StoreState {
   final String message;
 

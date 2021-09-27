@@ -20,7 +20,7 @@ class StoreCubit extends Cubit<StoreState> {
     emit(StoreLoadedState(storeList));
   }
 
-  void init() {
-    emit(StoreLoadingState());
+  void initMap() {
+    emit(MapInitializeState());
   }
 }
