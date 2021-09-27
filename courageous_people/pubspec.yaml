@@ -31,11 +31,14 @@ dependencies:
   flutter_bloc: ^7.2.0
   graphql_flutter: ^5.0.0
   flutter_rating_bar: ^4.0.0
+  http: ^0.13.3
+  flutter_hooks: ^0.18.0
   naver_map_plugin:
     git:
       url: https://github.com/LBSTECH/naver_map_plugin.git
-  http: ^0.13.3
-  flutter_hooks: ^0.18.0
+#  wh_flutter_widget:
+#    git:
+#      url: https://github.com/DDOLDDOL/wh_flutter_widget.git
 
 
   # The following adds the Cupertino Icons font to your application.
