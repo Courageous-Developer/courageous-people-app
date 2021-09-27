@@ -4,9 +4,9 @@ import 'package:courageous_people/sign_in/cubit/sign_in_repository.dart';
 import 'package:courageous_people/sign_in/cubit/sign_in_state.dart';
 
 class SignInCubit extends Cubit<SignInState>{
-  final SignInRepository repository;
+  final SignInRepository _repository;
 
-  SignInCubit(this.repository) : super(SignInInitialState());
+  SignInCubit(this._repository) : super(SignInInitialState());
 
   Future<void> signIn(
       String nickname,
@@ -16,9 +16,12 @@ class SignInCubit extends Cubit<SignInState>{
       int manageFlag
       ) async {
     emit(SignInLoadingState());
-    final user = await repository.signIn(
+    final message = await _repository.signIn(
       nickname, email, password, birthDate, manageFlag,
     );
-    emit(SignInSuccessState(user));
+
+    message == null
+        ? emit(SignInSuccessState('회원가입을 완료했습니다'))
+        : emit(SignInErrorState(message));
   }
 }

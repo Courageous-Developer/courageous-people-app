@@ -7,9 +7,9 @@ abstract class SignInState {
 class SignInInitialState extends SignInState {}
 class SignInLoadingState extends SignInState {}
 class SignInSuccessState extends SignInState {
-  final User user;
+  final String message;
 
-  const SignInSuccessState(this.user);
+  const SignInSuccessState(this.message);
 }
 class SignInErrorState extends SignInState {
   final String message;
