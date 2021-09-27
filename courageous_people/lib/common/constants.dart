@@ -17,5 +17,5 @@ const USER_HIVE_FAVORITE_FIELD = "_favorite";
 const USER_HIVE_MANAGE_FLAG_FIELD = "_manageFlag";
 
 // DB server url
-const AUTH_RELATED_SERVER_URL = 'http://ec2-13-209-14-10.ap-northeast-2.compute.amazonaws.com:8000/account';
+const AUTH_SERVER_URL = 'http://ec2-13-209-14-10.ap-northeast-2.compute.amazonaws.com:8000/account';
 const NON_AUTH_SERVER_URL = 'http://ec2-13-209-14-10.ap-northeast-2.compute.amazonaws.com:8000/board';
