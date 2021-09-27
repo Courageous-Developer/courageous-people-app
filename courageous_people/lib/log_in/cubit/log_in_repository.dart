@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:courageous_people/common/hive/token_hive.dart';
-import 'package:courageous_people/common/mock_data.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/utils/http_client.dart';
 import 'package:flutter/cupertino.dart';

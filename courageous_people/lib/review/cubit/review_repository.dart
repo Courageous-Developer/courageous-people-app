@@ -2,7 +2,6 @@ import 'package:http/http.dart' as http;
 
 import '../../model/review_data.dart';
 import '../../common/classes.dart';
-import '../../common/mock_data.dart';
 import '../../common/constants.dart';
 import '../../utils/interpreters.dart';
 

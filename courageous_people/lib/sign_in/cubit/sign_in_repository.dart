@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:courageous_people/common/mock_data.dart';
 import 'package:courageous_people/model/user_data.dart';
 import 'package:courageous_people/utils/interpreters.dart';
 import 'package:flutter/cupertino.dart';
