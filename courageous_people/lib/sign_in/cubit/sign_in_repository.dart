@@ -15,15 +15,6 @@ class SignInRepository {
       String birthDate,
       int manageFlag
       ) async {
-
-    print('aaaaaaaaaaaaaaa');
-
-    print('$email ${email.runtimeType}');
-    print('$nickname ${nickname.runtimeType}');
-    print('$password ${password.runtimeType}');
-    print('$birthDate ${birthDate.runtimeType}');
-    print('$manageFlag ${manageFlag.runtimeType}');
-    // 보낼 데이터
     http.Response response = await http.post(
       Uri.parse('$AUTH_SERVER_URL/register'),
       headers: {"Accept": "application/json"},
@@ -35,8 +26,6 @@ class SignInRepository {
         "user_type": manageFlag.toString(),
       }),
     );
-
-    // print(response.statusCode);
 
     if(response.statusCode == 400) return '이미 사용중인 이메일입니다';
     if(response.statusCode == 201) return null;
