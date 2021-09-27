@@ -6,6 +6,8 @@ abstract class ReviewState {
 
 class ReviewInitialState extends ReviewState {}
 
+class ReviewReadyState extends ReviewState {}
+
 class ReviewErrorState extends ReviewState {
   final String message;
 

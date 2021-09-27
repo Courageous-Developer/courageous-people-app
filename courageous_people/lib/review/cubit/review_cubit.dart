@@ -16,8 +16,8 @@ class ReviewCubit extends Cubit<ReviewState> {
     final reviewList = await repository.getReviews(storeId);
     emit(ReviewLoadedState(reviewList));
   }
-
-  void init() {
-    emit(ReviewInitialState());
-  }
+  //
+  // void init() {
+  //   emit(ReviewReadyState());
+  // }
 }
