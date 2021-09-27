@@ -8,6 +8,7 @@ import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_repository.dart';
 import 'package:courageous_people/utils/user_verification.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'common/hive/token_hive.dart';
@@ -22,6 +23,10 @@ import 'review/cubit/review_repository.dart';
 import 'utils/user_verification.dart';
 
 Future<void> main() async {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
+
   await initHiveForFlutter(boxes: [
     HiveStore.defaultBoxName,
     TokenHive.tokenStore,
@@ -29,16 +34,13 @@ Future<void> main() async {
   ]);
 
   final bool userVerificationResult = await isUserVerified();
-  final image =
-      await OverlayImage.fromAssetImage(assetName: 'assets/images/container.png');
 
-  runApp(MyApp(isUserVerified: userVerificationResult, image: image));
+  runApp(MyApp(isUserVerified: userVerificationResult));
 }
 
 class MyApp extends StatelessWidget {
   final bool isUserVerified;
-  final OverlayImage image;
-  const MyApp({Key? key, required this.isUserVerified, required this.image}) : super(key: key);
+  const MyApp({Key? key, required this.isUserVerified}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: Home(isUserVerified: isUserVerified, image: image),
+        home: Home(isUserVerified: isUserVerified),
         debugShowCheckedModeBanner: false,
       ),
     );
