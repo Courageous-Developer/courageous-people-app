@@ -26,13 +26,9 @@ class LogInRepository {
     //     })
     // );
 
-    http.Response response = await authHttpRequest(
+    http.Response response = await httpRequestWithoutToken(
       requestType: 'POST',
-      path: '/login',
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
+      path: '/account/login',
       body: {
         "email": email,
         "password": password,

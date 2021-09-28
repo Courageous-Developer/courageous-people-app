@@ -4,13 +4,9 @@ import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/utils/http_client.dart';
 
 Future<bool> isUserVerified() async {
-  final refreshTokenResponse = await authHttpRequest(
+  final refreshTokenResponse = await httpRequestWithoutToken(
     requestType: 'post',
-    path: '/verify',
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    },
+    path: '/account/verify',
     body: {
       "token": TokenService().refreshToken
     },
@@ -18,13 +14,9 @@ Future<bool> isUserVerified() async {
 
   if (refreshTokenResponse.statusCode != 200) return false;
 
-  final getAccessTokenResponse = await authHttpRequest(
+  final getAccessTokenResponse = await httpRequestWithoutToken(
     requestType: 'post',
-    path: '/refresh',
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    },
+    path: '/account/refresh',
     body: {
       "refresh": TokenService().refreshToken
     },

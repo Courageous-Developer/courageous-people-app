@@ -7,9 +7,9 @@ class LogOutRepository {
   const LogOutRepository();
 
   Future<bool> logOut() async {
-    final response = await authHttpRequest(
+    final response = await httpRequestWithToken(
       requestType: 'POST',
-      path: '/logout',
+      path: '/account/logout',
       body: {
         "refresh": TokenService().refreshToken,
       },

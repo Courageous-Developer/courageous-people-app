@@ -6,9 +6,9 @@ import '../../utils/http_client.dart';
 
 class StoreRepository {
   Future<List<Stores>> getStores() async {
-    return storeInterpret((await nonAuthHttpRequest(
+    return storeInterpret((await httpRequestWithoutToken(
         requestType: 'GET',
-        path: '/store'
+        path: '/board/store'
     )).body);
   }
 }
