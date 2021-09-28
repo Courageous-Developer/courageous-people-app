@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/common/hive/token_hive.dart';
+import 'package:courageous_people/utils/http_client.dart';
 import 'package:courageous_people/widget/my_input_form.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:http/http.dart' as http;
@@ -76,21 +77,18 @@ class StoreAddScreen extends StatelessWidget {
             child: GestureDetector(
               onTap: () async {
                 // todo: 오류 수정
-                final http.Response response = await http.post(
-                    Uri.parse('$NON_AUTH_SERVER_URL/store'),
-                    headers: {
-                      "Accept": "application/json",
-                      "Authorization": "Bearer ${TokenHive().accessToken!}"
-                    },
-                    body: jsonEncode({
-                      "store_name": storeData['title'],
-                      "address": storeData['address'],
-                      "post": "",
-                      "picture": "",  // todo: image url 추가
-                      "latitude": "126.11111",
-                      "longitude": "37.111111",
-                      "user": "3",
-                    })
+                final http.Response response = await httpRequestWithToken(
+                  requestType: 'POST',
+                  path: 'board/store',
+                  body: {
+                    "store_name": storeData['title'],
+                    "address": storeData['address'],
+                    "post": "",
+                    "picture": "",  // todo: image url 추가
+                    "latitude": "126.11111",
+                    "longitude": "37.111111",
+                    "user": "3",
+                  },
                 );
 
                 print(response.body);
