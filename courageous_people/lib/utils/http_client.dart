@@ -5,20 +5,25 @@ import 'package:http/http.dart' as http;
 import '../common/classes.dart';
 import '../service/token_service.dart';
 
-Future<http.Response> nonAuthHttpRequest({
+Future<http.Response> httpRequestWithToken({
   required String requestType,
   required String path,
-  Map<String, String> headers = const {
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-  },
+  Map<String, String>? headers,
   Json? body,
   Encoding? encoding,
 }) async {
-  final uri = Uri.parse('$NON_AUTH_SERVER_URL$path');
+  final uri = Uri.parse('$REQUEST_URL$path');
+
+  final Map<String, String> requestHeaders = headers ?? {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "Authorization": "Bearer ${TokenService().accessToken!}",
+  };
+
   final Future<http.Response> Function(
       Uri, {Map<String, String>? headers}
       ) requestWithoutBody = http.get;
+
   late Future<http.Response> Function(
       Uri, {Object? body, Encoding? encoding, Map<String, String>? headers}
       ) requestWithBody;
@@ -47,7 +52,7 @@ Future<http.Response> nonAuthHttpRequest({
   response = hasBody
       ? await requestWithBody(
     uri,
-    headers: headers,
+    headers: requestHeaders,
     body: jsonEncode(body),
     encoding: encoding,
   )
@@ -59,26 +64,27 @@ Future<http.Response> nonAuthHttpRequest({
   return response;
 }
 
-Future<http.Response> authHttpRequest({
+Future<http.Response> httpRequestWithoutToken({
   required String requestType,
   required String path,
   Map<String, String>? headers,
   Json? body,
   Encoding? encoding,
 }) async {
-  final uri = Uri.parse('$AUTH_SERVER_URL$path');
+  final uri = Uri.parse('$REQUEST_URL$path');
+
+  final Map<String, String> requestHeaders = headers ?? {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+  };
+
   final Future<http.Response> Function(
       Uri, {Map<String, String>? headers}
       ) requestWithoutBody = http.get;
+
   late Future<http.Response> Function(
       Uri, {Object? body, Encoding? encoding, Map<String, String>? headers}
       ) requestWithBody;
-
-  final headersWithAccessToken = headers ??  {
-    "Accept": "application/json",
-    "Content-Type": "application/json",
-    "Authorization": "Bearer ${TokenService().accessToken!}"
-  };
 
   http.Response response;
   bool hasBody = true;
@@ -104,13 +110,13 @@ Future<http.Response> authHttpRequest({
   response = hasBody
       ? await requestWithBody(
     uri,
-    headers: headersWithAccessToken,
+    headers: requestHeaders,
     body: jsonEncode(body),
     encoding: encoding,
   )
       : await requestWithoutBody(
     uri,
-    headers: headersWithAccessToken,
+    headers: headers,
   );
 
   return response;
