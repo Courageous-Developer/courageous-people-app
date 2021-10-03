@@ -34,7 +34,6 @@ class Home extends HookWidget {
     final storeCubit = StoreCubit.of(context);
     final logOutCubit = LogOutCubit.of(context);
 
-    // final isUserVerifiedNotifier = useState<bool>(isUserVerified);
     final storeNotifier = useState<Stores?>(null);  // 클릭해서 선택한 가게
     final markerNotifier = useState<List<Marker>>([]);
     late NaverMapController mapController;
@@ -118,20 +117,18 @@ class Home extends HookWidget {
             ),
           ),
           Positioned(
-            // left: 30.0,
-            // top: 30.0,
-            // child: FloatingActionButton(
-            //   onPressed: () {},
-            //   backgroundColor: isUserVerified ? Colors.black : Colors.pink,
-            //   child: Icon(Icons.menu),
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   // child: MyStatefulWidget(),
-            // ),
-            left: 34,
-            top: 40,
-            child: _userSection(),
+            left: 30.0,
+            top: 30.0,
+            child: FloatingActionButton(
+              onPressed: () {},
+              backgroundColor: isUserVerified ? Colors.black : Colors.pink,
+              child: Icon(Icons.menu),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              // child: MyStatefulWidget(),
+            ),
+            // child: _userSection(),
           ),
           Positioned(
             left: 34,
@@ -142,9 +139,6 @@ class Home extends HookWidget {
               backgroundColor: Colors.blue.shade300,
               heroTag: "registerStore",
               onPressed: () {
-                print('asdf ${getWidgetSizeByKey(_menuIconKey)!.width}');
-                print('asdf ${getWidgetSizeByKey(_menuIconKey)!.height}');
-
                 isUserVerified
                     ? Navigator.push(context, MaterialPageRoute(
                   builder: (_) => StoreSearchScreen(),
@@ -158,7 +152,6 @@ class Home extends HookWidget {
                       ElevatedButton(
                         onPressed: () async {
                           Navigator.pop(context);
-
                           isUserVerified = await Navigator.push(context, MaterialPageRoute(
                             builder: (_) => LogInScreen(),
                           ));
