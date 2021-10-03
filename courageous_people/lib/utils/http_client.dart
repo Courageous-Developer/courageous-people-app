@@ -121,3 +121,30 @@ Future<http.Response> httpRequestWithoutToken({
 
   return response;
 }
+
+Future<http.Response> naverRequestResponse({
+  required String url,
+  required String queryString,
+  required String requestApi,
+}) async {
+  http.Response response = await http.get(
+    Uri.parse('$url$queryString'),
+    headers: requestApi == 'place'
+        ?
+    {
+      "Accept": "application/json",
+      "X-Naver-Client-Id": NAVER_API_CLINET_ID,
+      "X-Naver-Client-Secret": NAVER_API_CLINET_SECRET
+    }
+        :
+    {
+      "Accept": "application/json",
+      "X-NCP-APIGW-API-KEY-ID": X_NCP_APIGW_API_KEY_ID,
+      "X-NCP-APIGW-API-KEY": X_NCP_APIGW_API_KEY,
+    },
+  );
+
+  return response;
+}
+
+// todo: http.Response를 반환하지 말고, statuscode에 따른 예외처리 후 json decode 된 객체 반환

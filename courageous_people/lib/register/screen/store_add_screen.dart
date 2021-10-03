@@ -79,25 +79,29 @@ class StoreAddScreen extends StatelessWidget {
                 // todo: 오류 수정
                 final http.Response response = await httpRequestWithToken(
                   requestType: 'POST',
-                  path: 'board/store',
+                  path: '/board/store',
                   body: {
                     "store_name": storeData['title'],
                     "address": storeData['address'],
                     "post": "",
                     "picture": "",  // todo: image url 추가
-                    "latitude": "126.11111",
-                    "longitude": "37.111111",
+                    "latitude": storeData['latitude'],
+                    "longitude": storeData['longitude'],
                     "user": "3",
                   },
                 );
 
-                print(response.body);
                 print(response.statusCode);
+                print(response.body);
 
                 if(response.statusCode == 201) {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => Home(isUserVerified: true),
-                  ));
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => Home(isUserVerified: true),
+                    ),
+                        (route) => false,
+                  );
                 }
               },
               child: Container(
