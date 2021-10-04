@@ -22,10 +22,6 @@ Future<bool> isUserVerified() async {
     },
   );
 
-  print(refreshTokenResponse.statusCode);
-  print(refreshTokenResponse.body);
-  print(jsonDecode(getAccessTokenResponse.body)['access']);
-
   if(getAccessTokenResponse.statusCode != 200)  return false;
 
   await TokenService().setAccessToken(
