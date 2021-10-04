@@ -88,7 +88,7 @@ class Home extends HookWidget {
               storeNotifier.value != null
                   ? 30
                   :  MediaQuery.of(context).size.width - 30,
-              MediaQuery.of(context).size.height*0.68,
+              MediaQuery.of(context).size.height*0.68 + 80,
               30,
               MediaQuery.of(context).size.height*0.07,
             ),
@@ -121,7 +121,7 @@ class Home extends HookWidget {
             top: 30.0,
             child: FloatingActionButton(
               onPressed: () {},
-              backgroundColor: isUserVerified ? Colors.black : Colors.pink,
+              backgroundColor: Colors.black,
               child: Icon(Icons.menu),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -130,7 +130,8 @@ class Home extends HookWidget {
             ),
             // child: _userSection(),
           ),
-          Positioned(
+          isUserVerified
+              ? Positioned(
             left: 34,
             top: 103,
             child: _menuListButton(
@@ -147,12 +148,11 @@ class Home extends HookWidget {
                   context: context,
                   builder: (context) => AlertDialog(
                     title: const Text('로그인이 필요합니다.'),
-                    content: Image.asset('assets/images/pukka.png'),
                     actions: [
                       ElevatedButton(
                         onPressed: () async {
                           Navigator.pop(context);
-                          isUserVerified = await Navigator.push(context, MaterialPageRoute(
+                          Navigator.push(context, MaterialPageRoute(
                             builder: (_) => LogInScreen(),
                           ));
                         },
@@ -169,8 +169,24 @@ class Home extends HookWidget {
                 );
               },
             ),
+          )
+              : Positioned(
+            left: 34,
+            top: 103,
+            child: _menuListButton(
+              icon: Icons.login,
+              menuTitle: "로그인",
+              backgroundColor: Colors.grey.shade500,
+              heroTag: "logIn",
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (_) => LogInScreen(),
+                ));
+              },
+            ),
           ),
-          Positioned(
+          isUserVerified
+              ? Positioned(
             left: 34,
             top: 168,
             child: _menuListButton(
@@ -180,8 +196,10 @@ class Home extends HookWidget {
               heroTag: "favorite",
               onPressed: () {},
             ),
-          ),
-          Positioned(
+          )
+              : SizedBox(height: 0),
+          isUserVerified
+              ? Positioned(
             left: 34,
             top: 233,
             child: _menuListButton(
@@ -191,7 +209,8 @@ class Home extends HookWidget {
               heroTag: "near",
               onPressed: () {},
             ),
-          ),
+          )
+              : SizedBox(height: 0),
           isUserVerified
               ? Positioned(
             left: 34,
@@ -214,6 +233,14 @@ class Home extends HookWidget {
                           Navigator.pop(context);
 
                           await logOutCubit.logOut();
+
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => Home(isUserVerified: false),
+                            ),
+                                (route) => false,
+                          );
                           // if(!logOutResult) showDialog(context: context, builder: builder);
                         },
                         child: Text('확인'),
@@ -251,10 +278,7 @@ class Home extends HookWidget {
     }
 
     return Container(
-      height: MediaQuery
-          .of(context)
-          .size
-          .height / 5,
+      height: MediaQuery.of(context).size.height/5,
       color: THEME_COLOR,
       child: Center(
         child: Column(
@@ -319,15 +343,15 @@ class Home extends HookWidget {
       // height: Size.fromHeight(),
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(
-          color: Colors.teal.shade100,
-          borderRadius: BorderRadius.circular(
-            22.5,
-            // getWidgetSizeByKey(_menuIconKey).
-          ),
-          border: Border.all(
-            width: 2.5,
-            color: Colors.white,
-          ),
+        color: Colors.teal.shade100,
+        borderRadius: BorderRadius.circular(
+          22.5,
+          // getWidgetSizeByKey(_menuIconKey).
+        ),
+        border: Border.all(
+          width: 2.5,
+          color: Colors.white,
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
