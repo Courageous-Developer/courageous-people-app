@@ -3,7 +3,6 @@ import 'package:courageous_people/register/screen/store_add_screen.dart';
 import 'package:courageous_people/utils/get_widget_information.dart';
 import 'package:courageous_people/widget/my_drop_down.dart';
 import 'package:courageous_people/widget/my_input_form.dart';
-import 'package:courageous_people/widget/store_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +27,6 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
   late List<bool> isSelectedList = [false, false, false, false, false];
   late List<Marker> markerList;
   late List<Stores> storeList;
-  //  todo: 마커 리스트 생성
 
   @override
   void initState() {
@@ -42,8 +40,12 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final storeSearchInputController = TextEditingController();
+    final locationInputController = TextEditingController();
 
     return Scaffold(
+      appBar: TransparentAppBar(
+        title: "가게 추가",
+      ),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -55,14 +57,22 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
                   Expanded(
                     child: Column(
                       children: [
-                        _locationSelectList(),
+                        // _locationSelectList(),
+                        MyInputForm(
+                          title: Text('지역을 입력해주세요'),
+                            controller: locationInputController,
+                        ),
+                        SizedBox(height: 5),
                         MyInputForm(
                           title: Text('가게 이름을 입력해주세요'),
                           controller: storeSearchInputController,
                           additionalButton: ElevatedButton(
                             onPressed: () async {
+                              if(locationInputController.text == '')  return;
+
                               String queryString =
-                                  "?query=${storeSearchInputController.text}"
+                                  "?query=${locationInputController.text} "
+                                  "${storeSearchInputController.text}"
                                   "&display=10&start=1&sort=random";
 
                               final response = await naverRequestResponse(
@@ -105,14 +115,14 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
                 ],
               ),
             ),
-            Positioned(
-              left: 20.0,
-              top: 20.0,
-              child: FloatingActionButton.small(
-                onPressed: () => Navigator.pop(context),
-                child: Icon(Icons.arrow_back),
-              ),
-            )
+            // Positioned(
+            //   left: 20.0,
+            //   top: 20.0,
+            //   child: FloatingActionButton.small(
+            //     onPressed: () => Navigator.pop(context),
+            //     child: Icon(Icons.arrow_back),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -126,19 +136,34 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text('지역을 설정해주세요'),
+        SizedBox(height: 8),
         Row(
           children: [
-            MyDropDown(
-              title: '시/도',
-              contents: ['aa', 'bb','aa', 'bb','aa', 'bb','aa', 'bb','aa', 'bb'],
+            Expanded(
+              child: MyDropDown(
+                title: '시/도',
+                contents: ['aa', 'bb','aa', 'bb','aa', 'bb','aa', 'bb','aa', 'bb'],
+              ),
             ),
             SizedBox(width: 10),
-            MyDropDown(
-              title: '구',
-              contents: [
-                '강동구', '강서구', '강남구', '강북구', '송파구',
-                '노원구', '성북구', '성동구', '금천구', '동대문구'
-              ],
+            Expanded(
+              child: MyDropDown(
+                title: '시/군/구',
+                contents: [
+                  '강동구', '강서구', '강남구', '강북구', '송파구',
+                  '노원구', '성북구', '성동구', '금천구', '동대문구'
+                ],
+              ),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: MyDropDown(
+                title: '읍/면/동',
+                contents: [
+                  '강동구', '강서구', '강남구', '강북구', '송파구',
+                  '노원구', '성북구', '성동구', '금천구', '동대문구'
+                ],
+              ),
             ),
           ],
         ),
@@ -216,7 +241,7 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
   Widget _resultListView(List<dynamic> results) {
     return  Center(
       child: results.length != 0
-          ? ListView.separated(
+          ? ListView.builder(
         itemCount: results.length,
         itemBuilder:
             (context, index) =>
@@ -225,7 +250,6 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
               results[index],
               index,
             ),
-        separatorBuilder: (context, index) => Divider(thickness: 1),
       )
           : Text('검색 결과가 없습니다'),
     );
