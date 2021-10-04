@@ -1,7 +1,40 @@
+import 'package:courageous_people/utils/http_client.dart';
 import 'package:courageous_people/widget/my_input_form.dart';
+import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:image_picker/image_picker.dart';
 
-class ReviewBox extends StatelessWidget {
+// class ReviewBox extends StatelessWidget {
+//   const ReviewBox({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final reviewController = TextEditingController();
+//     final containerController = TextEditingController();
+//     final tagController = TextEditingController();
+//
+//     return Scaffold(
+//       body: Container(
+//         width: MediaQuery.of(context).size.width*0.8,
+//         height: MediaQuery.of(context).size.height*0.8,
+//         child: Column(
+//           children: [
+//             MyInputForm(
+//               title: Text('리뷰'),
+//               controller: reviewController,
+//             ),
+//             MyInputForm(controller: containerController),
+//             MyInputForm(controller: tagController),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+class ReviewBox extends HookWidget {
   const ReviewBox({Key? key}) : super(key: key);
 
   @override
@@ -10,26 +43,114 @@ class ReviewBox extends StatelessWidget {
     final containerController = TextEditingController();
     final tagController = TextEditingController();
 
+    final pictureNotifier = useState<String?>(null);
+    final _picker = ImagePicker();
+
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width*0.8,
-        height: MediaQuery.of(context).size.height*0.8,
-        child: Column(
-          children: [
-            MyInputForm(
-              title: Text('리뷰'),
-              controller: reviewController,
+      appBar: TransparentAppBar(
+        title: '리뷰 등록',
+      ),
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Container(
+            alignment: Alignment.topCenter,
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                MyInputForm(
+                  title: Text('메뉴'),
+                  controller: tagController,
+                ),
+                SizedBox(height: 25),
+                Text('사진'),
+                SizedBox(height: 5,),
+                GestureDetector(
+                  onTap: () async {
+                    final picture = await _picker.pickImage(source: ImageSource.gallery);
+                    pictureNotifier.value = "assets/images/chicken.jpg";
+                  },
+                  child: Container(
+                    padding: pictureNotifier.value != null
+                        ? null
+                        : EdgeInsets.all(15),
+                    width: 200,
+                    height: 200,
+                    decoration: pictureNotifier.value != null
+                        ? null
+                        : BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      border: Border.all(width: 1),
+                      color: Colors.white,
+                    ),
+                    child:  pictureNotifier.value != null
+                        ? Image.asset(pictureNotifier.value!)
+                        : _nonPictureForm(),
+                  ),
+                ),
+                SizedBox(height: 25),
+                MyInputForm(
+                  title: Text('용기 정보'),
+                  // hintText: "ML",
+                  controller: reviewController,
+                ),
+                SizedBox(height: 25),
+                MyInputForm(
+                  title: Text('리뷰'),
+                  controller: containerController,
+                ),
+                SizedBox(height: 25),
+                ElevatedButton(
+                  onPressed: () async {
+                    final response = await httpRequestWithToken(
+                        requestType: 'POST',
+                        path: '/board/review',
+                      body: {
+                          'user': 1,
+                        'store': 2,
+                      },
+                    );
+
+                    print(response.statusCode);
+                    print(response.body);
+                  },
+                  child: Text('리뷰 등록'),
+                ),
+              ],
             ),
-            MyInputForm(controller: containerController),
-            MyInputForm(controller: tagController),
-          ],
+          ),
         ),
       ),
     );
   }
+
+  Widget _nonPictureForm() => Stack(
+    children: [
+      Center(child: Icon(Icons.camera_alt_outlined, size: 80)),
+      Container(
+        alignment: Alignment.bottomCenter,
+        child: Text(
+          "No Image",
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 25
+          ),
+        ),
+      ),
+      Container(
+        alignment: Alignment.topCenter,
+        child: Text(
+          "사진을 추가하려면 터치하세요",
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey.shade700,
+          ),
+        ),
+      ),
+    ],
+  );
 }
-
-
 // import 'package:courageous_people/widget/my_rating_bar.dart';
 // import 'package:flutter/cupertino.dart';
 // import 'package:flutter/material.dart';
