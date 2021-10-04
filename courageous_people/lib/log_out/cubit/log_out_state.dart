@@ -12,7 +12,7 @@ class LogOutErrorState extends LogOutState {
 
 class LogOutLoadingState extends LogOutState {}
 
-class LogOutLoadedState extends LogOutState {
+class LogOutSuccessState extends LogOutState {
 
-  const LogOutLoadedState();
+  const LogOutSuccessState();
 }

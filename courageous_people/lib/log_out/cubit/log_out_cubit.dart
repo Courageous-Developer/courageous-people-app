@@ -12,7 +12,9 @@ class LogOutCubit extends Cubit<LogOutState> {
 
   LogOutCubit(this.repository) : super(LogOutInitialState());
 
-  Future<bool> logOut() async {
-    return await repository.logOut();
+  Future<void> logOut() async {
+    emit(LogOutLoadingState());
+    await repository.logOut();
+    emit(LogOutSuccessState());
   }
 }

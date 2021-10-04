@@ -9,7 +9,6 @@ import 'package:courageous_people/review/cubit/review_cubit.dart';
 import 'package:courageous_people/review/cubit/review_state.dart';
 import 'package:courageous_people/review/screen/add_review_screen.dart';
 import 'package:courageous_people/store/section/review_section.dart';
-import 'package:courageous_people/widget/my_input_form.dart';
 import 'package:courageous_people/widget/review_tile.dart';
 import 'package:courageous_people/widget/menu_tile.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,192 +36,196 @@ class StoreMainScreen extends HookWidget {
     _reviewCubit.getReviews(store.id);
 
     return Scaffold(
-      // appBar: TransparentAppBar(
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {
-      //         // todo: 즐찾 추가 해제 로직 작성
-      //         // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
-      //       },
-      //       icon: Icon(
-      //         Icons.favorite,
-      //         color: isFavorite ? Colors.red : Colors.grey,
-      //       ),
-      //     )
-      //   ],
-      // ),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            floating: true,
-            // title: Text(store.name),
-            expandedHeight: 250.0,
-            backgroundColor: Colors.red,
-            // backgroundColor: Colors.transparent,
-            flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                store.name,
-                style: TextStyle(
-                  color: Colors.black,
-                ),
-              ),
-              background: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(25.0),
-                    bottomLeft: Radius.circular(25.0),
-                  ),
-                ),
-                child: NaverMap(
-                  initLocationTrackingMode: LocationTrackingMode.None,
-                  scrollGestureEnable: false,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(store.latitude, store.longitude),
-                  ),
-                  markers: [
-                    Marker(
-                      markerId: "current",
-                      position: LatLng(store.latitude, store.longitude),
-                    ),
-                  ],
-
-                ),
-              ),
+      appBar: TransparentAppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              // todo: 즐찾 추가 해제 로직 작성
+              // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
+            },
+            icon: Icon(
+              Icons.favorite,
+              color: isFavorite ? Colors.red : Colors.grey,
             ),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  // todo: 즐찾 추가 해제 로직 작성
-                  // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
-                },
-                icon: Icon(
-                  Icons.favorite,
-                  color: isFavorite ? Colors.red : Colors.grey,
-                ),
-              ),
-            ],
-          ),
-          SliverFillRemaining(
-            child: _body(),
-          ),
+          )
         ],
       ),
+      // body: CustomScrollView(
+      //   slivers: [
+      //     SliverAppBar(
+      //       pinned: true,
+      //       floating: true,
+      //       // title: Text(store.name),
+      //       expandedHeight: 250.0,
+      //       backgroundColor: Colors.red,
+      //       // backgroundColor: Colors.transparent,
+      //       flexibleSpace: FlexibleSpaceBar(
+      //         // title: Text(
+      //         //   store.name,
+      //         //   style: TextStyle(
+      //         //     color: Colors.black,
+      //         //   ),
+      //         // ),
+      //         background: Container(
+      //           decoration: BoxDecoration(
+      //             borderRadius: BorderRadius.only(
+      //               bottomRight: Radius.circular(25.0),
+      //               bottomLeft: Radius.circular(25.0),
+      //             ),
+      //           ),
+      //           child: NaverMap(
+      //             initLocationTrackingMode: LocationTrackingMode.None,
+      //             scrollGestureEnable: false,
+      //             initialCameraPosition: CameraPosition(
+      //               target: LatLng(store.latitude, store.longitude),
+      //             ),
+      //             markers: [
+      //               Marker(
+      //                 markerId: "current",
+      //                 position: LatLng(store.latitude, store.longitude),
+      //               ),
+      //             ],
+      //
+      //           ),
+      //         ),
+      //       ),
+      //       actions: [
+      //         IconButton(
+      //           onPressed: () {
+      //             // todo: 즐찾 추가 해제 로직 작성
+      //             // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
+      //           },
+      //           icon: Icon(
+      //             Icons.favorite,
+      //             color: isFavorite ? Colors.red : Colors.grey,
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //     SliverFillRemaining(
+      //       child: _body(context),
+      //     ),
+      //   ],
+      // ),
+      body: _body(context),
     );
   }
 
-  Widget _body() => Container(
-    alignment: Alignment.topCenter,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          // flex: 1,
-          child: Center(
-            child: Text(
-              store.name,
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+  Widget _body(BuildContext context) {
+    final _reviewCubit = context.read<ReviewCubit>();
+
+    return Container(
+      padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+      alignment: Alignment.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            child: Center(
+              child: Text(
+                store.name,
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
-        ),
-        Container(
-          // flex: 1,
-          child: Center(
-            child: Text(
-              store.intro ?? '한 줄 소개가 없습니다',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal[300],
+          Container(
+            // flex: 1,
+            child: Center(
+              child: Text(
+                store.intro ?? '한 줄 소개가 없습니다',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal[300],
+                ),
               ),
             ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.all(20),
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '주소',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    '대표 메뉴',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(width: 30),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    store.address,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                  SizedBox(height: 15),
-                  Text(
-                    '대표 메뉴 정보가 없습니다',
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Container(
-          child: Row(
-            children: [
-              Flexible(
-                child: GestureDetector(
-                  onTap: null,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      border: Border.all(width: 1),
-                      color: Colors.teal.shade50,
-                    ),
-                    margin: EdgeInsets.only(left: 10, right: 5),
-                    padding: EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    width: Size.infinite.width,
-                    child: Text(
-                      '가게 정보',
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '주소',
+                      textAlign: TextAlign.start,
                       style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      '대표 메뉴',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(width: 30),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      store.address,
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    Text(
+                      '대표 메뉴 정보가 없습니다',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            child: Row(
+              children: [
+                Flexible(
+                  child: GestureDetector(
+                    onTap: null,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        // border: Border.all(width: 1),
+                        color: Colors.teal.shade100,
+                      ),
+                      margin: EdgeInsets.only(left: 10, right: 5),
+                      padding: EdgeInsets.all(15),
+                      alignment: Alignment.center,
+                      width: Size.infinite.width,
+                      child: Text(
+                        '가게 정보',
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black
+                        ),
                       ),
                     ),
                   ),
+                  flex: 1,
                 ),
-                flex: 1,
-              ),
-              Flexible(
-                child: GestureDetector(
-                  onTap: () async {
+                Flexible(
+                  child: GestureDetector(
+                    onTap: () async {
 // await _reviewCubit.getReviews(4);
 
 //   showModalBottomSheet(
@@ -231,50 +234,57 @@ class StoreMainScreen extends HookWidget {
 //       reviewController, containerController, tagController,
 //     ),
 //   );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      border: Border.all(width: 1),
-                      color: Colors.teal.shade50,
-                    ),
-                    margin: EdgeInsets.only(left: 5, right: 10),
-                    padding: EdgeInsets.all(15),
-                    alignment: Alignment.center,
-                    width: Size.infinite.width,
-                    child: Text(
-                      '리뷰 남기기',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ReviewBox(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        // border: Border.all(width: 0),
+                        color: Colors.teal.shade100,
+                      ),
+                      margin: EdgeInsets.only(left: 5, right: 10),
+                      padding: EdgeInsets.all(15),
+                      alignment: Alignment.center,
+                      width: Size.infinite.width,
+                      child: Text(
+                        '리뷰 남기기',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
+                  flex: 1,
                 ),
-                flex: 1,
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 20),
-        Divider(thickness: 4),
-        SizedBox(height: 20),
-// Flexible(
-// // child: BlocConsumer(
-// //   bloc: _reviewCubit,
-// //   listener: (_, state) {
-// //     if (state is ReviewLoadedState) print('aaa');
-// //     // _reviewListNotifier.value = state.reviewList;
-// //   },
-// child: BlocBuilder<ReviewCubit, ReviewState>(
-// bloc: _reviewCubit,
-// builder: (context, state) => _reviews(state),
-// ),
-// flex: 8,
-// ),
-      ],
-    ),
-  );
+          SizedBox(height: 20),
+          Divider(thickness: 4),
+          SizedBox(height: 20),
+          Flexible(
+// child: BlocConsumer(
+//   bloc: _reviewCubit,
+//   listener: (_, state) {
+//     if (state is ReviewLoadedState) print('aaa');
+//     // _reviewListNotifier.value = state.reviewList;
+//   },
+            child: BlocBuilder<ReviewCubit, ReviewState>(
+              bloc: _reviewCubit,
+              builder: (context, state) => _reviews(state),
+            ),
+            flex: 8,
+          ),
+        ],
+      ),
+    );
+  }
 
 
   BoxDecoration _selected() {
@@ -322,6 +332,7 @@ class StoreMainScreen extends HookWidget {
 
     return Container();
   }
+}
 
 // Widget _addReview(
 //     TextEditingController reviewController,
@@ -411,7 +422,7 @@ class StoreMainScreen extends HookWidget {
 //     ),
 //   );
 // }
-}
+// }
 
 // import 'package:courageous_people/model/review_data.dart';
 // import 'package:courageous_people/model/store_data.dart';

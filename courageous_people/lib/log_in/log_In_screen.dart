@@ -1,9 +1,11 @@
+import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:courageous_people/sign_in/sign_in_select_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../home.dart';
 import 'cubit/log_in_cubit.dart';
 import 'cubit/log_in_state.dart';
 
@@ -15,7 +17,7 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _loginState extends State<LogInScreen> {
-  bool? _autoLogIn=false;
+  bool? _autoLogIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,10 @@ class _loginState extends State<LogInScreen> {
         child: SingleChildScrollView(
           child: Center(
             child: Container(
-              width: MediaQuery.of(context).size.width*0.9,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.9,
               child: Column(
                 children: [
                   Image.asset('assets/images/logo_color.png'),
@@ -37,7 +42,8 @@ class _loginState extends State<LogInScreen> {
                     decoration: InputDecoration(
                       contentPadding:
                       EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.zero),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.zero,
                         borderSide: BorderSide(),
@@ -51,7 +57,8 @@ class _loginState extends State<LogInScreen> {
                     decoration: InputDecoration(
                       contentPadding:
                       EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.zero),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.zero),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.zero,
                         borderSide: BorderSide(),
@@ -63,15 +70,17 @@ class _loginState extends State<LogInScreen> {
                   SizedBox(
                     child: BlocListener(
                       bloc: _logInCubit,
-                      listener: (context, state) async{
+                      listener: (context, state) async {
                         print(state);
-                        if(state is LogInSuccessState) _logInSuccessCallBack(context);
-                        if(state is LogInFailedState) print("로그인 실패");
+                        if (state is LogInSuccessState) _logInSuccessCallBack(
+                            context);
+                        if (state is LogInFailedState) print("로그인 실패");
                       },
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero)
                         ),
                         onPressed: () async {
                           await _logInCubit.logIn(
@@ -83,8 +92,11 @@ class _loginState extends State<LogInScreen> {
                         child: Text('로그인'),
                       ),
                     ),
-                    width:MediaQuery.of(context).size.width*0.9,
-                    height:45,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.9,
+                    height: 45,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -92,20 +104,21 @@ class _loginState extends State<LogInScreen> {
                       SizedBox(
                         width: 24,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0,3,5,0),
+                          padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
                           child: Checkbox(
                             value: _autoLogIn,
                             onChanged: (value) {
                               setState(() {
-                                _autoLogIn=value;
+                                _autoLogIn = value;
                               });
                             },
                           ),
                         ),
                       ),
-                      Text('자동 로그인',style: TextStyle(color: Colors.grey[700]),),
+                      Text(
+                        '자동 로그인', style: TextStyle(color: Colors.grey[700]),),
                       Spacer(),
-                      TextButton(onPressed: (){},
+                      TextButton(onPressed: () {},
                         child: Text(
                           '아이디찾기',
                           style: TextStyle(color: Colors.grey[700]),
@@ -115,7 +128,7 @@ class _loginState extends State<LogInScreen> {
                         ' | ',
                         style: TextStyle(color: Colors.grey[700]),
                       ),
-                      TextButton(onPressed: (){},
+                      TextButton(onPressed: () {},
                         child: Text(
                           '비밀번호찾기',
                           style: TextStyle(color: Colors.grey[700]),
@@ -155,30 +168,33 @@ class _loginState extends State<LogInScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(onPressed: (){},
+                      ElevatedButton(onPressed: () {},
                         child: SizedBox(
                             height: 48,
-                            child: Image.asset('assets/images/kakao_circular.png')
+                            child: Image.asset(
+                                'assets/images/kakao_circular.png')
                         ),
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           shape: CircleBorder(),
                         ),
                       ),
-                      ElevatedButton(onPressed: (){},
+                      ElevatedButton(onPressed: () {},
                         child: SizedBox(
                             height: 48,
-                            child: Image.asset('assets/images/naver_circular.png')
+                            child: Image.asset(
+                                'assets/images/naver_circular.png')
                         ),
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
                           shape: CircleBorder(),
                         ),
                       ),
-                      ElevatedButton(onPressed: (){},
+                      ElevatedButton(onPressed: () {},
                         child: SizedBox(
                             height: 48,
-                            child: Image.asset('assets/images/google_circular.png')
+                            child: Image.asset(
+                                'assets/images/google_circular.png')
                         ),
                         style: ElevatedButton.styleFrom(
                           elevation: 0,
@@ -192,15 +208,18 @@ class _loginState extends State<LogInScreen> {
                     children: [
                       Text('처음 사용하신다면?'),
                       TextButton(
-                        onPressed: (){
+                        onPressed: () {
                           Navigator.push(
-                              context,MaterialPageRoute(builder: (context)=>SignInSelectScreen())
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignInSelectScreen(),
+                            ),
                           );
                         },
                         child: Text(
                           '회원가입',
                           style: TextStyle(
-                            color: Color.fromRGBO(6,69,173,1.0),
+                            color: Color.fromRGBO(6, 69, 173, 1.0),
                             //decoration: TextDecoration.underline
                           ),
                         ),
@@ -217,6 +236,12 @@ class _loginState extends State<LogInScreen> {
   }
 
   void _logInSuccessCallBack(BuildContext context) {
-    Navigator.pop(context, true);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Home(isUserVerified: true),
+      ),
+          (route) => false,
+    );
   }
 }

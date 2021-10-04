@@ -54,7 +54,7 @@ List<Review> reviewInterpret(String source) {
           review['store'],
           review['nickname'],
           review['content'],
-          "2021-09-20",
+          review['insrt_dt'],
           // review['review_img'],
           // review['tag'],
           [],
