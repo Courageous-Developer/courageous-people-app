@@ -76,7 +76,7 @@ class ReviewTile extends HookWidget {
             ),
             SizedBox(width: 10),
             Text(
-              "20201-09-15",
+              review.createAt.split('T')[0],
               style: TextStyle(
                 fontSize: 13,
                 color: Colors.grey,
