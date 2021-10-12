@@ -8,6 +8,24 @@ class StoreInitialState extends StoreState {}
 
 class MapInitializeState extends StoreState {}
 
+// 가게 추가
+
+class AddingStoreSLoadingState extends StoreState {}
+
+class AddingStoreSuccessState extends StoreState {
+  final String message;
+
+  const AddingStoreSuccessState(this.message);
+}
+
+class AddingStoreErrorState extends StoreState {
+  final String message;
+
+  const AddingStoreErrorState(this.message);
+}
+
+// 가게 불러오기
+
 class StoreErrorState extends StoreState {
   final String message;
 

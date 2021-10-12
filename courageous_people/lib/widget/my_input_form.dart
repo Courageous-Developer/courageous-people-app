@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyInputForm extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final Widget? title;
   final Widget? additionalButton;
   final TextInputType? textInputType;
@@ -15,7 +15,7 @@ class MyInputForm extends StatelessWidget {
 
   MyInputForm({
     Key? key,
-    required this.controller,
+    this.controller,
     this.title,
     this.additionalButton,
     this.textInputType,
@@ -30,7 +30,7 @@ class MyInputForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(controllerText != null)  controller.text = controllerText!;
+    // if(controllerText != null)  controller.text = controllerText!;
 
     return Container(
       // height: 14.0,

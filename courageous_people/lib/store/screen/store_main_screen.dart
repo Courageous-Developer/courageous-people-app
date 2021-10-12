@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/common/hive/token_hive.dart';
+import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/model/review_data.dart';
 import 'package:courageous_people/model/store_data.dart';
 import 'package:courageous_people/model/menu_data.dart';
@@ -226,20 +227,21 @@ class StoreMainScreen extends HookWidget {
                 Flexible(
                   child: GestureDetector(
                     onTap: () async {
-// await _reviewCubit.getReviews(4);
+                      final userId = UserHive().userId;
 
-//   showModalBottomSheet(
-//     context: context,
-//     builder: (_) => _addReview(
-//       reviewController, containerController, tagController,
-//     ),
-//   );
-                      Navigator.push(
+                      final addingReviewSucceeded = await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ReviewBox(),
+                          builder: (_) => AddReviewScreen(
+                            storeId: store.id,
+                            userId: userId,
+                          ),
                         ),
                       );
+
+                      if(addingReviewSucceeded != null && addingReviewSucceeded!) {
+                        await _reviewCubit.getReviews(store.id);
+                      }
                     },
                     child: Container(
                       decoration: BoxDecoration(
