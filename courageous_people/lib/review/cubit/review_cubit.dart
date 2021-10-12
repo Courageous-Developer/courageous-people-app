@@ -16,8 +16,25 @@ class ReviewCubit extends Cubit<ReviewState> {
     final reviewList = await repository.getReviews(storeId);
     emit(ReviewLoadedState(reviewList));
   }
-  //
-  // void init() {
-  //   emit(ReviewReadyState());
-  // }
+
+  Future<void> addReview({
+    required int storeId,
+    required int userId,
+    required String comment,
+    String? imageUrl,
+  }) async {
+    emit(AddingReviewLoadingState());
+    final statusCode = await repository.addReview(
+      storeId: storeId,
+      userId: userId,
+      comment: comment,
+    );
+
+    if(statusCode == 201) {
+      emit(AddingReviewSuccessState('리뷰를 등록했습니다'));
+      return;
+    }
+
+    emit(AddingReviewErrorState('리뷰 등록에 실패했습니다'));
+  }
 }

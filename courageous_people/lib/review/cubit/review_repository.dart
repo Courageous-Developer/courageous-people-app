@@ -6,7 +6,6 @@ import '../../common/classes.dart';
 import '../../common/constants.dart';
 import '../../utils/interpreters.dart';
 
-
 class ReviewRepository {
   Future<List<Review>> getReviews(int storeId) async {
     final http.Response response = await httpRequestWithoutToken(
@@ -14,8 +13,29 @@ class ReviewRepository {
       path: '/board/review/$storeId',
     );
 
-    // todo: imageurl 추후 처리
-
     return reviewInterpret(response.body);
+  }
+
+  Future<int> addReview({
+    required int storeId,
+    required int userId,
+    required String comment,
+    String? imageUrl,
+  }) async {
+    final response = await httpRequestWithToken(
+      requestType: 'POST',
+      path: '/board/review',
+      body: {
+        'user': userId,
+        'store': storeId,
+        'content': comment,
+        'review_img': imageUrl ?? '',
+      }
+    );
+
+    print(response.statusCode);
+    print(response.body);
+
+    return response.statusCode;
   }
 }
