@@ -1,5 +1,5 @@
 import 'package:courageous_people/log_out/cubit/log_out_cubit.dart';
-import 'package:courageous_people/register/screen/store_add_screen.dart';
+import 'package:courageous_people/store/screen/store_add_screen.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_state.dart';
 import 'package:courageous_people/utils/user_verification.dart';
@@ -12,7 +12,7 @@ import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'common/constants.dart';
 import 'log_in/log_In_screen.dart';
 import 'model/store_data.dart';
-import 'register/screen/store_search_screen.dart';
+import 'store/screen/store_search_screen.dart';
 import 'sign_in/sign_in_select_screen.dart';
 import 'store/screen/store_main_screen.dart';
 import 'widget/store_tile.dart';
@@ -38,7 +38,7 @@ class Home extends HookWidget {
     final markerNotifier = useState<List<Marker>>([]);
     late NaverMapController mapController;
 
-    useEffect(() {}, [isUserVerified]);
+    // useEffect(() {}, [isUserVerified]);
 
     return Scaffold(
       body: Stack(
