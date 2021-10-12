@@ -1,5 +1,5 @@
 import 'package:courageous_people/common/constants.dart';
-import 'package:courageous_people/register/screen/store_add_screen.dart';
+import 'package:courageous_people/store/screen/store_add_screen.dart';
 import 'package:courageous_people/utils/get_widget_information.dart';
 import 'package:courageous_people/widget/my_drop_down.dart';
 import 'package:courageous_people/widget/my_input_form.dart';
