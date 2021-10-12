@@ -1,3 +1,4 @@
+import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:courageous_people/sign_in/sign_in_select_screen.dart';
@@ -13,10 +14,10 @@ class LogInScreen extends StatefulWidget {
   const LogInScreen({Key? key}) : super(key: key);
 
   @override
-  _loginState createState() => _loginState();
+  _LoginState createState() => _LoginState();
 }
 
-class _loginState extends State<LogInScreen> {
+class _LoginState extends State<LogInScreen> {
   bool? _autoLogIn = false;
 
   @override
@@ -71,9 +72,9 @@ class _loginState extends State<LogInScreen> {
                     child: BlocListener(
                       bloc: _logInCubit,
                       listener: (context, state) async {
-                        print(state);
-                        if (state is LogInSuccessState) _logInSuccessCallBack(
-                            context);
+                        if (state is LogInSuccessState) {
+                          _logInSuccessCallBack(context);
+                        }
                         if (state is LogInFailedState) print("로그인 실패");
                       },
                       child: ElevatedButton(

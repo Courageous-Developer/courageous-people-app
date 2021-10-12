@@ -1,3 +1,4 @@
+import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/utils/http_client.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +18,9 @@ class LogOutRepository {
 
     if(response.statusCode == 205) {
       await TokenService().setTokens('', '');
+      await UserHive().setEmail('');
+      await UserHive().setId(-1);
+
       return true;
     }
 
