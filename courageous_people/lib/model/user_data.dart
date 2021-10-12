@@ -4,8 +4,8 @@ class User {
   final int id;
   final String nickname;
   final String email;
-  final String birthDate;
   final int managerFlag;
+  // final String birthDate;
   // final List<int> favorites;
   // todo: 즐겨찾기 목록 -> user hive에 넣음 (db 저장 x)
 
@@ -13,7 +13,7 @@ class User {
       this.id,
       this.nickname,
       this.email,
-      this.birthDate,
+      // this.birthDate,
       this.managerFlag,
       // this.favorites,
       );
