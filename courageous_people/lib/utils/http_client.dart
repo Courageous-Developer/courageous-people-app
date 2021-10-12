@@ -14,7 +14,7 @@ Future<http.Response> httpRequestWithToken({
 }) async {
   final uri = Uri.parse('$REQUEST_URL$path');
 
-  final Map<String, String> requestHeaders = headers ?? {
+  final requestHeaders = headers ?? {
     "Accept": "application/json",
     "Content-Type": "application/json",
     "Authorization": "Bearer ${TokenService().accessToken!}",
@@ -58,7 +58,7 @@ Future<http.Response> httpRequestWithToken({
   )
       : await requestWithoutBody(
     uri,
-    headers: headers,
+    headers: requestHeaders,
   );
 
   return response;
@@ -116,7 +116,7 @@ Future<http.Response> httpRequestWithoutToken({
   )
       : await requestWithoutBody(
     uri,
-    headers: headers,
+    headers: requestHeaders,
   );
 
   return response;

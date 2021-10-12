@@ -34,10 +34,9 @@ User userInterpret(String source) {
   final Json user = data;
 
   return User(
-    1,    //user['id'],
-    'Nickname',   // user['nickname'],
+    user['id'],    //user['id'],
+    user['nickname'],   // user['nickname'],
     user['email'],
-    user['date_of_birth'],
     user['user_type'],
   );
 }
