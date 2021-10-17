@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/utils/http_client.dart';
 import 'package:courageous_people/utils/interpreters.dart';
+import 'package:http/http.dart' as http;
 
 Future<bool> isUserVerified() async {
   final refreshToken = TokenService().refreshToken;
@@ -19,6 +21,7 @@ Future<bool> isUserVerified() async {
     },
   );
 
+  print('verify response code: ${refreshTokenResponse.statusCode}');
   if (refreshTokenResponse.statusCode != 200) return false;
 
   final getAccessTokenResponse = await httpRequestWithoutToken(
@@ -43,7 +46,7 @@ Future<bool> isUserVerified() async {
       path: '/account/user?email=$userEmail',
     );
 
-    print('code: ${getUserResponse.statusCode}');
+    print('refresh code: ${getUserResponse.statusCode}');
 
     final userData = userInterpret(getUserResponse.body);
     UserHive().setUser(userData);
