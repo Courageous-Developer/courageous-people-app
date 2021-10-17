@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:courageous_people/model/menu_data.dart';
+
 import '../model/store_data.dart';
 import '../model/user_data.dart';
 import '../model/review_data.dart';
@@ -55,7 +57,7 @@ List<ReviewData> reviewInterpret(String source) {
           review['content'],
           review['insrt_dt'],
           (review['review_img'] as List<dynamic>).map(
-              (data) => data['review_img'] as String
+                  (data) => data['review_img'] as String
           ).toList(),
           tagInterpreter(jsonEncode(review['tag'])),
         );
@@ -81,4 +83,27 @@ List<TagData> tagInterpreter(String source) {
   ).toList();
 
   return tagList;
+}
+
+List<MenuData> menuInterpreter(String source) {
+  final List<dynamic> dataList = jsonDecode(source);
+
+  if(dataList.length == 0)  return [];
+
+  final menuList = dataList.map(
+          (data) {
+        Json menu = data;
+
+        return MenuData(
+          menu['title'],
+          // menu['price'],
+          10000,
+          menu['store_id'],
+          // menu[''],
+          'https://courageous-bucket.s3.amazonaws.com/media/review_upload_files/52/review_img_52.jpg',
+        );
+      }
+  ).toList();
+
+  return menuList;
 }
