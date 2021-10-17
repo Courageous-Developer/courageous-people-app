@@ -1,6 +1,10 @@
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:courageous_people/log_in/cubit/log_in_repository.dart';
 import 'package:courageous_people/log_in/cubit/log_in_state.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '';
 import 'review_repository.dart';
@@ -21,16 +25,17 @@ class ReviewCubit extends Cubit<ReviewState> {
     required int storeId,
     required int userId,
     required String comment,
-    String? imageUrl,
+    Uint8List? pictureToByte,
   }) async {
     emit(AddingReviewLoadingState());
     final statusCode = await repository.addReview(
       storeId: storeId,
       userId: userId,
       comment: comment,
+      pictureToByte: pictureToByte,
     );
 
-    if(statusCode == 201) {
+    if(statusCode == 200 || statusCode == 201) {
       emit(AddingReviewSuccessState('리뷰를 등록했습니다'));
       return;
     }

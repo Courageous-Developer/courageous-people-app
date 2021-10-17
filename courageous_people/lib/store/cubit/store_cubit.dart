@@ -17,7 +17,7 @@ class StoreCubit extends Cubit<StoreState> {
 
   Future<void> getStores() async {
     emit(StoreLoadingState());
-    List<Stores> storeList = await repository.getStores();
+    List<StoreData> storeList = await repository.getStores();
     emit(StoreLoadedState(storeList));
   }
 

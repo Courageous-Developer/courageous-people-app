@@ -9,20 +9,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 // todo: 색 반전
 
 class ReviewTile extends HookWidget {
-  final Review review;
+  final ReviewData review;
 
   ReviewTile({Key? key, required this.review}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // final double SCREEN_WIDTH = MediaQuery
-    //     .of(context)
-    //     .size
-    //     .width;
-    // final double SCREEN_HEIGHT = MediaQuery
-    //     .of(context)
-    //     .size
-    //     .height;
     ValueNotifier<bool> isExpandedNotifier = useState<bool>(false);
 
     return Container(
@@ -86,9 +78,7 @@ class ReviewTile extends HookWidget {
         ),
       );
 
-  Widget _imageSection() => Container(
-    padding: EdgeInsets.symmetric(horizontal: 10),
-  );
+  Widget _imageSection() => Image.network(review.imageUri[0]);
 
   Widget _commentSection() =>
       Container(
@@ -137,7 +127,7 @@ class ReviewTile extends HookWidget {
             border: Border(top: BorderSide(width: 0.2)),
           ),
           child: TagWidget(
-            tag: Tag('500-1000 (ml)', 2),
+            tag: TagData('500-1000 (ml)', 2),
             fontWeight: FontWeight.bold,
           ),
         ),

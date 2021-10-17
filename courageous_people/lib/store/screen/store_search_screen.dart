@@ -26,7 +26,7 @@ class _StoreSearchScreenState extends State<StoreSearchScreen> {
   late List<dynamic> crawledStoreData;
   late List<bool> isSelectedList = [false, false, false, false, false];
   late List<Marker> markerList;
-  late List<Stores> storeList;
+  late List<StoreData> storeList;
 
   @override
   void initState() {

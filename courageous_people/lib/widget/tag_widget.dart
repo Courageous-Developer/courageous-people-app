@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../model/tag_data.dart';
 
 class TagWidget extends StatelessWidget {
-  final Tag tag;
+  final TagData tag;
   // final String content;
   // final Color? backgroundColor;
   final List<MaterialColor> colors = [Colors.red, Colors.blue, Colors.amber, Colors.pink,

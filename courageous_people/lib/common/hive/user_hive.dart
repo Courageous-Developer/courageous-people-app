@@ -73,7 +73,7 @@ class UserHive {
   //   await setManageFlag(manageFlag);
   // }
 
-  Future<void> setUser(User user) async {
+  Future<void> setUser(UserData user) async {
     await setId(user.id);
     await setNickname(user.nickname);
     await setEmail(user.email);

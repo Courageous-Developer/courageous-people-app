@@ -34,6 +34,8 @@ dependencies:
   http: ^0.13.3
   flutter_hooks: ^0.18.0
   image_picker: ^0.8.4
+  http_parser: ^4.0.0
+  dio: ^4.0.0
   naver_map_plugin:
     git:
       url: https://github.com/LBSTECH/naver_map_plugin.git
