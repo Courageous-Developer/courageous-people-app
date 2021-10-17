@@ -1,6 +1,6 @@
-class Tag {
+class TagData {
   final String content;
   final int colorIndex;
 
-  const Tag(this.content, this.colorIndex);
+  const TagData(this.content, this.colorIndex);
 }

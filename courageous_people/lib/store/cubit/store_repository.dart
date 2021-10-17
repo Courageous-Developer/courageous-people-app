@@ -7,7 +7,7 @@ import 'package:courageous_people/utils/interpreters.dart';
 import '../../utils/http_client.dart';
 
 class StoreRepository {
-  Future<List<Stores>> getStores() async {
+  Future<List<StoreData>> getStores() async {
     return storeInterpret((await httpRequestWithoutToken(
         requestType: 'GET', path: '/board/store'))
         .body);

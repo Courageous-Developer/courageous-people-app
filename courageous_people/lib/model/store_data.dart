@@ -1,18 +1,18 @@
-class Stores {
+class StoreData {
   final int id;
   final String name;
   final String address;
-  final String? intro;
+  final String? introduction;
   final double latitude;
   final double longitude;
   final String? businessNumber;
   final String? image;
 
-  const Stores(
+  const StoreData(
       this.id,
       this.name,
       this.address,
-      this.intro,
+      this.introduction,
       this.latitude,
       this.longitude,
       this.businessNumber,

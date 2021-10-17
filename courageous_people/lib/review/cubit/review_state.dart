@@ -35,7 +35,7 @@ class AddingReviewErrorState extends ReviewState {
 class ReviewLoadingState extends ReviewState {}
 
 class ReviewLoadedState extends ReviewState {
-  final List<Review> reviewList;
+  final List<ReviewData> reviewList;
 
   const ReviewLoadedState(this.reviewList);
 }

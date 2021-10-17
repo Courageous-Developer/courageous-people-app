@@ -6,14 +6,14 @@ import '../model/review_data.dart';
 import '../model/tag_data.dart';
 import '../common/classes.dart';
 
-List<Stores> storeInterpret(String source) {
+List<StoreData> storeInterpret(String source) {
   final List<dynamic> dataList = jsonDecode(source);
 
   final storeList = dataList.map(
           (data) {
         Json store = data;
 
-        return Stores(
+        return StoreData(
             store['id'],
             store['store_name'],
             store['address'],
@@ -29,11 +29,11 @@ List<Stores> storeInterpret(String source) {
   return storeList;
 }
 
-User userInterpret(String source) {
+UserData userInterpret(String source) {
   final dynamic data = jsonDecode(source);
   final Json user = data;
 
-  return User(
+  return UserData(
     user['id'],    //user['id'],
     user['nickname'],   // user['nickname'],
     user['email'],
@@ -41,24 +41,22 @@ User userInterpret(String source) {
   );
 }
 
-List<Review> reviewInterpret(String source) {
+List<ReviewData> reviewInterpret(String source) {
   final List<dynamic> dataList = jsonDecode(source);
 
   final reviewList = dataList.map(
           (data) {
         Json review = data;
 
-        return Review(
+        return ReviewData(
           review['id'],
           review['store'],
           review['nickname'],
           review['content'],
           review['insrt_dt'],
-          // review['review_img'],
-          // review['tag'],
-          [],
-          // tagInterpreter(review['tag'].toString())
-          // review['tag'].length
+          (review['review_img'] as List<dynamic>).map(
+              (data) => data['review_img'] as String
+          ).toList(),
           tagInterpreter(jsonEncode(review['tag'])),
         );
       }
@@ -67,7 +65,7 @@ List<Review> reviewInterpret(String source) {
   return reviewList;
 }
 
-List<Tag> tagInterpreter(String source) {
+List<TagData> tagInterpreter(String source) {
   final List<dynamic> dataList = jsonDecode(source);
   if(dataList.length == 0)  return [];
 
@@ -75,7 +73,7 @@ List<Tag> tagInterpreter(String source) {
           (data) {
         Json tag = data;
 
-        return Tag(
+        return TagData(
           tag['tag_content'],
           tag['color_index'],
         );

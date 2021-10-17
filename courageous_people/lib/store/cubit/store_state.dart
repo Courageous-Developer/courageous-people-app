@@ -35,7 +35,7 @@ class StoreErrorState extends StoreState {
 class StoreLoadingState extends StoreState {}
 
 class StoreLoadedState extends StoreState {
-  final List<Stores> storeList;
+  final List<StoreData> storeList;
 
   const StoreLoadedState(this.storeList);
 }
