@@ -7,7 +7,7 @@ import 'package:courageous_people/utils/http_client.dart';
 import 'package:courageous_people/utils/interpreters.dart';
 import 'package:http/http.dart' as http;
 
-Future<bool> isUserVerified() async {
+Future<bool> checkUserVerified() async {
   final refreshToken = TokenService().refreshToken;
   final noRefreshToken = refreshToken == null || refreshToken == '';
 
