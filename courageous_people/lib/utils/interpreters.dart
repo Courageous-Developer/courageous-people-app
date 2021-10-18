@@ -16,14 +16,15 @@ List<StoreData> storeInterpret(String source) {
         Json store = data;
 
         return StoreData(
-            store['id'],
-            store['store_name'],
-            store['address'],
-            store['post'],
-            double.parse(store['latitude']),
-            double.parse(store['longitude']),
-            store['biz_num'],
-            store['picture']
+          store['id'],
+          store['store_name'],
+          store['address'],
+          store['post'],
+          double.parse(store['latitude']),
+          double.parse(store['longitude']),
+          store['biz_num'],
+          store['picture'],
+          menuInterpreter(jsonEncode(store['menu'])),
         );
       }
   ).toList();
@@ -95,12 +96,12 @@ List<MenuData> menuInterpreter(String source) {
         Json menu = data;
 
         return MenuData(
-          menu['title'],
+          menu['menu'],
           // menu['price'],
           10000,
-          menu['store_id'],
-          // menu[''],
-          'https://courageous-bucket.s3.amazonaws.com/media/review_upload_files/52/review_img_52.jpg',
+          menu['store'],
+          // menu['menu_img'],
+          '',
         );
       }
   ).toList();

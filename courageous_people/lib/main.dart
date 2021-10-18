@@ -10,7 +10,6 @@ import 'package:courageous_people/utils/user_verification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'common/hive/token_hive.dart';
 import 'home.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +32,7 @@ Future<void> main() async {
     UserHive.userStore,
   ]);
 
-  final bool userVerificationResult = await isUserVerified();
+  final bool userVerificationResult = await checkUserVerified();
 
   runApp(MyApp(isUserVerified: userVerificationResult));
 }

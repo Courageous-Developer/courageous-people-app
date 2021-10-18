@@ -1,3 +1,5 @@
+import 'menu_data.dart';
+
 class StoreData {
   final int id;
   final String name;
@@ -6,7 +8,8 @@ class StoreData {
   final double latitude;
   final double longitude;
   final String? businessNumber;
-  final String? image;
+  final String? imageUrl;
+  final List<MenuData> menuList;
 
   const StoreData(
       this.id,
@@ -16,6 +19,7 @@ class StoreData {
       this.latitude,
       this.longitude,
       this.businessNumber,
-      this.image
+      this.imageUrl,
+      this.menuList,
       );
 }

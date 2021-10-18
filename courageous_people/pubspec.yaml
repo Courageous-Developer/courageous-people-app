@@ -79,6 +79,7 @@ flutter:
     - assets/images/menu.png
     - assets/images/picture.png
     - assets/images/logo_color.png
+    - assets/images/user.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
