@@ -39,3 +39,26 @@ class StoreLoadedState extends StoreState {
 
   const StoreLoadedState(this.storeList);
 }
+
+class StoreCrawlingState extends StoreState {}
+
+class StoreCrawlSuccessState extends StoreState {
+  // final List<Map<String, dynamic>> result;
+  final List<dynamic> result;
+
+  const StoreCrawlSuccessState(this.result);
+}
+
+class StoreCrawlErrorState extends StoreState {
+  final String message;
+
+  const StoreCrawlErrorState(this.message);
+}
+
+class StoreDuplicatedCheckingState extends StoreState {}
+
+class StoreDuplicatedCheckedState extends StoreState {
+  final StoreData? store;
+
+  const StoreDuplicatedCheckedState(this.store);
+}
