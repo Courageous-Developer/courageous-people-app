@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:courageous_people/menu/menu_repository.dart';
-import 'package:courageous_people/menu/menu_state.dart';
+import 'package:courageous_people/menu/repository/menu_repository.dart';
+import 'package:courageous_people/menu/cubit/menu_state.dart';
 
 class MenuCubit extends Cubit<MenuState> {
   final MenuRepository repository;

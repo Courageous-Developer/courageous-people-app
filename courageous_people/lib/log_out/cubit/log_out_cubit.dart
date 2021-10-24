@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'log_out_repository.dart';
+import '../repository/log_out_repository.dart';
 import 'log_out_state.dart';
 
 class LogOutCubit extends Cubit<LogOutState> {

@@ -1,12 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:courageous_people/model/store_data.dart';
-import 'package:courageous_people/store/cubit/store_repository.dart';
+import 'package:courageous_people/store/repository/store_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'store_state.dart';
-import '../../common/classes.dart';
 
 class StoreCubit extends Cubit<StoreState> {
   final StoreRepository repository;
