@@ -16,3 +16,31 @@ class SignInErrorState extends SignInState {
 
   const SignInErrorState(this.message);
 }
+
+class NicknameCheckingState extends SignInState {}
+
+class NicknameCheckedState extends SignInState {
+  final String message;
+
+  const NicknameCheckedState(this.message);
+}
+
+class NicknameCheckErrorState extends SignInState {
+  final String message;
+
+  const NicknameCheckErrorState(this.message);
+}
+
+class RegisterNumberCheckingState extends SignInState {}
+
+class RegisterNumberCheckedState extends SignInState {
+  final String message;
+
+  const RegisterNumberCheckedState(this.message);
+}
+
+class RegisterNumberCheckErrorState extends SignInState {
+  final String message;
+
+  const RegisterNumberCheckErrorState(this.message);
+}
