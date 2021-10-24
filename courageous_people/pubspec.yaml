@@ -36,6 +36,7 @@ dependencies:
   image_picker: ^0.8.4
   http_parser: ^4.0.0
   dio: ^4.0.0
+  email_validator: ^2.0.1
   naver_map_plugin:
     git:
       url: https://github.com/LBSTECH/naver_map_plugin.git
@@ -79,7 +80,7 @@ flutter:
     - assets/images/menu.png
     - assets/images/picture.png
     - assets/images/logo_color.png
-    - assets/images/user.png
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

@@ -1,3 +1,4 @@
+import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -18,221 +19,184 @@ class LogInScreen extends StatefulWidget {
 }
 
 class _LoginState extends State<LogInScreen> {
-  bool? _autoLogIn = false;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: _body());
+  }
+
+  Widget _body() {
+    return SingleChildScrollView(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 55, vertical: 45),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _logoSection(),
+            _LogInForm(),
+            SizedBox(height: 50),
+            _socialLogInSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _logoSection() => Padding(
+    padding: EdgeInsets.only(left: 30, right: 30, top: 30),
+    child: Image.asset('assets/images/logo_color.png'),
+  );
+
+  Widget _socialLogInSection() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Divider(
+                  thickness: 0.5,
+                  endIndent: 10,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+              Text("소셜 로그인"),
+              Expanded(
+                child: Divider(
+                  thickness: 0.5,
+                  indent: 10,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset('assets/images/kakao_circular.png'),
+                ),
+              ),
+              SizedBox(width: 20),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset('assets/images/naver_circular.png'),
+                ),
+              ),
+              SizedBox(width: 20),
+              GestureDetector(
+                onTap: () {},
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  child: Image.asset(
+                    'assets/images/google_circular.png',
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LogInForm extends StatelessWidget {
+  const _LogInForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _logInCubit = context.read<LogInCubit>();
-    final emailInputController = TextEditingController();
-    final passwordInputController = TextEditingController();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        TextField(
+          decoration: InputDecoration(hintText: 'Email'),
+          controller: emailController,
+        ),
+        TextField(
+          obscureText: true,
+          decoration: InputDecoration(hintText: 'Password'),
+          controller: passwordController,
+        ),
+        SizedBox(height: 15),
+        BlocListener(
+          bloc: _logInCubit,
+          listener: (context, state) async {
+            if (state is LogInSuccessState) {
+              _logInSuccessCallBack(context);
+            }
+            if (state is LogInFailedState) print("로그인 실패");
+          },
+          child: GestureDetector(
             child: Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 0.9,
-              child: Column(
-                children: [
-                  Image.asset('assets/images/logo_color.png'),
-                  // SizedBox(height: 30,),
-                  TextField(
-                    decoration: InputDecoration(
-                      contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.zero),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(),
-                      ),
-                      hintText: 'email',
-                    ),
-                    controller: emailInputController,
-                  ),
-                  TextField(
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      contentPadding:
-                      EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.zero),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.zero,
-                        borderSide: BorderSide(),
-                      ),
-                      hintText: 'Password',
-                    ),
-                    controller: passwordInputController,
-                  ),
-                  SizedBox(
-                    child: BlocListener(
-                      bloc: _logInCubit,
-                      listener: (context, state) async {
-                        if (state is LogInSuccessState) {
-                          _logInSuccessCallBack(context);
-                        }
-                        if (state is LogInFailedState) print("로그인 실패");
-                      },
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.zero)
-                        ),
-                        onPressed: () async {
-                          await _logInCubit.logIn(
-                            context,
-                            emailInputController.text,
-                            passwordInputController.text,
-                          );
-                        },
-                        child: Text('로그인'),
-                      ),
-                    ),
-                    width: MediaQuery
-                        .of(context)
-                        .size
-                        .width * 0.9,
-                    height: 45,
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 24,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
-                          child: Checkbox(
-                            value: _autoLogIn,
-                            onChanged: (value) {
-                              setState(() {
-                                _autoLogIn = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      Text(
-                        '자동 로그인', style: TextStyle(color: Colors.grey[700]),),
-                      Spacer(),
-                      TextButton(onPressed: () {},
-                        child: Text(
-                          '아이디찾기',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                      ),
-                      Text(
-                        ' | ',
-                        style: TextStyle(color: Colors.grey[700]),
-                      ),
-                      TextButton(onPressed: () {},
-                        child: Text(
-                          '비밀번호찾기',
-                          style: TextStyle(color: Colors.grey[700]),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: new Container(
-                            margin: const EdgeInsets.only(right: 10.0),
-                            child: Divider(
-                              color: Colors.grey[350],
-                            )),
-                      ),
-                      Text(
-                        "소셜 로그인",
-                        style: TextStyle(
-                            color: Colors.grey[350]
-                        ),
-                      ),
-                      Expanded(
-                        child: new Container(
-                          margin: const EdgeInsets.only(left: 10,),
-                          child: Divider(
-                            color: Colors.grey[350],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(onPressed: () {},
-                        child: SizedBox(
-                            height: 48,
-                            child: Image.asset(
-                                'assets/images/kakao_circular.png')
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shape: CircleBorder(),
-                        ),
-                      ),
-                      ElevatedButton(onPressed: () {},
-                        child: SizedBox(
-                            height: 48,
-                            child: Image.asset(
-                                'assets/images/naver_circular.png')
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shape: CircleBorder(),
-                        ),
-                      ),
-                      ElevatedButton(onPressed: () {},
-                        child: SizedBox(
-                            height: 48,
-                            child: Image.asset(
-                                'assets/images/google_circular.png')
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shape: CircleBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('처음 사용하신다면?'),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SignInSelectScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          '회원가입',
-                          style: TextStyle(
-                            color: Color.fromRGBO(6, 69, 173, 1.0),
-                            //decoration: TextDecoration.underline
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              padding: EdgeInsets.all(15),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: THEME_COLOR,
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: Text(
+                '로그인',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
+            onTap: () async {
+              await _logInCubit.logIn(
+                context,
+                emailController.text,
+                passwordController.text,
+              );
+            },
           ),
         ),
-      ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              '처음이신가요?',
+              style: TextStyle(fontSize: 13),
+            ),
+            SizedBox(width: 4),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignInSelectScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                '회원가입',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -240,7 +204,7 @@ class _LoginState extends State<LogInScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (_) => Home(isUserVerified: true),
+        builder: (_) => Home(succeedLogIn: true),
       ),
           (route) => false,
     );

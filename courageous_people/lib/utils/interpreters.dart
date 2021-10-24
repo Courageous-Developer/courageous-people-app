@@ -95,13 +95,18 @@ List<MenuData> menuInterpreter(String source) {
           (data) {
         Json menu = data;
 
+        final List<dynamic> menuImageList = menu['menu_img'];
+        String? imageUrl;
+
+        if(menuImageList.length > 0) {
+          imageUrl = menuImageList[0]['menu_img'];
+        }
+
         return MenuData(
-          menu['menu'],
-          // menu['price'],
-          10000,
+          menu['menu'] ?? '',
+          menu['price'] ?? '',
           menu['store'],
-          // menu['menu_img'],
-          '',
+          imageUrl,
         );
       }
   ).toList();

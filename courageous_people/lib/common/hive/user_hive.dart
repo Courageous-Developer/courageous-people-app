@@ -16,7 +16,7 @@ class UserHive {
   }
 
   int get userId {
-    int id = _box.get(USER_HIVE_ID_FIELD, defaultValue: null);
+    int id = _box.get(USER_HIVE_ID_FIELD, defaultValue: -1);
     return id;
   }
 

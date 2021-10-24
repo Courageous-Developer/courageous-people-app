@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: Home(isUserVerified: isUserVerified),
+        home: Home(succeedLogIn: isUserVerified),
         debugShowCheckedModeBanner: false,
       ),
     );

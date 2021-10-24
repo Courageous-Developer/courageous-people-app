@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:courageous_people/model/store_data.dart';
 import 'package:courageous_people/store/cubit/store_repository.dart';
 import 'package:bloc/bloc.dart';
@@ -23,19 +25,27 @@ class StoreCubit extends Cubit<StoreState> {
 
   Future<void> addStore(
       String storeName, String address, String post,
-      String? imageUrl, double latitude, double longitude, int registrant
+      Uint8List? imageToByte, double latitude, double longitude,
+      int registrant, int managerFlag, List<Map<String, dynamic>> menuList,
       ) async {
     emit(AddingStoreSLoadingState());
-    final succeeded = await repository.addStore(
-      storeName, address, post, imageUrl, latitude, longitude, registrant,
+    final resultCode = await repository.addStore(
+      storeName, address, post, imageToByte,
+      latitude, longitude, registrant, managerFlag, menuList,
     );
 
-    succeeded
+    resultCode == 200 || resultCode == 201
         ? emit(AddingStoreSuccessState('가게를 등록했습니다'))
         : emit(AddingStoreErrorState('가게 등록에 실패했습니다'));
   }
 
-  void initMap() {
-    emit(MapInitializeState());
+  Future<void> crawlStore(String location, String storeName) async {
+    try {
+      emit(StoreCrawlingState());
+      final result = await repository.crawlStore(location, storeName);
+      emit(StoreCrawlSuccessState(result));
+    } on Exception catch (e) {
+      emit(StoreCrawlErrorState('오류가 발생했습니다'));
+    }
   }
 }
