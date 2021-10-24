@@ -1,340 +1,478 @@
-import 'dart:convert';
-
-import 'package:courageous_people/common/constants.dart';
-import 'package:courageous_people/common/hive/token_hive.dart';
 import 'package:courageous_people/common/hive/user_hive.dart';
-import 'package:courageous_people/model/review_data.dart';
-import 'package:courageous_people/model/store_data.dart';
 import 'package:courageous_people/model/menu_data.dart';
-import 'package:courageous_people/review/cubit/review_cubit.dart';
-import 'package:courageous_people/review/cubit/review_state.dart';
-import 'package:courageous_people/review/screen/add_review_screen.dart';
-import 'package:courageous_people/store/section/review_section.dart';
-import 'package:courageous_people/widget/review_tile.dart';
-import 'package:courageous_people/widget/menu_tile.dart';
+import 'package:courageous_people/model/store_data.dart';
+import 'package:courageous_people/review/screen/show_review_screen.dart';
+import 'package:courageous_people/widget/menu_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
-import '../../widget/transparent_app_bar.dart';
-import 'package:provider/provider.dart';
 
 class StoreMainScreen extends HookWidget {
-  final Stores store;
+  final StoreData store;
   bool isFavorite = false; // todo: 즐겨찾기이면 반영 (hive)
 
   StoreMainScreen({Key? key, required this.store}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _reviewCubit = context.read<ReviewCubit>();
-
-    final reviewController = TextEditingController();
-    final containerController = TextEditingController();
-    final tagController = TextEditingController();
-
-    _reviewCubit.getReviews(store.id);
-
     return Scaffold(
-      appBar: TransparentAppBar(
-        actions: [
-          IconButton(
-            onPressed: () {
-              // todo: 즐찾 추가 해제 로직 작성
-              // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
-            },
-            icon: Icon(
-              Icons.favorite,
-              color: isFavorite ? Colors.red : Colors.grey,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            floating: true,
+            expandedHeight: 230.0,
+            elevation: 1,
+            backgroundColor: Colors.grey.shade100,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _flexibleSpaceSection(),
             ),
-          )
+            title: Text(store.name),
+            titleTextStyle: TextStyle(color: Colors.black),
+            centerTitle: true,
+            leading: Icon(Icons.arrow_back, color: Colors.grey),
+            actions: [
+              _favoriteIcon(
+                onPressed: () {
+                  // todo: 즐찾 추가 해제 로직 작성
+                  // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
+                },
+              ),
+            ],
+          ),
+          SliverFillRemaining(child: _body(context)),
         ],
       ),
-      // body: CustomScrollView(
-      //   slivers: [
-      //     SliverAppBar(
-      //       pinned: true,
-      //       floating: true,
-      //       // title: Text(store.name),
-      //       expandedHeight: 250.0,
-      //       backgroundColor: Colors.red,
-      //       // backgroundColor: Colors.transparent,
-      //       flexibleSpace: FlexibleSpaceBar(
-      //         // title: Text(
-      //         //   store.name,
-      //         //   style: TextStyle(
-      //         //     color: Colors.black,
-      //         //   ),
-      //         // ),
-      //         background: Container(
-      //           decoration: BoxDecoration(
-      //             borderRadius: BorderRadius.only(
-      //               bottomRight: Radius.circular(25.0),
-      //               bottomLeft: Radius.circular(25.0),
-      //             ),
-      //           ),
-      //           child: NaverMap(
-      //             initLocationTrackingMode: LocationTrackingMode.None,
-      //             scrollGestureEnable: false,
-      //             initialCameraPosition: CameraPosition(
-      //               target: LatLng(store.latitude, store.longitude),
-      //             ),
-      //             markers: [
-      //               Marker(
-      //                 markerId: "current",
-      //                 position: LatLng(store.latitude, store.longitude),
-      //               ),
-      //             ],
-      //
-      //           ),
-      //         ),
-      //       ),
-      //       actions: [
-      //         IconButton(
-      //           onPressed: () {
-      //             // todo: 즐찾 추가 해제 로직 작성
-      //             // todo: 츨찾 추가 시에 db 서버에 수정 put 요청
-      //           },
-      //           icon: Icon(
-      //             Icons.favorite,
-      //             color: isFavorite ? Colors.red : Colors.grey,
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //     SliverFillRemaining(
-      //       child: _body(context),
-      //     ),
-      //   ],
-      // ),
-      body: _body(context),
     );
   }
 
   Widget _body(BuildContext context) {
-    final _reviewCubit = context.read<ReviewCubit>();
-
     return Container(
-      padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+      padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
       alignment: Alignment.center,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            child: Center(
+          _storeIntroduceSection(),
+          InkWell(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ShowReviewScreen(storeId: store.id),
+              ),
+            ),
+            child: Container(
+              alignment: Alignment.centerRight,
               child: Text(
-                store.name,
+                '리뷰 보기 〉',
                 style: TextStyle(
-                  fontSize: 30,
+                  color: Colors.black,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
-          Container(
-            // flex: 1,
-            child: Center(
-              child: Text(
-                store.intro ?? '한 줄 소개가 없습니다',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal[300],
-                ),
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '주소',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      '대표 메뉴',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 30),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      store.address,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      '대표 메뉴 정보가 없습니다',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey.shade700,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Container(
-            child: Row(
-              children: [
-                Flexible(
-                  child: GestureDetector(
-                    onTap: null,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        // border: Border.all(width: 1),
-                        color: Colors.teal.shade100,
-                      ),
-                      margin: EdgeInsets.only(left: 10, right: 5),
-                      padding: EdgeInsets.all(15),
-                      alignment: Alignment.center,
-                      width: Size.infinite.width,
-                      child: Text(
-                        '가게 정보',
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black
-                        ),
-                      ),
-                    ),
-                  ),
-                  flex: 1,
-                ),
-                Flexible(
-                  child: GestureDetector(
-                    onTap: () async {
-                      final userId = UserHive().userId;
-
-                      final addingReviewSucceeded = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => AddReviewScreen(
-                            storeId: store.id,
-                            userId: userId,
-                          ),
-                        ),
-                      );
-
-                      if(addingReviewSucceeded != null && addingReviewSucceeded!) {
-                        await _reviewCubit.getReviews(store.id);
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        // border: Border.all(width: 0),
-                        color: Colors.teal.shade100,
-                      ),
-                      margin: EdgeInsets.only(left: 5, right: 10),
-                      padding: EdgeInsets.all(15),
-                      alignment: Alignment.center,
-                      width: Size.infinite.width,
-                      child: Text(
-                        '리뷰 남기기',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                  flex: 1,
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 20),
-          Divider(thickness: 4),
-          SizedBox(height: 20),
-          Flexible(
-// child: BlocConsumer(
-//   bloc: _reviewCubit,
-//   listener: (_, state) {
-//     if (state is ReviewLoadedState) print('aaa');
-//     // _reviewListNotifier.value = state.reviewList;
-//   },
-            child: BlocBuilder<ReviewCubit, ReviewState>(
-              bloc: _reviewCubit,
-              builder: (context, state) => _reviews(state),
-            ),
-            flex: 8,
-          ),
+          _simpleCommentSection(),
+          _menuListSection(),
         ],
       ),
     );
   }
 
-
-  BoxDecoration _selected() {
-    return BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.all(Radius.circular(7)),
+  Widget _flexibleSpaceSection() {
+    return NaverMap(
+      initLocationTrackingMode: LocationTrackingMode.None,
+      scrollGestureEnable: false,
+      initialCameraPosition: CameraPosition(
+        target: LatLng(store.latitude, store.longitude),
+      ),
+      markers: [
+        Marker(
+          markerId: "current",
+          position: LatLng(store.latitude, store.longitude),
+        ),
+      ],
     );
   }
 
-  Widget _menus() =>
-      ListView.builder(
-        itemBuilder: (context, index) => MenuTile(),
-        itemCount: 10,
-      );
+  Widget _storeIntroduceSection() => Stack(
+    children: [
+      _storeSubInformationBox(),
+      _storeNameSection(),
+    ],
+  );
 
-  Widget _reviews(ReviewState state) {
-    if (state is ReviewLoadingState) return CircularProgressIndicator();
-    if (state is ReviewLoadedState) {
-      final reviews = state.reviewList;
+  Widget _storeSubInformationBox() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(12)),
+        border: Border.all(color: Colors.grey.shade700, width: 2),
+      ),
+      margin: EdgeInsets.only(top: 18, bottom: 2),
+      child: Container(
+        padding: EdgeInsets.only(top: 27, bottom: 20, left: 20, right: 20),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '주소',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  '대표 메뉴',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(width: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  store.address,
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade700,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text('대표 메뉴가 없습니다'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-      return Container(
-        // child: Column(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     Container(
-        //       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        //       child: Text(
-        //         '리뷰 ${reviews.length}개',
-        //         style: TextStyle(
-        //           fontSize: 20,
-        //           fontWeight: FontWeight.bold,
-        //         ),
-        //       ),
-        //     ),
-        //     Container(
-        child: ListView.builder(
-          itemBuilder: (context, index) => ReviewTile(review: reviews[index]),
-          itemCount: reviews.length,
+  Widget _storeNameSection() {
+    return Container(
+      color: Colors.white,
+      margin: EdgeInsets.only(left: 20),
+      child: Text(
+        ' ${store.name} ',
+        style: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  Widget _simpleCommentSection() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.lightbulb,
+              color: Colors.yellow.shade900,
+              size: 13,
+            ),
+            Text(
+              ' 사장님의 한 줄 소개!',
+              style: TextStyle(fontSize: 12),
+            ),
+          ],
+        ),
+        SizedBox(height: 3),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          width: Size.infinite.width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            color: Colors.yellow.shade300,
+          ),
+          child: Text(store.introduction ?? '한 줄 소개가 없습니다',
+            style: TextStyle(
+              color: Colors.grey.shade500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _favoriteIcon({required void Function()? onPressed}) => IconButton(
+    onPressed: onPressed,
+    icon: Icon(
+      Icons.favorite,
+      color: isFavorite ? Colors.red : Colors.grey,
+    ),
+  );
+
+  Widget _menuListSection() {
+    if (store.menuList.length == 0) {
+      return Expanded(
+        child: Center(
+          child: Text('메뉴가 아직 등록되지 않았습니다'),
         ),
       );
-      //     ],
-      //   ),
-      // );
     }
 
-    return Container();
+    final List<Widget> menuTileList = store.menuList.map(
+          (menu) => _MenuTile(menu: menu),
+    ).toList();
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            ' 메뉴 ',
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 12),
+          Container(
+            // padding: EdgeInsets.symmetric(horizontal: 15),
+            // margin: EdgeInsets.symmetric(horizontal: 5, vertical: 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: menuTileList,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
+
+class _MenuTile extends StatelessWidget {
+  final MenuData menu;
+
+  const _MenuTile({Key? key, required this.menu}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(left: 7),
+      height: 90,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                menu.title,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                menu.price.toString(),
+                style: TextStyle(fontSize: 17),
+              ),
+            ],
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              'assets/images/picture.png',
+              width: 70,
+              height: 70,
+            ),
+            // child: Image.network(
+            //   menu.imageUrl,
+            //   width: 70,
+            //   height: 70,
+            // ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Container(
+//   child: Row(
+//     children: [
+//       Flexible(
+//         child: GestureDetector(
+//           onTap: null,
+//           child: Container(
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.all(Radius.circular(10)),
+//               // border: Border.all(width: 1),
+//               color: Colors.teal.shade100,
+//             ),
+//             margin: EdgeInsets.only(left: 10, right: 5),
+//             padding: EdgeInsets.all(15),
+//             alignment: Alignment.center,
+//             width: Size.infinite.width,
+//             child: Text(
+//               '가게 정보',
+//               style: TextStyle(
+//                   fontSize: 20,
+//                   color: Colors.black
+//               ),
+//             ),
+//           ),
+//         ),
+//         flex: 1,
+//       ),
+//       Flexible(
+//         child: GestureDetector(
+//           onTap: () async {
+//             final userId = UserHive().userId;
+//
+//             final addingReviewSucceeded = await Navigator.push(
+//               context,
+//               MaterialPageRoute(
+//                 builder: (_) => AddReviewScreen(
+//                   storeId: store.id,
+//                   userId: userId,
+//                 ),
+//               ),
+//             );
+//
+//             if(addingReviewSucceeded != null && addingReviewSucceeded!) {
+//               await _reviewCubit.getReviews(store.id);
+//             }
+//           },
+//           child: Container(
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.all(Radius.circular(10)),
+//               // border: Border.all(width: 0),
+//               color: Colors.teal.shade100,
+//             ),
+//             margin: EdgeInsets.only(left: 5, right: 10),
+//             padding: EdgeInsets.all(15),
+//             alignment: Alignment.center,
+//             width: Size.infinite.width,
+//             child: Text(
+//               '리뷰 남기기',
+//               style: TextStyle(
+//                 fontSize: 20,
+//                 color: Colors.black,
+//               ),
+//             ),
+//           ),
+//         ),
+//         flex: 1,
+//       ),
+//     ],
+//   ),
+// ),
+// SizedBox(height: 20),
+// // Divider(thickness: 4),
+// // SizedBox(height: 20),
+// Flexible(
+//   child: BlocBuilder<ReviewCubit, ReviewState>(
+//     bloc: _reviewCubit,
+//     builder: (context, state) => _reviews(state),
+//   ),
+//   flex: 8,
+// ),
+
+
+
+
+
+
+
+
+// Widget get _subContent => Container(
+//   padding: EdgeInsets.symmetric(vertical: 20),
+//   child: Column(
+//     crossAxisAlignment: CrossAxisAlignment.start,
+//     children: [
+//       Text(
+//         '메뉴',
+//         style: TextStyle(
+//           fontSize: 25,
+//           fontWeight: FontWeight.bold,
+//         ),
+//       ),
+//       SizedBox(height: 12),
+//       Container(
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             _menuTile(),
+//             _menuTile(),
+//             _menuTile(),
+//           ],
+//         ),
+//       ),
+//     ],
+//   ),
+// );
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Widget _addReview(
 //     TextEditingController reviewController,
@@ -456,7 +594,6 @@ class StoreMainScreen extends HookWidget {
 //
 //   @override
 //
-//   // todo: review repository에서 데이터 받기
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
@@ -482,7 +619,7 @@ class StoreMainScreen extends HookWidget {
 //                 backgroundColor: Color.fromRGBO(250,250,250,1),
 //                 collapsedHeight: 200,
 //                 expandedHeight: 200,
-//                 flexibleSpace: StoreProfile(),//ToDo:가게 이름,주소,별점 평균 인자로 넘기기
+//                 flexibleSpace: StoreProfile(),
 //               ),
 //               SliverPersistentHeader(
 //                 delegate: MyDelegate(
@@ -505,7 +642,7 @@ class StoreMainScreen extends HookWidget {
 //           body: TabBarView(
 //               children: [
 //                 ListView(
-//                   children: [//ToDo:MenuTile에 인자(사진,메뉴이름,메뉴설명) 추가하고 리뷰처럼 자동으로 배열
+//                   children: [
 //                     MenuTile(),
 //                     MenuTile(),
 //                     MenuTile(),
@@ -537,7 +674,7 @@ class StoreMainScreen extends HookWidget {
 //                             child: Icon(Icons.add),
 //                           ),
 //                         ),
-//                       )//ToDo:연필모양 아이콘으로 수정
+//                       )
 //                     ]
 //                 ),
 //               ]
@@ -575,7 +712,6 @@ class StoreMainScreen extends HookWidget {
 //
 //
 // class StoreProfile extends StatelessWidget {
-//   //ToDo:위에서 인자 전달 받아서 정보 표시
 //   @override
 //   Widget build(BuildContext context) {
 //     return Column(
@@ -602,7 +738,7 @@ class StoreMainScreen extends HookWidget {
 //                   Row(
 //                     mainAxisAlignment: MainAxisAlignment.center,
 //                     children: [
-//                       MyRatingBar(4.5),//ToDo:별점 표기&사이즈 조절
+//                       MyRatingBar(4.5),
 //                     ],
 //                   ),
 //                 ],
@@ -676,7 +812,6 @@ class StoreMainScreen extends HookWidget {
 //
 // class StoreInfo extends StatelessWidget {
 //   const StoreInfo({Key? key}) : super(key: key);
-//   //ToDo:가게 정보 받아와서 표시
 //   @override
 //   Widget build(BuildContext context) {
 //     return Column(
