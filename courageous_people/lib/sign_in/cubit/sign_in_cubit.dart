@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:courageous_people/model/user_data.dart';
-import 'package:courageous_people/sign_in/cubit/sign_in_repository.dart';
+import 'package:courageous_people/sign_in/repository/sign_in_repository.dart';
 import 'package:courageous_people/sign_in/cubit/sign_in_state.dart';
 
 class SignInCubit extends Cubit<SignInState>{
