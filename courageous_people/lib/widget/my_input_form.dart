@@ -30,57 +30,61 @@ class MyInputForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // if(controllerText != null)  controller.text = controllerText!;
-
-    return Container(
-      // height: 14.0,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          title ?? SizedBox(height: 0),
-          SizedBox(height: 5),
-          Container(
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    enabled: enabled,
-                    onChanged: onChanged,
-                    obscureText: obscureText ?? false,
-                    keyboardType: textInputType,
-                    decoration: InputDecoration(
-                      filled: filled,
-                      fillColor: Colors.grey[300],
-                      errorText: errorText,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: 0,
-                        horizontal: 15,
-                      ),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        borderSide: BorderSide(
-                            color: Colors.black
-                        ),
-                      ),
-                      helperText: helperText,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        title ?? SizedBox(height: 0),
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                enabled: enabled,
+                onChanged: onChanged,
+                obscureText: obscureText ?? false,
+                keyboardType: textInputType,
+                decoration: InputDecoration(
+                  errorText: errorText,
+                  border: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: helperText == null ? Colors.black : Colors.green,
                     ),
-                    controller: controller,
                   ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: helperText == null ? Colors.blue : Colors.green,
+                      width: 2,
+                    ),
+                  ),
+                  helperText: helperText,
+                  helperStyle: TextStyle(color: Colors.green),
+                  // filled: filled,
+                  // fillColor: Colors.grey[300],
+                  // contentPadding: EdgeInsets.symmetric(
+                  //   vertical: 0,
+                  //   horizontal: 15,
+                  // ),
+                  // border: OutlineInputBorder(
+                  //   borderSide: BorderSide(
+                  //     color: Colors.red,
+                  //   ),
+                  //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  // ),
+                  // focusedBorder: OutlineInputBorder(
+                  //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                  //   borderSide: BorderSide(
+                  //       color: Colors.black
+                  //   ),
+                  // ),
                 ),
-                SizedBox(width: additionalButton == null ? 0 : 8),
-                additionalButton ?? SizedBox(width: 0),
-              ],
+                controller: controller,
+              ),
             ),
-          ),
-        ],
-      ),
+            SizedBox(width: additionalButton == null ? 0 : 8),
+            additionalButton ?? SizedBox(width: 0),
+          ],
+        ),
+      ],
     );
   }
 }
