@@ -203,9 +203,7 @@ class _LogInForm extends StatelessWidget {
   void _logInSuccessCallBack(BuildContext context) {
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(
-        builder: (_) => Home(succeedLogIn: true),
-      ),
+      MaterialPageRoute(builder: (_) => Home()),
           (route) => false,
     );
   }

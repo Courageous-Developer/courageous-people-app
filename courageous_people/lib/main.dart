@@ -1,11 +1,11 @@
 import 'package:courageous_people/common/hive/user_hive.dart';
-import 'package:courageous_people/log_in/cubit/log_in_repository.dart';
+import 'package:courageous_people/log_in/repository/log_in_repository.dart';
 import 'package:courageous_people/log_out/cubit/log_out_cubit.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/sign_in/cubit/sign_in_cubit.dart';
-import 'package:courageous_people/sign_in/cubit/sign_in_repository.dart';
+import 'package:courageous_people/sign_in/repository/sign_in_repository.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
-import 'package:courageous_people/store/cubit/store_repository.dart';
+import 'package:courageous_people/store/repository/store_repository.dart';
 import 'package:courageous_people/utils/user_verification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,15 +16,15 @@ import 'package:provider/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'log_in/cubit/log_in_cubit.dart';
-import 'log_out/cubit/log_out_repository.dart';
+import 'log_out/repository/log_out_repository.dart';
 import 'review/cubit/review_cubit.dart';
 import 'review/cubit/review_repository.dart';
 import 'utils/user_verification.dart';
 
 Future<void> main() async {
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-  ));
+  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+  //   statusBarColor: Colors.transparent,
+  // ));
 
   await initHiveForFlutter(boxes: [
     HiveStore.defaultBoxName,
@@ -32,14 +32,15 @@ Future<void> main() async {
     UserHive.userStore,
   ]);
 
-  final bool userVerificationResult = await checkUserVerified();
 
-  runApp(MyApp(isUserVerified: userVerificationResult));
+  // final bool userVerificationResult = await verifyUser();
+  // runApp(MyApp(isUserVerified: userVerificationResult));
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool isUserVerified;
-  const MyApp({Key? key, required this.isUserVerified}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        home: Home(succeedLogIn: isUserVerified),
+        home: Home(),
         debugShowCheckedModeBanner: false,
       ),
     );

@@ -18,7 +18,7 @@ class SignInRepository {
         "email": email,
         "password": password,
         "date_of_birth": birthDate,
-        "user_type": manageFlag.toString(),
+        "user_type": manageFlag,
       },
     );
 

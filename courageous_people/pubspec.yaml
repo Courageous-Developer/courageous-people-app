@@ -37,6 +37,7 @@ dependencies:
   http_parser: ^4.0.0
   dio: ^4.0.0
   email_validator: ^2.0.1
+  encrypt: ^5.0.1
   naver_map_plugin:
     git:
       url: https://github.com/LBSTECH/naver_map_plugin.git

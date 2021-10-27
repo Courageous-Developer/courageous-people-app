@@ -39,9 +39,7 @@ class StoreAddScreen extends HookWidget {
         if (state is AddingStoreSuccessState) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(
-              builder: (_) => Home(succeedLogIn: true),
-            ),
+            MaterialPageRoute(builder: (_) => Home()),
                 (route) => false,
           );
         }
@@ -57,23 +55,6 @@ class StoreAddScreen extends HookWidget {
             child: Column(
               children: [
                 _storeInformationSection,
-                // addMenuSection: () {
-                //   final addedMenuList = [
-                //     ...menuWidgetListNotifier.value,
-                //     _MenuWidget(),
-                //     _menuWidget(
-                //       onPhotoTap: () {},
-                //       removeMenuSection: (index) {
-                //         final menuList = menuWidgetListNotifier.value;
-                //
-                //         menuList.removeAt(index);
-                //
-                //         menuWidgetListNotifier.value = menuList;
-                //       },
-                //     ),
-                //   ];
-                //   menuWidgetListNotifier.value = addedMenuList;
-                // },
                 SizedBox(height: 25),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,22 +77,51 @@ class StoreAddScreen extends HookWidget {
                 _managerSection(
                   addMenuSection: () {
                     final newMenuList = [
-                        ...menuWidgetListNotifier.value,
-                        _MenuWidget(
-                          index: menuWidgetListNotifier.value.length,
-                        ),
-                        // _menuWidget(
-                        //   onPhotoTap: () {},
-                        //   removeMenuSection: (index) {
-                        //     final menuList = menuWidgetListNotifier.value;
-                        //
-                        //     menuList.removeAt(index);
-                        //
-                        //     menuWidgetListNotifier.value = menuList;
-                        //   },
-                        // ),
-                      ];
-                      menuWidgetListNotifier.value = newMenuList;
+                      ...menuWidgetListNotifier.value,
+                      _MenuWidget(
+                        index: menuWidgetListNotifier.value.length,
+                        removeMenuSection: (index) {
+                          var copiedList = menuWidgetListNotifier.value;
+                          menuWidgetListNotifier.value = [];
+
+                          copiedList.removeAt(index);
+
+                          for (int index=0; index<copiedList.length; index++) {
+                            final newMenuName = copiedList[index].menuName;
+                            final newMenuPrice = copiedList[index].menuPrice;
+                            final newMenuImage = copiedList[index].menuImageByte;
+                            final newRemove = copiedList[index].removeMenuSection;
+
+                            final newMenuWidget = _MenuWidget(
+                              index: index,
+                              removeMenuSection: newRemove,
+                              menuInitialText: newMenuName,
+                              priceInitialText: newMenuPrice,
+                            )
+                              ..imageByte = newMenuImage;
+
+                            copiedList[index].setIndex(index);
+                            copiedList[index].menuInitialText = copiedList[index].menuName;
+                            copiedList[index].priceInitialText = copiedList[index].menuPrice;
+
+                            print(copiedList[index].menuName);
+                            print(copiedList[index].index);
+
+                            menuWidgetListNotifier.value.add(copiedList[index]);
+                          }
+
+                          for (int index=0; index<copiedList.length; index++) {
+                            print(copiedList[index].menuName);
+                            print(copiedList[index].menuInitialText);
+                          }
+
+                          menuWidgetListNotifier.value = copiedList;
+                        },
+                      ),
+                    ];
+
+                    menuWidgetListNotifier.value = [];
+                    menuWidgetListNotifier.value = newMenuList;
                   },
                   menus: menuWidgetListNotifier.value,
                 ),
@@ -129,11 +139,12 @@ class StoreAddScreen extends HookWidget {
                       userId,
                       2,
                       menuWidgetListNotifier.value.map(
-                          (menuWidget) => {
-                            'name': menuWidget.menuName,
-                            'price': menuWidget.menuPrice,
-                            'imageByte': menuWidget.imageByte,
-                          }
+                            (menuWidget) =>
+                        {
+                          'name': menuWidget.menuName,
+                          'price': menuWidget.menuPrice,
+                          'imageByte': menuWidget.imageByte,
+                        },
                       ).toList(),
                     );
                   },
@@ -197,50 +208,6 @@ class StoreAddScreen extends HookWidget {
     );
   }
 
-  // Widget _uploadImageSection({
-  //   required double size,
-  //   required Uint8List? selectedImageByte,
-  // }) {
-  //   return selectedImageByte == null
-  //       ?
-  //   Container(
-  //     padding: EdgeInsets.all(10),
-  //     width: size,
-  //     height: size,
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(5),
-  //       border: Border.all(width: 1, color: Colors.grey.shade400),
-  //     ),
-  //     child: Stack(
-  //       alignment: Alignment.bottomCenter,
-  //       children: [
-  //         Text(
-  //           "No Image",
-  //           textAlign: TextAlign.center,
-  //           style: TextStyle(
-  //             fontWeight: FontWeight.bold,
-  //             fontSize: 15,
-  //             color: Colors.grey,
-  //           ),
-  //         ),
-  //         Center(
-  //           child: Icon(
-  //             Icons.camera_alt_outlined,
-  //             color: Colors.grey,
-  //             size: size / 2,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   )
-  //       :
-  //   Container(
-  //     width: size,
-  //     height:  size,
-  //     child: Image.memory(selectedImageByte),
-  //   );
-  // }
-
   Widget _managerSection({
     required void Function() addMenuSection,
     required List<_MenuWidget> menus,
@@ -298,75 +265,6 @@ class StoreAddScreen extends HookWidget {
     );
   }
 
-  // Widget _menuWidget({
-  //   // required int index,
-  //   required void Function() onPhotoTap,
-  //   required void Function(int) removeMenuSection,
-  // }) {
-  //   return Container(
-  //     margin: EdgeInsets.only(top: 15),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.end,
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         IconButton(
-  //           onPressed: () {},
-  //           // onPressed: () => removeMenuSection(index),
-  //           icon: Icon(Icons.cancel),
-  //         ),
-  //         SizedBox(height: 3),
-  //         Container(
-  //           padding: EdgeInsets.all(10),
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(10),
-  //             border: Border.all(width: 1, color: Colors.grey.shade400),
-  //           ),
-  //           child: Row(
-  //             mainAxisAlignment: MainAxisAlignment.start,
-  //             children: [
-  //               GestureDetector(
-  //                 onTap: onPhotoTap,
-  //                 // child: _uploadImageSection(
-  //                 //   size: 90,
-  //                 //   selectedImageByte: null,
-  //                 // ),
-  //               ),
-  //               SizedBox(width: 20),
-  //               Column(
-  //                 mainAxisSize: MainAxisSize.min,
-  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Row(
-  //                     children: [
-  //                       Text('이름'),
-  //                       SizedBox(width: 10),
-  //                       Container(
-  //                         width: 30,
-  //                         child: TextFormField(),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   Row(
-  //                     children: [
-  //                       Text('가격'),
-  //                       SizedBox(width: 10),
-  //                       Container(
-  //                         width: 30,
-  //                         child: TextFormField(),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _fixedInputBox({
     required String title,
     required String content,
@@ -420,13 +318,15 @@ class _MenuWidget extends StatelessWidget {
   _MenuWidget({
     Key? key,
     required this.index,
-    // required this.onPhotoTap,
-    // required this.removeMenuSection,
+    required this.removeMenuSection,
+    this.menuInitialText,
+    this.priceInitialText,
   }) : super(key: key);
 
-  final int index;
-  // final void Function() onPhotoTap;
-  // final void Function(int) removeMenuSection;
+  final void Function(int) removeMenuSection;
+  int index;
+  String? menuInitialText;
+  String? priceInitialText;
 
   String name = '';
   String price = '';
@@ -434,6 +334,9 @@ class _MenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(menuInitialText);
+    print(priceInitialText);
+
     return Container(
       margin: EdgeInsets.only(top: 15),
       child: Column(
@@ -441,8 +344,7 @@ class _MenuWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            onPressed: () {},
-            // onPressed: () => removeMenuSection(index),
+            onPressed: () => removeMenuSection(index),
             icon: Icon(Icons.cancel),
           ),
           SizedBox(height: 3),
@@ -455,7 +357,10 @@ class _MenuWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _ImagePickerWidget(size: 90),
+                _ImagePickerWidget(
+                  size: 90,
+                  onImageChanged: (imageByte) => this.imageByte = imageByte,
+                ),
                 SizedBox(width: 20),
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -468,7 +373,10 @@ class _MenuWidget extends StatelessWidget {
                         SizedBox(width: 10),
                         Container(
                           width: 30,
-                          child: TextFormField(),
+                          child: TextFormField(
+                            initialValue: menuInitialText ?? '',
+                            onChanged: (name) => this.name = name,
+                          ),
                         ),
                       ],
                     ),
@@ -478,7 +386,10 @@ class _MenuWidget extends StatelessWidget {
                         SizedBox(width: 10),
                         Container(
                           width: 30,
-                          child: TextFormField(),
+                          child: TextFormField(
+                            initialValue: priceInitialText ?? '',
+                            onChanged: (price) => this.price = price,
+                          ),
                         ),
                       ],
                     ),
@@ -496,6 +407,8 @@ class _MenuWidget extends StatelessWidget {
   String get menuPrice => this.price;
   Uint8List? get menuImageByte => this.imageByte;
   int get menuIndex => this.index;
+
+  void setIndex(int index) => this.index = index;
 }
 
 class _ImagePickerWidget extends HookWidget {

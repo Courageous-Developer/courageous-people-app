@@ -7,13 +7,41 @@ import 'package:courageous_people/utils/http_client.dart';
 import 'package:courageous_people/utils/interpreters.dart';
 import 'package:http/http.dart' as http;
 
-Future<bool> checkUserVerified() async {
+Future<bool> getAuthorization() async {
   final refreshToken = TokenService().refreshToken;
   final noRefreshToken = refreshToken == null || refreshToken == '';
-
   if(noRefreshToken) return false;
 
-  final refreshTokenResponse = await httpRequestWithoutToken(
+  final isRefreshTokenVerified = await _verifyRefreshToken(refreshToken!);
+  if(!isRefreshTokenVerified) return false;
+
+  final isRefreshed = await _refresh(refreshToken);
+  if(!isRefreshed)  return false;
+
+  return true;
+}
+
+Future<bool> verifyUser() async {
+  final refreshToken = TokenService().refreshToken;
+  final noRefreshToken = refreshToken == null || refreshToken == '';
+  if(noRefreshToken) return false;
+
+  final isRefreshTokenVerified = await _verifyRefreshToken(refreshToken!);
+  if(!isRefreshTokenVerified) {
+    UserHive().clearUser();
+    return false;
+  }
+
+  final userEmail = UserHive().userEmail;
+
+  final setUserSucceed = await _setUser(userEmail ?? '');
+  if(!setUserSucceed) return false;
+
+  return true;
+}
+
+Future<bool> _verifyRefreshToken(String refreshToken) async {
+  final response = await httpRequestWithoutToken(
     requestType: 'post',
     path: '/account/verify',
     body: {
@@ -21,10 +49,14 @@ Future<bool> checkUserVerified() async {
     },
   );
 
-  print('verify response code: ${refreshTokenResponse.statusCode}');
-  if (refreshTokenResponse.statusCode != 200) return false;
+  print('verify response code: ${response.statusCode}');
 
-  final getAccessTokenResponse = await httpRequestWithoutToken(
+  if(response.statusCode != 200) return false;
+  return true;
+}
+
+Future<bool> _refresh(String refreshToken) async {
+  final response = await httpRequestWithoutToken(
     requestType: 'post',
     path: '/account/refresh',
     body: {
@@ -32,25 +64,26 @@ Future<bool> checkUserVerified() async {
     },
   );
 
-  if(getAccessTokenResponse.statusCode != 200)  return false;
+  print('refresh response code: ${response.statusCode}');
 
-  await TokenService().setAccessToken(
-    jsonDecode(getAccessTokenResponse.body)['access'],
+  if(response.statusCode != 200) return false;
+
+  await TokenService().setAccessToken(jsonDecode(response.body)['access']);
+  return true;
+}
+
+Future<bool> _setUser(String email) async {
+  if(email == '') return false;
+
+  final response = await httpRequestWithToken(
+    requestType: 'GET',
+    path: '/account/user?email=$email',
   );
 
-  final userEmail = UserHive().userEmail;
+  if(response.statusCode != 200) return false;
 
-  if(userEmail != null || userEmail != '') {
-    final getUserResponse = await httpRequestWithToken(
-      requestType: 'GET',
-      path: '/account/user?email=$userEmail',
-    );
-
-    print('refresh code: ${getUserResponse.statusCode}');
-
-    final userData = userInterpret(getUserResponse.body);
-    UserHive().setUser(userData);
-  }
+  final userData = userInterpret(response.body);
+  UserHive().setUser(userData);
 
   return true;
 }

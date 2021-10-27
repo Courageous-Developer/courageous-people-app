@@ -17,7 +17,7 @@ const USER_HIVE_NICKNAME_FIELD = "_nickname";
 const USER_HIVE_BIRTH_DATE_FIELD = '_birthDate';
 const USER_HIVE_EMAIL_FIELD = "_email";
 const USER_HIVE_FAVORITE_FIELD = "_favorite";
-const USER_HIVE_MANAGE_FLAG_FIELD = "_manageFlag";
+const USER_HIVE_MANAGER_FLAG_FIELD = "_managerFlag";
 
 // DB server url
 const REQUEST_URL =

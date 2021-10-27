@@ -3,6 +3,7 @@ import 'package:courageous_people/store/screen/store_add_screen.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_state.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
+import 'package:courageous_people/utils/user_verification.dart';
 import 'package:courageous_people/widget/menu_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,16 +16,11 @@ import 'store/screen/store_search_screen.dart';
 import 'store/screen/store_main_screen.dart';
 
 class Home extends HookWidget {
-  bool succeedLogIn;      // 토큰 확인 / 자동 로그인
-  List<StoreData> storeList = [];    // 가게 리스트
+  Home({Key? key}) : super(key: key);
 
   String myCurrentLocation = '';  // 내 현재 위치
 
   NaverMapController? _mapController;
-
-  GlobalKey _menuIconKey = GlobalKey();
-
-  Home({Key? key, required this.succeedLogIn}) : super(key: key);
 
   Future<void> loadMap() async {
 
@@ -36,7 +32,6 @@ class Home extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('app start');
     final storeCubit = StoreCubit.of(context);
     final logOutCubit = LogOutCubit.of(context);
 
@@ -52,191 +47,214 @@ class Home extends HookWidget {
     final storeNameController = TextEditingController();
 
     return Scaffold(
-      body: BlocListener(
-        bloc: storeCubit,
-        listener: (context, state) async {
-          if(state is StoreLoadedState) {
-            final image = await OverlayImage.fromAssetImage(
-              assetName: 'assets/images/container.png',
-            );
-            storeList = state.storeList;
+      body: FutureBuilder(
+          future: verifyUser(),
+          builder: (context, snapshot) {
+            final loginSucceed = snapshot.data as bool?;
 
-            markerNotifier.value = storeList.map(
-                    (store) {
-                  return Marker(
-                    markerId: 'store${store.id}',
-                    position:  LatLng(store.latitude, store.longitude),
-                    icon: image,
-                    onMarkerTab: (a, b) {
-                      storeNotifier.value = store;
-                    },
+            return BlocListener(
+              bloc: storeCubit,
+              listener: (context, state) async {
+                if (state is StoreLoadedState) {
+                  final image = await OverlayImage.fromAssetImage(
+                    assetName: 'assets/images/container.png',
                   );
-                }
-            ).toList();
 
-            mergedMarkerListNotifier.value = markerNotifier.value;
-          }
-          if(state is StoreCrawlSuccessState) {
-            crawledStoreNotifier.value = state.result;
-            crawledMarkerNotifier.value = [];
-
-            for (dynamic store in crawledStoreNotifier.value) {
-              final index = crawledStoreNotifier.value.indexOf(store);
-              if (store['duplicated']) continue;
-
-              crawledMarkerNotifier.value.add(
-                Marker(
-                  markerId: '${store['title']}-$index',
-                  position: LatLng(store['latitude'], store['longitude']),
-                ),
-              );
-            }
-
-            mergedMarkerListNotifier.value = [
-              ...markerNotifier.value,
-              ...crawledMarkerNotifier.value,
-            ];
-          }
-        },
-        child: Stack(
-          children: [
-            NaverMap(
-              initLocationTrackingMode: LocationTrackingMode.Follow,
-              locationButtonEnable: true,
-              onMapCreated: (controller) {
-                print('no map created');
-                _mapController = controller;
-
-                print(_mapController == null);
-                storeCubit.getStores();
-              },
-              onMapTap: (latLng) {
-                storeNotifier.value = null;
-              },
-              rotationGestureEnable: false,
-              markers: mergedMarkerListNotifier.value,
-            ),
-            Positioned(
-              left: 30,
-              top: 30,
-              child: _mainMenu(
-                onMainPressed: () {},
-                onLogInPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => LogInScreen(),
-                  ));
-                },
-                onLogOutPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('로그아웃합니다'),
-                      content: null,
-                      actions: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-
-                            await logOutCubit.logOut();
-
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => Home(succeedLogIn: false),
-                              ),
-                                  (route) => false,
-                            );
+                  markerNotifier.value = state.storeList.map(
+                          (store) {
+                        return Marker(
+                          markerId: 'store${store.id}',
+                          position: LatLng(store.latitude, store.longitude),
+                          icon: image,
+                          onMarkerTab: (a, b) {
+                            storeNotifier.value = store;
                           },
-                          child: Text('확인'),
-                        ),
-                        ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: Text('취소'),
-                        ),
-                      ],
+                        );
+                      }
+                  ).toList();
+
+                  mergedMarkerListNotifier.value = markerNotifier.value;
+                }
+                if (state is StoreCrawlSuccessState) {
+                  crawledStoreNotifier.value = state.result;
+                  crawledMarkerNotifier.value = [];
+
+                  for (dynamic store in crawledStoreNotifier.value) {
+                    final index = crawledStoreNotifier.value.indexOf(store);
+                    if (store['duplicated']) continue;
+
+                    crawledMarkerNotifier.value.add(
+                      Marker(
+                        markerId: '${store['title']}-$index',
+                        position: LatLng(store['latitude'], store['longitude']),
+                      ),
+                    );
+                  }
+
+                  mergedMarkerListNotifier.value = [
+                    ...markerNotifier.value,
+                    ...crawledMarkerNotifier.value,
+                  ];
+
+                  if(_mapController == null);
+
+                  final newPosition = CameraUpdate.toCameraPosition(
+                    CameraPosition(
+                      target: LatLng(
+                        crawledStoreNotifier.value[0]['latitude'],
+                        crawledStoreNotifier.value[0]['longitude'],
+                      ),
                     ),
                   );
-                },
-                onAddingStorePressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (_) => StoreSearchScreen(),
-                  ));
-                },
-                onNearStoreListPressed: () {},
-                onFavoriteListPressed: () {},
-              ),
-            ),
-            _StoreBox(store: storeNotifier.value),
-            if(searchStoreSectionNotifier.value)
-              Positioned(
-                left: 0,
-                top: 90,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _StoreSearchWidget(
-                      locationController: locationController,
-                      storeNameController: storeNameController,
-                      onSearchPressed: () async {
-                        FocusScope.of(context).unfocus();
 
-                        if(locationController.text == '') {
-                          showAlertDialog(
-                            context: context,
-                            title: '가게가 있는 지역을 압력해주세요',
-                          );
+                  _mapController!.moveCamera(newPosition);
+                }
+              },
+              child: Stack(
+                children: [
+                  NaverMap(
+                    initLocationTrackingMode: LocationTrackingMode.Follow,
+                    locationButtonEnable: true,
+                    onMapCreated: (controller) {
+                      _mapController = controller;
 
-                          return;
-                        }
+                      storeCubit.getStores();
+                    },
+                    onMapTap: (latLng) {
+                      storeNotifier.value = null;
+                    },
+                    rotationGestureEnable: false,
+                    markers: mergedMarkerListNotifier.value,
+                  ),
+                  Positioned(
+                    left: 30,
+                    top: 30,
+                    child: _MainMenu(
+                      succeedLogIn: loginSucceed ?? false,
+                      onMainPressed: () {},
+                      onLogInPressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => LogInScreen(),
+                        ));
+                      },
+                      onLogOutPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) =>
+                              AlertDialog(
+                                title: const Text('로그아웃합니다'),
+                                content: null,
+                                actions: [
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
 
-                        if(storeNameController.text == '') {
-                          showAlertDialog(
-                            context: context,
-                            title: '가게의 이름을 압력해주세요',
-                          );
+                                      await logOutCubit.logOut();
 
-                          return;
-                        }
-
-                        await storeCubit.crawlStore(
-                          locationController.text,
-                          storeNameController.text,
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => Home(),
+                                        ),
+                                            (route) => false,
+                                      );
+                                    },
+                                    child: Text('확인'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: Text('취소'),
+                                  ),
+                                ],
+                              ),
                         );
                       },
-                      onCloseButtonPressed: () {
-                        searchStoreSectionNotifier.value = false;
+                      onAddingStorePressed: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => StoreSearchScreen(),
+                        ));
                       },
+                      onNearStoreListPressed: () {},
+                      onFavoriteListPressed: () {},
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.8 - 370),
-                    crawledStoreNotifier.value.length > 0
-                        ?
-                    _CrawledStoreBox(
-                      crawledData: crawledStoreNotifier.value,
-                      movePosition: (latitude, longitude) {
-                        print('_mapController ==null${_mapController ==null}');
-                        if(_mapController == null) return;
-
-                        final newPosition = CameraUpdate.toCameraPosition(
-                          CameraPosition(
-                            target: LatLng(
-                              latitude,
-                              longitude,
-                            ),
-                          ),
-                        );
-
-                        _mapController!.moveCamera(newPosition);
-                      },
-                    )
-                        : Container(
-                      color: Colors.white,
-                      child: Center(child: Text('검색 결과가 없습니다')),
-                    ),
-                  ],
-                ),
+                  ),
+                  _StoreBox(store: storeNotifier.value),
+                  // if(searchStoreSectionNotifier.value)
+                  //   Positioned(
+                  //     left: 0,
+                  //     top: 90,
+                  //     child: Column(
+                  //       mainAxisSize: MainAxisSize.min,
+                  //       children: [
+                  //         _StoreSearchWidget(
+                  //           locationController: locationController,
+                  //           storeNameController: storeNameController,
+                  //           onSearchPressed: () async {
+                  //             FocusScope.of(context).unfocus();
+                  //
+                  //             if (locationController.text == '') {
+                  //               showAlertDialog(
+                  //                 context: context,
+                  //                 title: '가게가 있는 지역을 압력해주세요',
+                  //               );
+                  //
+                  //               return;
+                  //             }
+                  //
+                  //             if (storeNameController.text == '') {
+                  //               showAlertDialog(
+                  //                 context: context,
+                  //                 title: '가게의 이름을 압력해주세요',
+                  //               );
+                  //
+                  //               return;
+                  //             }
+                  //
+                  //             await storeCubit.crawlStore(
+                  //               locationController.text,
+                  //               storeNameController.text,
+                  //             );
+                  //           },
+                  //           onCloseButtonPressed: () {
+                  //             searchStoreSectionNotifier.value = false;
+                  //           },
+                  //         ),
+                  //         SizedBox(height: MediaQuery
+                  //             .of(context)
+                  //             .size
+                  //             .height * 0.8 - 370),
+                  //         crawledStoreNotifier.value.length > 0
+                  //             ?
+                  //         _CrawledStoreBox(
+                  //           crawledData: crawledStoreNotifier.value,
+                  //           movePosition: (latitude, longitude) {
+                  //             print('_mapController ==null${_mapController ==
+                  //                 null}');
+                  //             if (_mapController == null) return;
+                  //
+                  //             final newPosition = CameraUpdate.toCameraPosition(
+                  //               CameraPosition(
+                  //                 target: LatLng(
+                  //                   latitude,
+                  //                   longitude,
+                  //                 ),
+                  //               ),
+                  //             );
+                  //
+                  //             _mapController!.moveCamera(newPosition);
+                  //           },
+                  //         )
+                  //             : Container(
+                  //           color: Colors.white,
+                  //           child: Center(child: Text('검색 결과가 없습니다')),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                ],
               ),
-          ],
-        ),
+            );
+          }
       ),
     );
   }
@@ -260,7 +278,6 @@ class Home extends HookWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           CircleAvatar(
-            key: _menuIconKey,
             backgroundImage: AssetImage('assets/images/profile.png'),
             radius: 22.5,
           ),
@@ -274,15 +291,30 @@ class Home extends HookWidget {
       ),
     );
   }
+}
 
-  Widget _mainMenu({
-    void Function()? onMainPressed,
-    void Function()? onLogInPressed,
-    void Function()? onLogOutPressed,
-    void Function()? onAddingStorePressed,
-    void Function()? onFavoriteListPressed,
-    void Function()? onNearStoreListPressed,
-  }) {
+class _MainMenu extends StatelessWidget {
+  const _MainMenu({
+    Key? key,
+    required this.succeedLogIn,
+    required this.onMainPressed,
+    required this.onLogInPressed,
+    required this.onLogOutPressed,
+    required this.onAddingStorePressed,
+    required this.onFavoriteListPressed,
+    required this.onNearStoreListPressed,
+  }) : super(key: key);
+
+  final bool succeedLogIn;
+  final void Function() onMainPressed;
+  final void Function() onLogInPressed;
+  final void Function() onLogOutPressed;
+  final void Function() onAddingStorePressed;
+  final void Function() onFavoriteListPressed;
+  final void Function() onNearStoreListPressed;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -379,16 +411,6 @@ class Home extends HookWidget {
     );
   }
 }
-
-class _Content extends HookWidget {
-  const _Content({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
 
 class _StoreBox extends StatelessWidget {
   final StoreData? store;
@@ -910,489 +932,3 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> with SingleTickerPr
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Positioned(
-//   left: 30.0,
-//   top: 30.0,
-//   child: FloatingActionButton(
-//     onPressed: () {},
-//     backgroundColor: Colors.black,
-//     child: Icon(Icons.menu),
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(10),
-//     ),
-//     // child: MyStatefulWidget(),
-//   ),
-//   // child: _userSection(),
-// ),
-// isUserVerified
-// //     ? Positioned(
-// //   left: 34,
-// //   top: 103,
-// //   child: _menuListButton(
-// //     icon: Icons.add,
-// //     menuTitle: "가게 추가",
-// //     backgroundColor: Colors.blue.shade300,
-// //     heroTag: "registerStore",
-// //     onPressed: () {
-// //       isUserVerified
-// //           ? Navigator.push(context, MaterialPageRoute(
-// //         builder: (_) => StoreSearchScreen(),
-// //       ))
-// //           : showDialog(
-// //         context: context,
-// //         builder: (context) => AlertDialog(
-// //           title: const Text('로그인이 필요합니다.'),
-// //           actions: [
-// //             ElevatedButton(
-// //               onPressed: () async {
-// //                 Navigator.pop(context);
-// //                 Navigator.push(context, MaterialPageRoute(
-// //                   builder: (_) => LogInScreen(),
-// //                 ));
-// //               },
-// //               child: Text('로그인'),
-// //             ),
-// //             ElevatedButton(
-// //               onPressed: () {
-// //                 Navigator.pop(context);
-// //               },
-// //               child: Text('취소'),
-// //             ),
-// //           ],
-// //         ),
-// //       );
-// //     },
-// //   ),
-// // )
-//     ? PositionedFloatingIconButton(
-//   left: 34,
-//   top: 103,
-//   mini: true,
-//   backgroundColor: Colors.blue.shade300,
-//   heroTag: "registerStore",
-//   menuTitle: '가게 추가',
-//   iconData: Icons.add,
-//   onPressed: () {
-//     isUserVerified
-//         ? Navigator.push(context, MaterialPageRoute(
-//       builder: (_) => StoreSearchScreen(),
-//     ))
-//         : showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         title: const Text('로그인이 필요합니다.'),
-//         actions: [
-//           ElevatedButton(
-//             onPressed: () async {
-//               Navigator.pop(context);
-//               Navigator.push(context, MaterialPageRoute(
-//                 builder: (_) => LogInScreen(),
-//               ));
-//             },
-//             child: Text('로그인'),
-//           ),
-//           ElevatedButton(
-//             onPressed: () {
-//               Navigator.pop(context);
-//             },
-//             child: Text('취소'),
-//           ),
-//         ],
-//       ),
-//     );
-//   },
-// )
-//     : Positioned(
-//   left: 34,
-//   top: 103,
-//   child: _menuListButton(
-//     icon: Icons.login,
-//     menuTitle: "로그인",
-//     backgroundColor: Colors.grey.shade500,
-//     heroTag: "logIn",
-//     onPressed: () {
-//       Navigator.push(context, MaterialPageRoute(
-//         builder: (_) => LogInScreen(),
-//       ));
-//     },
-//   ),
-// ),
-// isUserVerified
-//     ? Positioned(
-//   left: 34,
-//   top: 168,
-//   child: _menuListButton(
-//     icon: Icons.favorite,
-//     menuTitle: "내가 찜한 가게",
-//     backgroundColor: Colors.pink.shade300,
-//     heroTag: "favorite",
-//     onPressed: () {},
-//   ),
-// )
-//     : SizedBox(height: 0),
-// isUserVerified
-//     ? Positioned(
-//   left: 34,
-//   top: 233,
-//   child: _menuListButton(
-//     icon: Icons.store,
-//     menuTitle: "가까운 가게",
-//     backgroundColor: Colors.teal.shade300,
-//     heroTag: "near",
-//     onPressed: () {},
-//   ),
-// )
-//     : SizedBox(height: 0),
-// isUserVerified
-//     ? Positioned(
-//   left: 34,
-//   top: 298,
-//   child: _menuListButton(
-//     icon: Icons.sensor_door,
-//     menuTitle: "로그아웃",
-//     backgroundColor: Colors.grey.shade500,
-//     heroTag: "logout",
-//     onPressed: () async {
-//       // todo: 로그아웃 시 새로고침
-//       showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Text('로그아웃합니다'),
-//           content: null,
-//           actions: [
-//             ElevatedButton(
-//               onPressed: () async {
-//                 Navigator.pop(context);
-//
-//                 await logOutCubit.logOut();
-//
-//                 Navigator.pushAndRemoveUntil(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (_) => Home(isUserVerified: false),
-//                   ),
-//                       (route) => false,
-//                 );
-//                 // if(!logOutResult) showDialog(context: context, builder: builder);
-//               },
-//               child: Text('확인'),
-//             ),
-//             ElevatedButton(
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//               child: Text('취소'),
-//             ),
-//           ],
-//         ),
-//       );
-//     },
-//   ),
-// )
-//     : SizedBox(height: 0),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Widget _userAccountSection(BuildContext context, bool isUserVerified) {
-//   if (isUserVerified) {
-//     return UserAccountsDrawerHeader(
-//       accountName: Text(''),
-//       accountEmail: Text('example@naver.com'),
-//       currentAccountPicture: const CircleAvatar(
-//         backgroundImage: AssetImage('assets/images/pukka.png'),
-//       ),
-//       decoration: BoxDecoration(
-//         color: THEME_COLOR,
-//       ),
-//     );
-//   }
-//
-//   return Container(
-//     height: MediaQuery.of(context).size.height/5,
-//     color: THEME_COLOR,
-//     child: Center(
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           ElevatedButton(
-//             onPressed: () async {
-//               await Navigator.push(context, MaterialPageRoute(
-//                 builder: (_) => LogInScreen(),
-//               ));
-//             },
-//             child: Text('로그인', textAlign: TextAlign.center),
-//           ),
-//           SizedBox(height: 30),
-//           ElevatedButton(
-//             onPressed: () {
-//               Navigator.push(context, MaterialPageRoute(
-//                 builder: (_) => SignInSelectScreen(),
-//               ));
-//             },
-//             child: Text('회원가입', textAlign: TextAlign.center),
-//           ),
-//         ],
-//       ),
-//     ),
-//   );
-// }
-//
-// Widget _menuListButton({
-//   required IconData icon,
-//   required String menuTitle,
-//   required Color backgroundColor,
-//   required String heroTag,
-//   void Function()? onPressed,
-// }) {
-//   return Row(
-//     mainAxisSize: MainAxisSize.min,
-//     children: [
-//       FloatingActionButton.small(
-//         onPressed: onPressed,
-//         backgroundColor: backgroundColor,
-//         child: Icon(icon),
-//         shape: CircleBorder(),
-//         heroTag: heroTag,
-//         // child: MyStatefulWidget(),
-//       ),
-//       SizedBox(width: 5),
-//       Text(
-//         menuTitle,
-//         style: TextStyle(
-//           fontWeight: FontWeight.bold,
-//         ),
-//       ),
-//     ],
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/// This is the private State class that goes with MyStatefulWidget.
-// class _MyStatefulWidgetState extends State<MyStatefulWidget> with SingleTickerProviderStateMixin {
-//   late final AnimationController _controller = AnimationController(
-//     duration: const Duration(milliseconds: 400),
-//     vsync: this,
-//   )..repeat(reverse: true);
-//
-//   late final Animation<RelativeRect> _offsetAnimation = RelativeRectTween(
-//     begin: RelativeRect.fromLTRB(0, 50, 0, 0),
-//     end: RelativeRect.fromLTRB(0, 0, 0, 50),
-//   ).animate(CurvedAnimation(
-//     parent: _controller,
-//     curve: Curves.ease,
-//   ));
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     _controller.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return PositionedTransition(
-//       rect: _offsetAnimation,
-//       child: const Padding(
-//         padding: EdgeInsets.all(8.0),
-//         child: FlutterLogo(size: 150.0),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-// /// This is the stateful widget that the main application instantiates.
-// class MyStatefulWidget extends StatefulWidget {
-//   const MyStatefulWidget({Key? key}) : super(key: key);
-//
-//   @override
-//   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
-// }
-//
-// /// This is the private State class that goes with MyStatefulWidget.
-// /// AnimationControllers can be created with `vsync: this` because of TickerProviderStateMixin.
-// class _MyStatefulWidgetState extends State<MyStatefulWidget>
-//     with TickerProviderStateMixin {
-//   late final AnimationController _controller = AnimationController(
-//     duration: const Duration(milliseconds: 500),
-//     vsync: this,
-//   )..repeat(reverse: true);
-//
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     const double smallLogo = 10;
-//     const double bigLogo = 20;
-//
-//     return LayoutBuilder(
-//       builder: (BuildContext context, BoxConstraints constraints) {
-//         final Size biggest = constraints.biggest;
-//         return Stack(
-//           children: <Widget>[
-//             PositionedTransition(
-//               rect: RelativeRectTween(
-//                 begin: RelativeRect.fromSize(
-//                     const Rect.fromLTWH(0, 0, smallLogo, smallLogo), biggest),
-//                 end: RelativeRect.fromSize(
-//                     Rect.fromLTWH(biggest.width - bigLogo,
-//                         biggest.height - bigLogo, bigLogo, bigLogo),
-//                     biggest),
-//               ).animate(CurvedAnimation(
-//                 parent: _controller,
-//                 curve: Curves.ease,
-//               )),
-//               child: const Padding(
-//                   padding: EdgeInsets.all(8), child: FlutterLogo()),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-// drawer: Drawer(
-//   child: ListView(
-//     children: [
-//       _userAccountSection(context, isUserVerified),
-//       ListTile(
-//         leading: Icon(
-//           Icons.favorite,
-//           color: Colors.red,
-//         ),
-//         title: Text(
-//           '찜한 가게',
-//           style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//       ListTile(
-//         leading: Icon(
-//           Icons.settings,
-//           color: Colors.grey,
-//         ),
-//         title: Text(
-//           '설정',
-//           style: TextStyle(
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//       ),
-//     ],
-//   ),
-// ),
-// appBar: TransparentAppBar(
-//   title: myCurrentLocation,
-//   actions: [
-//     TextButton(
-//       onPressed: isUserVerified
-//           ? () async {
-//         Navigator.push(context, MaterialPageRoute(
-//           builder: (_) => StoreSearchScreen(),
-//         ));
-//       }
-//           : null,
-//       child: Text('가게 추가'),
-//     ),
-//   ],
-// ),

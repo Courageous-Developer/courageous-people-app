@@ -197,9 +197,7 @@ class SignInScreen extends HookWidget {
 
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => Home(succeedLogIn: false),
-                          ),
+                          MaterialPageRoute(builder: (context) => Home()),
                               (route) => false,
                         );
                       }
