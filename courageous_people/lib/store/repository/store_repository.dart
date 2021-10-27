@@ -43,50 +43,53 @@ class StoreRepository {
     print('store add code: ${addStoreResponse.statusCode}');
     print('store add body: ${addStoreResponse.body}');
 
-    if(imageToByte == null || addStoreResponse.statusCode != 201) {
-      return addStoreResponse.statusCode;
-    }
+    if(addStoreResponse.statusCode != 201) return addStoreResponse.statusCode;
 
     final storeId = jsonDecode(addStoreResponse.body)['id'];
 
-    final multiPartData = MultipartFile.fromBytes(
-      imageToByte,
-      filename: 'store_img_$storeId.jpg', // use the real name if available, or omit
-      contentType: MediaType('image', 'png'),
-    );
+    if(imageToByte != null) {
+      final multiPartData = MultipartFile.fromBytes(
+        imageToByte,
+        filename: 'store_img_$storeId.jpg',
+        // use the real name if available, or omit
+        contentType: MediaType('image', 'png'),
+      );
 
-    final formData = FormData.fromMap({
-      "store_img": multiPartData,
-      "store": storeId,
-    });
+      final formData = FormData.fromMap({
+        "store_img": multiPartData,
+        "store": storeId,
+      });
 
-    final sendingPictureResponse = await Dio().post(
-      '$REQUEST_URL/board/store-img',
-      data: formData,
-      options: Options(
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/octet-stream",
-          "Authorization": "Bearer ${TokenService().accessToken!}",
-        },
-      ),
-    );
+      final sendingPictureResponse = await Dio().post(
+        '$REQUEST_URL/board/store-img',
+        data: formData,
+        options: Options(
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/octet-stream",
+            "Authorization": "Bearer ${TokenService().accessToken!}",
+          },
+        ),
+      );
 
-    print('code: ${sendingPictureResponse.statusCode}');
-    print('body: ${sendingPictureResponse.data}');
+      print('code: ${sendingPictureResponse.statusCode}');
+      print('body: ${sendingPictureResponse.data}');
 
-    if(managerFlag == 1 || sendingPictureResponse.statusCode != 201) {
-      return sendingPictureResponse.statusCode!;
+      if (sendingPictureResponse.statusCode != 201) {
+        return sendingPictureResponse.statusCode!;
+      }
     }
 
     for(Map<String, dynamic> menuData in menuList) {
+      print('menu start');
       final menuResponse = await addMenu(storeId, menuData);
       print('menu response code: $menuResponse');
+      print('menu finished');
     }
 
     // todo: (수정사항 아님) 메뉴 post 오류 무시
 
-    return sendingPictureResponse.statusCode!;
+    return 201;
   }
 
   Future<List<dynamic>> crawlStore(
@@ -152,9 +155,11 @@ class StoreRepository {
       int storeId,
       Map<String, dynamic> menuMap,
       ) async {
+    print('add menu');
+
     final String menuName = menuMap['name'];
     final String menuPrice = menuMap['price'];
-    final Uint8List menuImageByte = menuMap['imageByte'];
+    final Uint8List? menuImageByte = menuMap['imageByte'];
 
     final menuResponse = await httpRequestWithToken(
       requestType: 'POST',
@@ -166,13 +171,20 @@ class StoreRepository {
       },
     );
 
-    if(menuResponse.statusCode != 201)  return menuResponse.statusCode;
+    print('menu response code: ${menuResponse.body}');
+    print('menu response code: ${menuResponse.statusCode}');
+
+    if (menuImageByte == null || menuResponse.statusCode != 201) {
+      return menuResponse.statusCode;
+    }
+
 
     final menuId = jsonDecode(menuResponse.body)['id'];
 
     final multiPartData = MultipartFile.fromBytes(
       menuImageByte,
-      filename: 'menu_img_${storeId}_$menuId.jpg', // use the real name if available, or omit
+      filename: 'menu_img_${storeId}_$menuId.jpg',
+      // use the real name if available, or omit
       contentType: MediaType('image', 'png'),
     );
 
@@ -200,8 +212,7 @@ class StoreRepository {
   }
 
   Future<int> _checkStoreDuplicated(
-      String storeName,
-      String address,
+      String storeName, String address,
       ) async {
     final response = await httpRequestWithToken(
       requestType: 'POST',
