@@ -13,7 +13,7 @@ which are licensed under their own respective Open-Source licenses.
     Copyright 2012, the Dart project authors.
     https://github.com/dart-lang/sdk/blob/main/LICENSE
 
-flutter:
+### flutter:
     License: BSD-3-Clause License
     Copyright 2014 The Flutter Authors. All rights reserved.
     https://github.com/flutter/flutter/blob/master/LICENSE
