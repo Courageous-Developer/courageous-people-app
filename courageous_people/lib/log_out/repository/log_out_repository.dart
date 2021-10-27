@@ -17,9 +17,8 @@ class LogOutRepository {
     );
 
     if(response.statusCode == 205) {
-      await TokenService().setTokens('', '');
-      await UserHive().setEmail('');
-      await UserHive().setId(-1);
+      await TokenService().clearTokens();
+      await UserHive().clearUser();
 
       return true;
     }

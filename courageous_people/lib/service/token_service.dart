@@ -22,4 +22,6 @@ class TokenService {
   Future<void> setTokens(String accessToken, String refreshToken) async {
     await TokenHive().setTokens(accessToken, refreshToken);
   }
+
+  Future<void> clearTokens() async => await TokenHive().setTokens('', '');
 }

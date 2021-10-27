@@ -30,13 +30,8 @@ class UserHive {
     return nickname;
   }
 
-  // String get userBirthDate {
-  //   String birthDate = _box.get(USER_HIVE_BIRTH_DATE_FIELD, defaultValue: null);
-  //   return birthDate;
-  // }
-
-  int? get userManageFlag {
-    int manageFlag = _box.get(USER_HIVE_MANAGE_FLAG_FIELD, defaultValue: null);
+  int get userManagerFlag {
+    int manageFlag = _box.get(USER_HIVE_MANAGER_FLAG_FIELD, defaultValue: -1);
     return manageFlag;
   }
 
@@ -44,20 +39,16 @@ class UserHive {
     await _box.put(USER_HIVE_ID_FIELD, id);
   }
 
-  Future<void> setNickname(String nickname) async {
+  Future<void> setNickname(String? nickname) async {
     await _box.put(USER_HIVE_NICKNAME_FIELD, nickname);
   }
 
-  Future<void> setEmail(String email) async {
+  Future<void> setEmail(String? email) async {
     await _box.put(USER_HIVE_EMAIL_FIELD, email);
   }
 
-  // Future<void> setBirthDate(String birthDate) async {
-  //   await _box.put(USER_HIVE_BIRTH_DATE_FIELD, birthDate);
-  // }
-
-  Future<void> setManageFlag(int manageFlag) async {
-    await _box.put(USER_HIVE_MANAGE_FLAG_FIELD, manageFlag);
+  Future<void> setManagerFlag(int managerFlag) async {
+    await _box.put(USER_HIVE_MANAGER_FLAG_FIELD, managerFlag);
   }
 
   // Future<void> setUser(
@@ -77,7 +68,13 @@ class UserHive {
     await setId(user.id);
     await setNickname(user.nickname);
     await setEmail(user.email);
-    // await setBirthDate(birthDate);
-    await setManageFlag(user.managerFlag);
+    await setManagerFlag(user.managerFlag);
+  }
+
+  Future<void> clearUser() async {
+    await setId(-1);
+    await setNickname(null);
+    await setEmail(null);
+    await setManagerFlag(-1);
   }
 }
