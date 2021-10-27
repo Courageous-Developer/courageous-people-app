@@ -4,6 +4,7 @@ import 'package:courageous_people/common/constants.dart';
 import 'package:http/http.dart' as http;
 import '../common/classes.dart';
 import '../service/token_service.dart';
+import 'user_verification.dart';
 
 Future<http.Response> httpRequestWithToken({
   required String requestType,
@@ -28,7 +29,6 @@ Future<http.Response> httpRequestWithToken({
       Uri, {Object? body, Encoding? encoding, Map<String, String>? headers}
       ) requestWithBody;
 
-  http.Response response;
   bool hasBody = true;
 
   switch (requestType.toLowerCase()) {
@@ -49,19 +49,45 @@ Future<http.Response> httpRequestWithToken({
       break;
   }
 
-  response = hasBody
-      ? await requestWithBody(
+  final response = hasBody
+      ?
+  await requestWithBody(
     uri,
     headers: requestHeaders,
     body: jsonEncode(body),
     encoding: encoding,
   )
-      : await requestWithoutBody(
+      :
+  await requestWithoutBody(
     uri,
     headers: requestHeaders,
   );
 
-  return response;
+  if (response.statusCode != 401) return response;
+
+  final isAuthorized = await getAuthorization();
+  if (!isAuthorized) {
+    return http.Response(
+      jsonEncode({"message": "Cannot get authorization"}),
+      400,
+    );
+  }
+
+  final authorizedResponse = hasBody
+      ?
+  await requestWithBody(
+    uri,
+    headers: requestHeaders,
+    body: jsonEncode(body),
+    encoding: encoding,
+  )
+      :
+  await requestWithoutBody(
+    uri,
+    headers: requestHeaders,
+  );
+
+  return authorizedResponse;
 }
 
 Future<http.Response> httpRequestWithoutToken({
