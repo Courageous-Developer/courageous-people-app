@@ -82,7 +82,7 @@ Future<bool> _setUser(String email) async {
 
   if(response.statusCode != 200) return false;
 
-  final userData = userInterpret(response.body);
+  final userData = toUser(response.body);
   UserHive().setUser(userData);
 
   return true;
