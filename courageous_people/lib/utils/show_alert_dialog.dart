@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 Future<void> showAlertDialog({
   required BuildContext context,
   required String title,
+  void Function()? onPressed,
 }) async {
   await showDialog(
     context: context,
@@ -15,8 +16,8 @@ Future<void> showAlertDialog({
       ),
       actions: [
         ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('확인'),
+          onPressed: onPressed ?? () => Navigator.pop(context),
+          child: Text('확인'),
         ),
       ],
     ),

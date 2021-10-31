@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MyDropDown extends HookWidget{
-  String title;
   final List<String> contents;
+  final void Function(String) onSelect;
+  String title;
   double? width;
-  TextEditingController? controller;
 
   MyDropDown({
     required this.title,
     required this.contents,
+    required this.onSelect,
     this.width,
-    this.controller,
   });
 
   @override
@@ -20,9 +20,8 @@ class MyDropDown extends HookWidget{
 
     return GestureDetector(
       child: Container(
-        width: 150,
+        width: width ?? 150,
         height: 40,
-        // padding: EdgeInsets.all(20),
         alignment: Alignment.center,
         child: Text(
           titleNotifier.value ?? title,
@@ -52,7 +51,10 @@ class MyDropDown extends HookWidget{
               child: ListView.separated(
                 itemCount: contents.length,
                 itemBuilder: (context, index) => GestureDetector(
-                  onTap: () => Navigator.pop(context, contents[index]),
+                  onTap: () {
+                    onSelect(contents[index]);
+                    Navigator.pop(context, contents[index]);
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.symmetric(vertical: 20),

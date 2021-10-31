@@ -8,7 +8,7 @@ import '../model/review_data.dart';
 import '../model/tag_data.dart';
 import '../common/classes.dart';
 
-List<StoreData> storeInterpret(String source) {
+List<StoreData> toStoreList(String source) {
   final List<dynamic> dataList = jsonDecode(source);
 
   final storeList = dataList.map(
@@ -24,7 +24,7 @@ List<StoreData> storeInterpret(String source) {
           double.parse(store['longitude']),
           store['biz_num'],
           store['picture'],
-          menuInterpreter(jsonEncode(store['menu'])),
+          toMenuList(jsonEncode(store['menu'])),
         );
       }
   ).toList();
@@ -32,7 +32,7 @@ List<StoreData> storeInterpret(String source) {
   return storeList;
 }
 
-UserData userInterpret(String source) {
+UserData toUser(String source) {
   final dynamic data = jsonDecode(source);
   final Json user = data;
 
@@ -44,7 +44,7 @@ UserData userInterpret(String source) {
   );
 }
 
-List<ReviewData> reviewInterpret(String source) {
+List<ReviewData> toReviewList(String source) {
   final List<dynamic> dataList = jsonDecode(source);
 
   final reviewList = dataList.map(
@@ -60,7 +60,7 @@ List<ReviewData> reviewInterpret(String source) {
           (review['review_img'] as List<dynamic>).map(
                   (data) => data['review_img'] as String
           ).toList(),
-          tagInterpreter(jsonEncode(review['tag'])),
+          toTagList(jsonEncode(review['tag'])),
         );
       }
   ).toList();
@@ -68,7 +68,7 @@ List<ReviewData> reviewInterpret(String source) {
   return reviewList;
 }
 
-List<TagData> tagInterpreter(String source) {
+List<TagData> toTagList(String source) {
   final List<dynamic> dataList = jsonDecode(source);
   if(dataList.length == 0)  return [];
 
@@ -86,7 +86,7 @@ List<TagData> tagInterpreter(String source) {
   return tagList;
 }
 
-List<MenuData> menuInterpreter(String source) {
+List<MenuData> toMenuList(String source) {
   final List<dynamic> dataList = jsonDecode(source);
 
   if(dataList.length == 0)  return [];
@@ -112,4 +112,21 @@ List<MenuData> menuInterpreter(String source) {
   ).toList();
 
   return menuList;
+}
+
+StoreData toStore(String source) {
+  print('source: $source');
+  final Json store = jsonDecode(source);
+
+  return StoreData(
+    store['id'],
+    store['store_name'],
+    store['address'],
+    store['post'],
+    double.parse(store['latitude']),
+    double.parse(store['longitude']),
+    store['biz_num'],
+    store['picture'],
+    toMenuList(jsonEncode(store['menu'])),
+  );
 }

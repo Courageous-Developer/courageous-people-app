@@ -33,7 +33,7 @@ class StoreCubit extends Cubit<StoreState> {
       latitude, longitude, registrant, managerFlag, menuList,
     );
 
-    resultCode == 200 || resultCode == 201
+    resultCode == 200
         ? emit(AddingStoreSuccessState('가게를 등록했습니다'))
         : emit(AddingStoreErrorState('가게 등록에 실패했습니다'));
   }
@@ -42,7 +42,11 @@ class StoreCubit extends Cubit<StoreState> {
     try {
       emit(StoreCrawlingState());
       final result = await repository.crawlStore(location, storeName);
-      emit(StoreCrawlSuccessState(result));
+
+      final crawledList = result['crawled'] as List<dynamic>;
+      final duplicatedList = result['duplicated'] as List<StoreData?>;
+
+      emit(StoreCrawlSuccessState(crawledList, duplicatedList));
     } on Exception catch (e) {
       emit(StoreCrawlErrorState('오류가 발생했습니다'));
     }

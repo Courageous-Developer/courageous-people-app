@@ -13,6 +13,6 @@ class MenuRepository {
     print(response.statusCode);
     print(response.body);
 
-    return menuInterpreter(response.body);
+    return toMenuList(response.body);
   }
 }

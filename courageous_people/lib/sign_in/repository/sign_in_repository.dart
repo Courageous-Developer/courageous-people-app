@@ -43,11 +43,14 @@ class SignInRepository {
   Future<int> checkRegisterNumber(String registerNumber) async {
     final response = await httpRequestWithoutToken(
       requestType: 'POST',
-      path: '/account/biz-auth',
+      path: '/board/biz-auth',
       body: {
         "biz_num": registerNumber,
       },
     );
+
+    print(response.statusCode);
+    print(response.body);
 
     return response.statusCode;
   }

@@ -20,7 +20,7 @@ class ReviewRepository {
       path: '/board/review/$storeId',
     );
 
-    return reviewInterpret(response.body);
+    return toReviewList(response.body);
   }
 
   Future<int> addReview({

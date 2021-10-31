@@ -6,12 +6,10 @@ import 'package:courageous_people/sign_in/cubit/sign_in_cubit.dart';
 import 'package:courageous_people/sign_in/repository/sign_in_repository.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/repository/store_repository.dart';
-import 'package:courageous_people/utils/user_verification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'common/hive/token_hive.dart';
-import 'home.dart';
+import 'home/screen/home.dart';
 import 'package:provider/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -19,7 +17,6 @@ import 'log_in/cubit/log_in_cubit.dart';
 import 'log_out/repository/log_out_repository.dart';
 import 'review/cubit/review_cubit.dart';
 import 'review/cubit/review_repository.dart';
-import 'utils/user_verification.dart';
 
 Future<void> main() async {
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -31,10 +28,6 @@ Future<void> main() async {
     TokenHive.tokenStore,
     UserHive.userStore,
   ]);
-
-
-  // final bool userVerificationResult = await verifyUser();
-  // runApp(MyApp(isUserVerified: userVerificationResult));
 
   runApp(MyApp());
 }

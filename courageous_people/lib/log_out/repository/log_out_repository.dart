@@ -16,12 +16,22 @@ class LogOutRepository {
       },
     );
 
+    print('logout response');
+
     if(response.statusCode == 205) {
       await TokenService().clearTokens();
       await UserHive().clearUser();
 
+      print('logout success');
+      print(response.statusCode);
+      print(response.body);
+
       return true;
     }
+
+    print('logout failed');
+    print(response.statusCode);
+    print(response.body);
 
     return false;
   }

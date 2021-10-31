@@ -19,7 +19,7 @@ class StoreRepository {
 
     print(response.body);
 
-    return storeInterpret(response.body);
+    return toStoreList(response.body);
   }
 
   Future<int> addStore(
@@ -92,7 +92,7 @@ class StoreRepository {
     return 201;
   }
 
-  Future<List<dynamic>> crawlStore(
+  Future<Map<String, dynamic>> crawlStore(
       String location,
       String storeName,
       ) async {
@@ -107,48 +107,35 @@ class StoreRepository {
 
     final crawledStoreData = jsonDecode(response.body)['items'];
 
-    // for(int index = 0; index < (crawledStoreData as List).length; index++) {
-    //   crawledStoreData[index]['title'] = _pureTitle(crawledStoreData[index]['title']);
-    //
-    //   final duplicatedChecker = await _checkStoreDuplicated(
-    //     crawledStoreData[index]['title'],
-    //     crawledStoreData[index]['address'],
-    //   );
-    //
-    //   crawledStoreData[index]['duplicated'] = duplicatedChecker == 200
-    //       ? true
-    //       : false;
-    //
-    //   final storePosition = await _addressToLatLng(
-    //     crawledStoreData[index]['address'],
-    //   );
-    //
-    //   crawledStoreData[index]['latitude'] = storePosition.latitude;
-    //   crawledStoreData[index]['longitude'] = storePosition.longitude;
-    // }
+    print(crawledStoreData);
+    final List<StoreData?> duplicatedStoreList = [];
 
     for(dynamic data in crawledStoreData) {
-      final List<dynamic> crawledStoreList = crawledStoreData;
-      final index = crawledStoreList.indexOf(data);
+      final index = crawledStoreData.indexOf(data);
+      final storePosition = await _addressToLatLng(data['address']);
 
       crawledStoreData[index]['title'] = _pureTitle(data['title']);
+      crawledStoreData[index]['latitude'] = storePosition.latitude;
+      crawledStoreData[index]['longitude'] = storePosition.longitude;
 
-      final duplicatedChecker = await _checkStoreDuplicated(
+      final duplicated = await _duplicatedStore(
         data['title'],
         data['address'],
       );
 
-      crawledStoreData[index]['duplicated'] = duplicatedChecker == 200
-          ? true
-          : false;
+      duplicatedStoreList.add(duplicated);
 
-      final storePosition = await _addressToLatLng(data['address']);
+      // duplicatedStoreList.add(toStore(duplicated));
 
-      crawledStoreData[index]['latitude'] = storePosition.latitude;
-      crawledStoreData[index]['longitude'] = storePosition.longitude;
+      // crawledStoreData[index]['duplicated'] = duplicated == null
+      //     ? false
+      //     : true;
     }
 
-    return crawledStoreData;
+    return {
+      "crawled": crawledStoreData,
+      "duplicated": duplicatedStoreList,
+    };
   }
 
   Future<int> addMenu(
@@ -211,7 +198,7 @@ class StoreRepository {
     return sendingPictureResponse.statusCode!;
   }
 
-  Future<int> _checkStoreDuplicated(
+  Future<StoreData?> _duplicatedStore(
       String storeName, String address,
       ) async {
     final response = await httpRequestWithToken(
@@ -223,7 +210,9 @@ class StoreRepository {
       },
     );
 
-    return response.statusCode;
+    if(response.statusCode == 404)  return null;
+
+    return toStore(response.body);
   }
 
   String _pureTitle(String title)  {
