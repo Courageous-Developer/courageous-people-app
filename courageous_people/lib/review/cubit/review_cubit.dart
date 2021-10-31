@@ -7,7 +7,7 @@ import 'package:courageous_people/log_in/cubit/log_in_state.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '';
-import 'review_repository.dart';
+import '../repository/review_repository.dart';
 import 'review_state.dart';
 
 class ReviewCubit extends Cubit<ReviewState> {
