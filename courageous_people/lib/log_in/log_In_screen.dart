@@ -2,12 +2,12 @@ import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:courageous_people/sign_in/sign_in_select_screen.dart';
+import 'package:courageous_people/sign_in/screen/sign_in_select_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../home.dart';
+import '../home/screen/home.dart';
 import 'cubit/log_in_cubit.dart';
 import 'cubit/log_in_state.dart';
 
