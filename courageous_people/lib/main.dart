@@ -16,7 +16,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'log_in/cubit/log_in_cubit.dart';
 import 'log_out/repository/log_out_repository.dart';
 import 'review/cubit/review_cubit.dart';
-import 'review/cubit/review_repository.dart';
+import 'review/repository/review_repository.dart';
 
 Future<void> main() async {
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
