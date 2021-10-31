@@ -43,10 +43,10 @@ class StoreLoadedState extends StoreState {
 class StoreCrawlingState extends StoreState {}
 
 class StoreCrawlSuccessState extends StoreState {
-  // final List<Map<String, dynamic>> result;
-  final List<dynamic> result;
+  final List<dynamic> crawledList;
+  final List<StoreData?> duplicatedList;
 
-  const StoreCrawlSuccessState(this.result);
+  const StoreCrawlSuccessState(this.crawledList, this.duplicatedList);
 }
 
 class StoreCrawlErrorState extends StoreState {
@@ -55,10 +55,10 @@ class StoreCrawlErrorState extends StoreState {
   const StoreCrawlErrorState(this.message);
 }
 
-class StoreDuplicatedCheckingState extends StoreState {}
-
-class StoreDuplicatedCheckedState extends StoreState {
-  final StoreData? store;
-
-  const StoreDuplicatedCheckedState(this.store);
-}
+// class StoreDuplicatedCheckingState extends StoreState {}
+//
+// class StoreDuplicatedCheckedState extends StoreState {
+//   final StoreData? store;
+//
+//   const StoreDuplicatedCheckedState(this.store);
+// }
