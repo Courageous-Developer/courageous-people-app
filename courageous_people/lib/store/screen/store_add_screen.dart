@@ -11,7 +11,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../home.dart';
+import '../../home/screen/home.dart';
 
 class StoreAddScreen extends HookWidget {
   final Map<String, dynamic> storeData;

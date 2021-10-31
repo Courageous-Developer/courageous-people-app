@@ -1,15 +1,8 @@
-import 'package:courageous_people/common/constants.dart';
-import 'package:courageous_people/store/screen/store_add_screen.dart';
-import 'package:courageous_people/widget/my_drop_down.dart';
-import 'package:courageous_people/widget/my_input_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
-import 'dart:convert';
-import '../../common/classes.dart';
-import '../../utils/http_client.dart';
 import '../../model/store_data.dart';
 
 class StoreSearchScreen extends HookWidget {
