@@ -31,16 +31,16 @@ class NicknameCheckErrorState extends SignInState {
   const NicknameCheckErrorState(this.message);
 }
 
-class RegisterNumberCheckingState extends SignInState {}
+class BusinessNumberCheckingState extends SignInState {}
 
-class RegisterNumberCheckedState extends SignInState {
+class BusinessNumberCheckedState extends SignInState {
   final String message;
 
-  const RegisterNumberCheckedState(this.message);
+  const BusinessNumberCheckedState(this.message);
 }
 
-class RegisterNumberCheckErrorState extends SignInState {
+class BusinessNumberCheckErrorState extends SignInState {
   final String message;
 
-  const RegisterNumberCheckErrorState(this.message);
+  const BusinessNumberCheckErrorState(this.message);
 }

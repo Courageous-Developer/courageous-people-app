@@ -50,20 +50,20 @@ class SignInCubit extends Cubit<SignInState>{
     emit(NicknameCheckErrorState('중복 조회에 실패했습니다'));
   }
 
-  Future<void> checkRegisterNumber(String registerNumber) async {
-    emit(RegisterNumberCheckingState());
-    final resultCode = await _repository.checkRegisterNumber(registerNumber);
+  Future<void> checkRegisterNumber(String businessNumber) async {
+    emit(BusinessNumberCheckingState());
+    final resultCode = await _repository.checkRegisterNumber(businessNumber);
 
     if(resultCode == 200) {
-      emit(RegisterNumberCheckedState('인증이 완료되었습니다'));
+      emit(BusinessNumberCheckedState('인증이 완료되었습니다'));
       return;
     }
 
     if(resultCode == 400) {
-      emit(RegisterNumberCheckErrorState('올바르지 않은 등록 번호입니다'));
+      emit(BusinessNumberCheckErrorState('올바르지 않은 사업자 등록 번호입니다'));
       return;
     }
 
-    emit(RegisterNumberCheckErrorState('인증에 실패했습니다'));
+    emit(BusinessNumberCheckErrorState('인증에 실패했습니다'));
   }
 }
