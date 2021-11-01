@@ -13,8 +13,18 @@ class LogOutCubit extends Cubit<LogOutState> {
   LogOutCubit(this.repository) : super(LogOutInitialState());
 
   Future<void> logOut() async {
-    emit(LogOutLoadingState());
-    await repository.logOut();
-    emit(LogOutSuccessState());
+    try {
+      emit(LogOutLoadingState());
+      final logOutStatusCode = await repository.logOut();
+
+      if(logOutStatusCode == 205) {
+        emit(LogOutSuccessState());
+        return;
+      }
+
+      emit(LogOutErrorState('로그아웃에 실패했습니다'));
+    } on Exception catch(exception) {
+      emit(LogOutErrorState(exception.toString()));
+    }
   }
 }
