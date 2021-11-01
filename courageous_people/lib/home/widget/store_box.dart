@@ -20,7 +20,7 @@ class StoreBox extends StatelessWidget {
       child: Container(
         margin: EdgeInsets.fromLTRB(
           30,
-          MediaQuery.of(context).size.height * 0.68 + 80,
+          MediaQuery.of(context).size.height * 0.68 + 50,
           30,
           MediaQuery.of(context).size.height * 0.07,
         ),
