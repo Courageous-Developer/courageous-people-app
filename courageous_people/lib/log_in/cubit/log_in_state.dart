@@ -15,10 +15,10 @@ class LogInErrorState extends LogInState {
 
 class LogInLoadingState extends LogInState {}
 
-class LogInSuccessState extends LogInState {
-  final bool result;
+class LogInSuccessState extends LogInState {}
 
-  const LogInSuccessState(this.result);
+class LogInFailedState extends LogInState {
+  final String message;
+
+  const LogInFailedState(this.message);
 }
-
-class LogInFailedState extends LogInState {}
