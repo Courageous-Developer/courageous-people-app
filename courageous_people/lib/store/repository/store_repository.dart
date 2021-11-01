@@ -17,8 +17,6 @@ class StoreRepository {
       path: '/board/store',
     );
 
-    print(response.body);
-
     return toStoreList(response.body);
   }
 

@@ -17,9 +17,13 @@ class StoreCubit extends Cubit<StoreState> {
   static StoreCubit of(BuildContext context) => context.read<StoreCubit>();
 
   Future<void> getStores() async {
-    emit(StoreLoadingState());
-    List<StoreData> storeList = await repository.getStores();
-    emit(StoreLoadedState(storeList));
+    try {
+      emit(StoreLoadingState());
+      List<StoreData> storeList = await repository.getStores();
+      emit(StoreLoadedState(storeList));
+    } on Exception catch (_) {
+      emit(StoreErrorState('가게 불러오기에 실패했습니다\n앱을 재시작해주세요'));
+    }
   }
 
   Future<void> addStore(
@@ -27,15 +31,26 @@ class StoreCubit extends Cubit<StoreState> {
       Uint8List? imageToByte, double latitude, double longitude,
       int registrant, int managerFlag, List<Map<String, dynamic>> menuList,
       ) async {
-    emit(AddingStoreSLoadingState());
-    final resultCode = await repository.addStore(
-      storeName, address, post, imageToByte,
-      latitude, longitude, registrant, managerFlag, menuList,
-    );
+    try {
+      emit(AddingStoreSLoadingState());
+      final resultCode = await repository.addStore(
+        storeName,
+        address,
+        post,
+        imageToByte,
+        latitude,
+        longitude,
+        registrant,
+        managerFlag,
+        menuList,
+      );
 
-    resultCode == 201
-        ? emit(AddingStoreSuccessState('가게가 등록 되었습니다'))
-        : emit(AddingStoreErrorState('가게 등록에 실패했습니다'));
+      resultCode == 201
+          ? emit(AddingStoreSuccessState('가게가 등록 되었습니다'))
+          : emit(AddingStoreErrorState('가게 등록에 실패했습니다'));
+    } on Exception catch (exception) {
+      emit(AddingStoreErrorState(exception.toString()));
+    }
   }
 
   Future<void> crawlStore(String location, String storeName) async {
@@ -47,8 +62,8 @@ class StoreCubit extends Cubit<StoreState> {
       final duplicatedList = result['duplicated'] as List<StoreData?>;
 
       emit(StoreCrawlSuccessState(crawledList, duplicatedList));
-    } on Exception catch (e) {
-      emit(StoreCrawlErrorState('오류가 발생했습니다'));
+    } on Exception catch (_) {
+      emit(StoreCrawlErrorState('가게 검색에 실패했습니다'));
     }
   }
 }
