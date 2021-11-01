@@ -24,6 +24,8 @@ class ReviewCubit extends Cubit<ReviewState> {
   Future<void> addReview({
     required int storeId,
     required int userId,
+    required String menu,
+    required String container,
     required String comment,
     Uint8List? pictureToByte,
   }) async {
@@ -32,6 +34,8 @@ class ReviewCubit extends Cubit<ReviewState> {
       storeId: storeId,
       userId: userId,
       comment: comment,
+      menu: menu,
+      container: container,
       pictureToByte: pictureToByte,
     );
 
