@@ -5,6 +5,7 @@ import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/model/menu_data.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_state.dart';
+import 'package:courageous_people/utils/show_alert_dialog.dart';
 import 'package:courageous_people/widget/my_input_form.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -36,12 +37,23 @@ class StoreAddScreen extends HookWidget {
     return BlocListener<StoreCubit, StoreState>(
       bloc: storeCubit,
       listener: (context, state) async {
-        print(state);
         if (state is AddingStoreSuccessState) {
+          await showAlertDialog(
+            context: context,
+            title: state.message,
+          );
+
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => Home()),
                 (route) => false,
+          );
+        }
+
+        if (state is AddingStoreErrorState) {
+          await showAlertDialog(
+            context: context,
+            title: state.message,
           );
         }
       },
