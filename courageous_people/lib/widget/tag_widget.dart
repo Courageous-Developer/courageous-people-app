@@ -1,12 +1,8 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import '../model/tag_data.dart';
 
 class TagWidget extends StatelessWidget {
   final TagData tag;
-  // final String content;
-  // final Color? backgroundColor;
   final List<MaterialColor> colors = [Colors.red, Colors.blue, Colors.amber, Colors.pink,
     Colors.green, Colors.purple, Colors.teal, Colors.brown];
 
@@ -15,8 +11,6 @@ class TagWidget extends StatelessWidget {
   TagWidget({
     Key? key,
     required this.tag,
-    // required this.content,
-    // this.backgroundColor,
     this.fontWeight = FontWeight.normal,
   }) : super(key: key);
 

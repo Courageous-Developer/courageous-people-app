@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MyDropDown extends HookWidget{
-  final List<String> contents;
   final void Function(String) onSelect;
+  List<String>? contents;
+  List<String>? widgetContents;
   String title;
   double? width;
 
   MyDropDown({
     required this.title,
-    required this.contents,
     required this.onSelect,
+    this.contents,
+    this.widgetContents,
     this.width,
   });
 
@@ -18,10 +20,14 @@ class MyDropDown extends HookWidget{
   Widget build(BuildContext context) {
     final titleNotifier = useState<String?>(title);
 
+    final _contents = contents ?? widgetContents;
+
+    if(_contents == null) return Container();
+
     return GestureDetector(
       child: Container(
-        width: width ?? 150,
-        height: 40,
+        padding: EdgeInsets.all(8),
+        width: width,
         alignment: Alignment.center,
         child: Text(
           titleNotifier.value ?? title,
@@ -49,20 +55,15 @@ class MyDropDown extends HookWidget{
                 ),
               ),
               child: ListView.separated(
-                itemCount: contents.length,
+                itemCount: _contents.length,
                 itemBuilder: (context, index) => GestureDetector(
                   onTap: () {
-                    onSelect(contents[index]);
-                    Navigator.pop(context, contents[index]);
+                    onSelect(_contents[index]);
+                    Navigator.pop(context, _contents[index]);
                   },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Text(
-                      contents[index],
-                      style: TextStyle(fontSize: 24),
-                    ),
-                  ),
+                  child: contents != null
+                      ? _contentItem(_contents[index])
+                      : _widgetContentItem(_contents[index], 'assets/images/pukka.png'),
                 ),
                 separatorBuilder: (context, index) => Divider(thickness: 1),
               ),
@@ -70,6 +71,45 @@ class MyDropDown extends HookWidget{
           ),
         );
       },
+    );
+  }
+
+  Widget _contentItem(String title) {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: 20),
+      child: Text(
+        title,
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+
+  Widget _widgetContentItem(
+      String title,
+      String imageUri,
+      ) {
+    return Padding(
+      padding: EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(imageUri, width: 80, height: 80),
+          ),
+        ],
+      ),
     );
   }
 }
