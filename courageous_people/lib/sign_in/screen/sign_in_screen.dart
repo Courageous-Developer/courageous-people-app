@@ -106,6 +106,11 @@ class _Content extends HookWidget {
           }
 
           if(state is SignInSuccessState) {
+            await showAlertDialog(
+                context: context,
+                title: state.message,
+            );
+
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
