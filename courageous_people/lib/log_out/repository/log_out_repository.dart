@@ -7,7 +7,7 @@ import '../../service/token_service.dart';
 class LogOutRepository {
   const LogOutRepository();
 
-  Future<bool> logOut() async {
+  Future<int> logOut() async {
     final response = await httpRequestWithToken(
       requestType: 'POST',
       path: '/account/logout',
@@ -17,22 +17,14 @@ class LogOutRepository {
     );
 
     print('logout response');
+    print(response.statusCode);
+    print(response.body);
 
     if(response.statusCode == 205) {
       await TokenService().clearTokens();
       await UserHive().clearUser();
-
-      print('logout success');
-      print(response.statusCode);
-      print(response.body);
-
-      return true;
     }
 
-    print('logout failed');
-    print(response.statusCode);
-    print(response.body);
-
-    return false;
+    return response.statusCode;
   }
 }

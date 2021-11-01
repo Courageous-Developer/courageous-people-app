@@ -31,8 +31,8 @@ class UserHive {
   }
 
   int get userManagerFlag {
-    int manageFlag = _box.get(USER_HIVE_MANAGER_FLAG_FIELD, defaultValue: -1);
-    return manageFlag;
+    int managerFlag = _box.get(USER_HIVE_MANAGER_FLAG_FIELD, defaultValue: -1);
+    return managerFlag;
   }
 
   Future<void> setId(int id) async {

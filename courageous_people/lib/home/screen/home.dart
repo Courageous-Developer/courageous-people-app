@@ -44,6 +44,7 @@ class Home extends HookWidget {
 
     final crawledStoreNotifier = useState<List<dynamic>?>(null);
     final searchStoreSectionNotifier = useState(false);
+    final menuExpandedNotifier = useState(false);
 
     return SafeArea(
       child: Scaffold(
@@ -79,8 +80,6 @@ class Home extends HookWidget {
                 }
 
                 if (state is StoreCrawlSuccessState) {
-                  print('duplicated: ${state.duplicatedList}');
-
                   crawledStoreNotifier.value = state.crawledList;
                   duplicatedListNotifier.value = state.duplicatedList;
                   if(state.crawledList.isEmpty)  return;
@@ -126,43 +125,6 @@ class Home extends HookWidget {
                     rotationGestureEnable: false,
                     markers: mergedMarkerListNotifier.value,
                   ),
-                  Positioned(
-                    left: 30,
-                    top: 30,
-                    child: MainMenu(
-                      succeedLogIn: logInSucceed,
-                      onMainPressed: () {},
-                      onLogInPressed: () {
-                        Navigator.push(context,
-                          MaterialPageRoute(
-                            builder: (_) => LogInScreen(),
-                          ),
-                        );
-                      },
-                      onLogOutPressed: () {
-                        showAlertDialog(
-                          context: context,
-                          title: '로그아웃합니다',
-                          onPressed: () async {
-                            await logOutCubit.logOut();
-
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => Home(),
-                              ),
-                                  (route) => false,
-                            );
-                          },
-                        );
-                      },
-                      onAddingStorePressed: () {
-                        searchStoreSectionNotifier.value = true;
-                      },
-                      onNearStoreListPressed: () {},
-                      onFavoriteListPressed: () {},
-                    ),
-                  ),
                   StoreBox(store: storeNotifier.value),
                   if(searchStoreSectionNotifier.value)
                     Positioned(
@@ -191,10 +153,55 @@ class Home extends HookWidget {
                   if(state is StoreCrawlingState)
                     const Center(
                       child: CircularProgressIndicator(
-                          color: THEME_COLOR,
+                        color: THEME_COLOR,
                         strokeWidth: 7,
                       ),
                     ),
+                  Positioned(
+                    left: 30,
+                    top: 30,
+                    child: MainMenu(
+                      succeedLogIn: logInSucceed,
+                      isMenuExpanded: menuExpandedNotifier.value,
+                      onMainMenuPressed: () {
+                        menuExpandedNotifier.value = !(menuExpandedNotifier.value);
+                      },
+                      onLogInPressed: () {
+                        menuExpandedNotifier.value = false;
+
+                        Navigator.push(context,
+                          MaterialPageRoute(
+                            builder: (_) => LogInScreen(),
+                          ),
+                        );
+                      },
+                      onLogOutPressed: () {
+                        menuExpandedNotifier.value = false;
+
+                        showAlertDialog(
+                          context: context,
+                          title: '로그아웃합니다',
+                          onPressed: () async {
+                            await logOutCubit.logOut();
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => Home(),
+                              ),
+                                  (route) => false,
+                            );
+                          },
+                        );
+                      },
+                      onAddingStorePressed: () {
+                        menuExpandedNotifier.value = false;
+                        searchStoreSectionNotifier.value = true;
+                      },
+                      onNearStoreListPressed: () {},
+                      onFavoriteListPressed: () {},
+                    ),
+                  ),
                 ],
               ),
             );

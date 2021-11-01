@@ -38,46 +38,49 @@ class MyInputForm extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: TextFormField(
-                enabled: enabled,
-                onChanged: onChanged,
-                obscureText: obscureText ?? false,
-                keyboardType: textInputType,
-                decoration: InputDecoration(
-                  errorText: errorText,
-                  border: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: helperText == null ? Colors.black : Colors.green,
+              child: Container(
+                height: 30,
+                child: TextFormField(
+                  enabled: enabled,
+                  onChanged: onChanged,
+                  obscureText: obscureText ?? false,
+                  keyboardType: textInputType,
+                  decoration: InputDecoration(
+                    errorText: errorText,
+                    border: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: helperText == null ? Colors.black : Colors.green,
+                      ),
                     ),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: helperText == null ? Colors.blue : Colors.green,
-                      width: 2,
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: helperText == null ? Colors.blue : Colors.green,
+                        width: 2,
+                      ),
                     ),
+                    helperText: helperText,
+                    helperStyle: TextStyle(color: Colors.green),
+                    // filled: filled,
+                    // fillColor: Colors.grey[300],
+                    // contentPadding: EdgeInsets.symmetric(
+                    //   vertical: 0,
+                    //   horizontal: 15,
+                    // ),
+                    // border: OutlineInputBorder(
+                    //   borderSide: BorderSide(
+                    //     color: Colors.red,
+                    //   ),
+                    //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                    // ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.all(Radius.circular(5)),
+                    //   borderSide: BorderSide(
+                    //       color: Colors.black
+                    //   ),
+                    // ),
                   ),
-                  helperText: helperText,
-                  helperStyle: TextStyle(color: Colors.green),
-                  // filled: filled,
-                  // fillColor: Colors.grey[300],
-                  // contentPadding: EdgeInsets.symmetric(
-                  //   vertical: 0,
-                  //   horizontal: 15,
-                  // ),
-                  // border: OutlineInputBorder(
-                  //   borderSide: BorderSide(
-                  //     color: Colors.red,
-                  //   ),
-                  //   borderRadius: BorderRadius.all(Radius.circular(5)),
-                  // ),
-                  // focusedBorder: OutlineInputBorder(
-                  //   borderRadius: BorderRadius.all(Radius.circular(5)),
-                  //   borderSide: BorderSide(
-                  //       color: Colors.black
-                  //   ),
-                  // ),
+                  controller: controller,
                 ),
-                controller: controller,
               ),
             ),
             SizedBox(width: additionalButton == null ? 0 : 8),

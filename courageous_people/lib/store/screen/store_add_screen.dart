@@ -36,6 +36,7 @@ class StoreAddScreen extends HookWidget {
     return BlocListener<StoreCubit, StoreState>(
       bloc: storeCubit,
       listener: (context, state) async {
+        print(state);
         if (state is AddingStoreSuccessState) {
           Navigator.pushAndRemoveUntil(
             context,
@@ -137,7 +138,7 @@ class StoreAddScreen extends HookWidget {
                       storeData['latitude'],
                       storeData['longitude'],
                       userId,
-                      2,
+                      managerFlag,
                       menuWidgetListNotifier.value.map(
                             (menuWidget) =>
                         {

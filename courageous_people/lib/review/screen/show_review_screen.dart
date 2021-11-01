@@ -1,4 +1,5 @@
 import 'package:courageous_people/common/hive/user_hive.dart';
+import 'package:courageous_people/model/menu_data.dart';
 import 'package:courageous_people/model/review_data.dart';
 import 'package:courageous_people/review/cubit/review_cubit.dart';
 import 'package:courageous_people/review/cubit/review_state.dart';
@@ -9,9 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class ShowReviewScreen extends StatelessWidget {
-  final int storeId;
+  const ShowReviewScreen({
+    Key? key,
+    required this.storeId,
+    required this.menuList,
+  }) : super(key: key);
 
-  const ShowReviewScreen({Key? key, required this.storeId}) : super(key: key);
+  final int storeId;
+  final List<MenuData> menuList;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +44,9 @@ class ShowReviewScreen extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => AddReviewScreen(
-                storeId: storeId, userId: userId,
+                storeId: storeId,
+                userId: userId,
+                menuList: menuList,
               ),
             ),
           );
@@ -193,13 +201,13 @@ class _ReviewTile extends StatelessWidget {
       //     .width - 60,
       margin: EdgeInsets.only(top: 15),
       alignment: Alignment.topLeft,
-      child: ClipRRect(
+      child: review.imageUri.length > 0
+          ?
+      ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.network(
-          'https://courageous-bucket.s3.amazonaws.com/media/review_upload_files/51/review_img_51.jpg',
-        ),
-      ),
-      // child: Image.network(review.imageUri[0]),
+        child: Image.network(review.imageUri[0]),
+      )
+          : SizedBox(height: 0),
     );
   }
 

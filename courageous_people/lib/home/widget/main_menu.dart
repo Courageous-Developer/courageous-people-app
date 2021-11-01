@@ -1,11 +1,14 @@
+import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:flutter/material.dart';
 import 'package:courageous_people/widget/menu_button.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({
     Key? key,
     required this.succeedLogIn,
-    required this.onMainPressed,
+    required this.isMenuExpanded,
+    required this.onMainMenuPressed,
     required this.onLogInPressed,
     required this.onLogOutPressed,
     required this.onAddingStorePressed,
@@ -14,7 +17,8 @@ class MainMenu extends StatelessWidget {
   }) : super(key: key);
 
   final bool succeedLogIn;
-  final void Function() onMainPressed;
+  final bool isMenuExpanded;
+  final void Function() onMainMenuPressed;
   final void Function() onLogInPressed;
   final void Function() onLogOutPressed;
   final void Function() onAddingStorePressed;
@@ -23,6 +27,8 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final managerFlag = UserHive().userManagerFlag;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,24 +38,36 @@ class MainMenu extends StatelessWidget {
           borderRadiusValue: 8,
           iconData: Icons.menu,
           backgroundColor: Colors.black,
-          onPressed: onMainPressed,
+          onPressed: onMainMenuPressed,
         ),
         const SizedBox(height: 12),
-        succeedLogIn
-            ? Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _addStoreMenuButton(onPressed: onAddingStorePressed),
-            const SizedBox(height: 10),
-            _favoriteMenuButton(onPressed: onFavoriteListPressed),
-            const SizedBox(height: 10),
-            _nearStoreMenuButton(onPressed: onNearStoreListPressed),
-            const SizedBox(height: 10),
-            _logOutButton(onPressed: onLogOutPressed),
-          ],
-        )
-            : _logInButton(onPressed: onLogInPressed),
+        if(isMenuExpanded)
+          succeedLogIn
+              ? Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // if(managerFlag == 2)
+              //   Column(
+              //     mainAxisSize: MainAxisSize.min,
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       _myStoreMenuButton(onPressed: () {}),
+              //       const SizedBox(height: 10),
+              //       _registerMyStoreMenuButton(onPressed: () {}),
+              //       const SizedBox(height: 10),
+              //     ],
+              //   ),
+              _addStoreMenuButton(onPressed: onAddingStorePressed),
+              const SizedBox(height: 10),
+              // _favoriteMenuButton(onPressed: onFavoriteListPressed),
+              // const SizedBox(height: 10),
+              // _nearStoreMenuButton(onPressed: onNearStoreListPressed),
+              // const SizedBox(height: 10),
+              _logOutButton(onPressed: onLogOutPressed),
+            ],
+          )
+              : _logInButton(onPressed: onLogInPressed),
       ],
     );
   }
@@ -89,6 +107,32 @@ class MainMenu extends StatelessWidget {
       menuTitle: '가게 추가',
       backgroundColor: Colors.blue.shade300,
       heroTag: "registerStore",
+      onPressed: onPressed,
+    );
+  }
+
+  Widget _myStoreMenuButton({required void Function()? onPressed}) {
+    return MenuButton(
+      margin: EdgeInsets.only(left: 3),
+      size: 32,
+      borderRadiusValue: 16,
+      iconData: Icons.store,
+      menuTitle: "내 가게 보기",
+      backgroundColor: Colors.teal.shade300,
+      heroTag: "near",
+      onPressed: onPressed,
+    );
+  }
+
+  Widget _registerMyStoreMenuButton({required void Function()? onPressed}) {
+    return MenuButton(
+      margin: EdgeInsets.only(left: 3),
+      size: 32,
+      borderRadiusValue: 16,
+      iconData: Icons.store,
+      menuTitle: "내 가게 등록",
+      backgroundColor: Colors.pink.shade300,
+      heroTag: "near",
       onPressed: onPressed,
     );
   }

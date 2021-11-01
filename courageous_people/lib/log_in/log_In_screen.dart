@@ -1,5 +1,6 @@
 import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/service/token_service.dart';
+import 'package:courageous_people/utils/show_alert_dialog.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:courageous_people/sign_in/screen/sign_in_select_screen.dart';
@@ -138,10 +139,13 @@ class _LogInForm extends StatelessWidget {
         BlocListener(
           bloc: _logInCubit,
           listener: (context, state) async {
-            if (state is LogInSuccessState) {
-              _logInSuccessCallBack(context);
+            if (state is LogInSuccessState) _logInSuccessCallBack(context);
+            if (state is LogInFailedState) {
+              showAlertDialog(
+                context: context,
+                title: state.message,
+              );
             }
-            if (state is LogInFailedState) print("로그인 실패");
           },
           child: GestureDetector(
             child: Container(

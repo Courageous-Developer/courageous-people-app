@@ -1,38 +1,37 @@
 import 'dart:typed_data';
 
 import 'package:courageous_people/common/constants.dart';
+import 'package:courageous_people/model/menu_data.dart';
 import 'package:courageous_people/review/cubit/review_cubit.dart';
 import 'package:courageous_people/review/cubit/review_state.dart';
-import 'package:courageous_people/service/token_service.dart';
-import 'package:courageous_people/utils/http_client.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
-import 'package:courageous_people/widget/my_input_form.dart';
+import 'package:courageous_people/widget/image_picker_section.dart';
+import 'package:courageous_people/widget/my_drop_down.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-// import 'package:http/http.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:dio/dio.dart';
 
 class AddReviewScreen extends HookWidget {
-  final int storeId;
-  final int userId;
-
   const AddReviewScreen({
     Key? key,
     required this.storeId,
     required this.userId,
+    required this.menuList,
   }) : super(key: key);
+
+  final int storeId;
+  final int userId;
+  final List<MenuData> menuList;
 
   @override
   Widget build(BuildContext context) {
     final reviewCubit = context.read<ReviewCubit>();
 
-    final menuNotifier = useState<String?>(null);
-    final containerNotifier = useState<String?>(null);
+    final menuNotifier = useState('');
+    final containerNotifier = useState('');
     final commentNotifier = useState('');
     final pictureNotifier = useState<Uint8List?>(null);
     final picker = ImagePicker();
@@ -49,7 +48,7 @@ class AddReviewScreen extends HookWidget {
           Navigator.pop(context, true);
         }
 
-        if(state is ReviewErrorState) {
+        if(state is AddingReviewErrorState) {
           await showAlertDialog(
             context: context,
             title: state.message,
@@ -61,13 +60,14 @@ class AddReviewScreen extends HookWidget {
       child: Scaffold(
         appBar: TransparentAppBar(title: '리뷰 등록'),
         body: _Body(
+          menuList: menuList,
           storeId: storeId,
           userId: userId,
           pictureToByte: pictureNotifier.value,
           onMenuChanged: (menu) => menuNotifier.value = menu,
           onContainerChanged: (container) => containerNotifier.value = container,
           onCommentChanged: (comment) => commentNotifier.value = comment,
-          onPhotoTab: () async {
+          onPhotoTap: () async {
             final picture = await picker.pickImage(source: ImageSource.gallery);
             if(picture != null) {
               pictureNotifier.value = await picture.readAsBytes();
@@ -78,6 +78,8 @@ class AddReviewScreen extends HookWidget {
               storeId: storeId,
               userId: userId,
               comment: commentNotifier.value,
+              menu: menuNotifier.value,
+              container: containerNotifier.value,
               pictureToByte: pictureNotifier.value,
             );
           },
@@ -88,57 +90,60 @@ class AddReviewScreen extends HookWidget {
 }
 
 class _Body extends HookWidget {
+  final List<MenuData> menuList;
   final int storeId;
   final int userId;
+  final Uint8List? pictureToByte;
   final void Function() onSubmit;
   final void Function(String) onMenuChanged;
   final void Function(String) onContainerChanged;
   final void Function(String) onCommentChanged;
-  final void Function() onPhotoTab;
-  final Uint8List? pictureToByte;
+  final void Function() onPhotoTap;
 
   const _Body({
     Key? key,
+    required this.menuList,
     required this.storeId,
     required this.userId,
     required this.onSubmit,
     required this.onMenuChanged,
     required this.onContainerChanged,
     required this.onCommentChanged,
-    required this.onPhotoTab,
+    required this.onPhotoTap,
     this.pictureToByte,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final selectedMenuStringNotifier = useState('');
+
     return Stack(
       children: [
-        Container(
-          alignment: Alignment.topCenter,
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              MyInputForm(
-                title: Text('메뉴'),
-                onChanged: onMenuChanged,
-              ),
-              SizedBox(height: 25),
-              Text('사진'),
-              SizedBox(height: 5),
-              _pictureSection(),
-              SizedBox(height: 25),
-              MyInputForm(
-                title: Text('용기'),
-                onChanged: onContainerChanged,
-              ),
-              SizedBox(height: 25),
-              MyInputForm(
-                title: Text('리뷰'),
-                onChanged: onCommentChanged,
-              ),
-            ],
+        SingleChildScrollView(
+          child: Container(
+            alignment: Alignment.topCenter,
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _menuField(
+                    selected: selectedMenuStringNotifier.value,
+                    onSelectedChanged: (selected) {
+                      selectedMenuStringNotifier.value = selected;
+                    }
+                ),
+                SizedBox(height: 25),
+                _containerField(),
+                SizedBox(height: 25),
+                _reviewSection(onCommentChanged: onCommentChanged),
+                SizedBox(height: 25),
+                Text('사진'),
+                SizedBox(height: 5),
+                _pictureSection(),
+                SizedBox(height: kToolbarHeight),
+              ],
+            ),
           ),
         ),
         _bottomButton(
@@ -151,7 +156,7 @@ class _Body extends HookWidget {
 
   Widget _pictureSection() {
     return GestureDetector(
-      onTap: onPhotoTab,
+      onTap: onPhotoTap,
       child: Container(
         padding: pictureToByte != null
             ? null
@@ -170,7 +175,6 @@ class _Body extends HookWidget {
             : _nonPictureForm(),
       ),
     );
-
   }
 
   Widget _nonPictureForm() {
@@ -210,7 +214,7 @@ class _Body extends HookWidget {
       child: GestureDetector(
         onTap: onSubmit,
         child: Container(
-          height: 50,
+          height: kToolbarHeight,
           color: THEME_COLOR,
           child: Center(
             child:
@@ -226,5 +230,67 @@ class _Body extends HookWidget {
         ),
       ),
     );
+  }
+
+  Widget _menuField({
+    required String selected,
+    required void Function(String) onSelectedChanged,
+  }) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        MyDropDown(
+          title: '메뉴를 선택해주세요',
+          contents: [
+            ...(menuList.map((menuData) => menuData.title).toList()),
+            '직접 입력'
+          ],
+          onSelect: (container) {
+            onSelectedChanged(container);
+            onMenuChanged(container);
+          },
+        ),
+        if(selected == '직접 입력')
+          TextFormField(
+            onChanged: (menu) => onMenuChanged(menu),
+            decoration: InputDecoration(
+              hintText: '메뉴를 입력해주세요',
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _containerField() {
+    return MyDropDown(
+      title: '용량을 선택해주세요',
+      widgetContents: _containerList,
+      onSelect: (container) => onContainerChanged(container),
+    );
+  }
+
+  Widget _reviewSection({required void Function(String) onCommentChanged}) {
+    return TextFormField(
+      maxLines: 7,
+      onChanged: (menu) => onCommentChanged(menu),
+      cursorWidth: 1.0,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.all(8),
+        hintText: '리뷰를 작성하세요',
+        hintStyle: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+        fillColor: Colors.grey.shade200,
+        filled: true,
+        focusedBorder: InputBorder.none,
+        focusColor: Colors.transparent,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
+  List<String> get _containerList {
+    return ['300ml 미만', '300ml - 500ml', '500ml - 1L', '1L 이상'];
   }
 }
