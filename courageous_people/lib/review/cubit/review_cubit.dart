@@ -29,21 +29,26 @@ class ReviewCubit extends Cubit<ReviewState> {
     required String comment,
     Uint8List? pictureToByte,
   }) async {
-    emit(AddingReviewLoadingState());
-    final statusCode = await repository.addReview(
-      storeId: storeId,
-      userId: userId,
-      comment: comment,
-      menu: menu,
-      container: container,
-      pictureToByte: pictureToByte,
-    );
+    try {
+      emit(AddingReviewLoadingState());
+      final statusCode = await repository.addReview(
+        storeId: storeId,
+        userId: userId,
+        comment: comment,
+        menu: menu,
+        container: container,
+        pictureToByte: pictureToByte,
+      );
 
-    if(statusCode == 200 || statusCode == 201) {
-      emit(AddingReviewSuccessState('리뷰를 등록했습니다'));
-      return;
+      if (statusCode == 201) {
+        print(statusCode);
+        emit(AddingReviewSuccessState('리뷰를 등록했습니다'));
+        return;
+      }
+
+      emit(AddingReviewErrorState('리뷰 등록에 실패했습니다'));
+    } on Exception catch (exception) {
+      emit(AddingReviewErrorState(exception.toString()));
     }
-
-    emit(AddingReviewErrorState('리뷰 등록에 실패했습니다'));
   }
 }

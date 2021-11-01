@@ -52,8 +52,8 @@ class ReviewRepository {
       },
     );
 
-    print('status: ${addingReviewResponse.statusCode}');
-    print('status: ${addingReviewResponse.body}');
+    print('review add statusCode: ${addingReviewResponse.statusCode}');
+    print('review add body: ${addingReviewResponse.body}');
 
     if(pictureToByte == null || addingReviewResponse.statusCode != 201) {
       return addingReviewResponse.statusCode;
@@ -84,7 +84,8 @@ class ReviewRepository {
       ),
     );
 
-    print('status: ${sendingPictureResponse.statusCode}');
+    print('review image add status: ${sendingPictureResponse.statusCode}');
+    print('review image add body: ${sendingPictureResponse.data}');
 
     return sendingPictureResponse.statusCode!;
   }
