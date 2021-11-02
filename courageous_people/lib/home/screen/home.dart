@@ -79,6 +79,13 @@ class Home extends HookWidget {
                   mergedMarkerListNotifier.value = markerNotifier.value;
                 }
 
+                if (state is StoreErrorState) {
+                  showAlertDialog(
+                    context: context,
+                    title: state.message,
+                  );
+                }
+
                 if (state is StoreCrawlSuccessState) {
                   crawledStoreNotifier.value = state.crawledList;
                   duplicatedListNotifier.value = state.duplicatedList;
@@ -106,6 +113,13 @@ class Home extends HookWidget {
                     _mapController,
                     crawledStoreNotifier.value![0]['latitude'],
                     crawledStoreNotifier.value![0]['longitude'],
+                  );
+                }
+
+                if (state is StoreCrawlErrorState) {
+                  showAlertDialog(
+                    context: context,
+                    title: state.message,
                   );
                 }
               },

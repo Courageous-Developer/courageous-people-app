@@ -163,6 +163,24 @@ class _LogInForm extends StatelessWidget {
               ),
             ),
             onTap: () async {
+              if(emailController.text == '') {
+                await showAlertDialog(
+                  context: context,
+                  title: '이메일을 입력해주세요',
+                );
+
+                return;
+              }
+
+              if(passwordController.text == '') {
+                await showAlertDialog(
+                  context: context,
+                  title: '비밀번호를 입력해주세요',
+                );
+
+                return;
+              }
+
               await _logInCubit.logIn(
                 context,
                 emailController.text,
