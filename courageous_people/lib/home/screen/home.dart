@@ -23,14 +23,6 @@ class Home extends HookWidget {
 
   NaverMapController? _mapController;
 
-  Future<void> loadMap() async {
-
-  }
-
-  void clearAllSelectedElement() {
-
-  }
-
   @override
   Widget build(BuildContext context) {
     final storeCubit = StoreCubit.of(context);
@@ -87,6 +79,13 @@ class Home extends HookWidget {
                 }
 
                 if (state is StoreCrawlSuccessState) {
+                  if(state.crawledList.length == 0) {
+                    showAlertDialog(
+                      context: context,
+                      title: '검색 결과가 없습니다',
+                    );
+                  }
+
                   crawledStoreNotifier.value = state.crawledList;
                   duplicatedListNotifier.value = state.duplicatedList;
                   if(state.crawledList.isEmpty)  return;
@@ -195,7 +194,7 @@ class Home extends HookWidget {
                         showAlertDialog(
                           context: context,
                           title: '로그아웃합니다',
-                          onPressed: () async {
+                          onSubmit: () async {
                             await logOutCubit.logOut();
 
                             Navigator.pushAndRemoveUntil(
@@ -277,178 +276,3 @@ class Home extends HookWidget {
     mapController.moveCamera(newPosition);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class _Content extends HookWidget {
-//   _Content({
-//     Key? key,
-//     required this.state,
-//     required this.logInSucceed,
-//   }) : super(key: key);
-//
-//   final StoreState state;
-//   final bool logInSucceed;
-//
-//   NaverMapController? _mapController;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final storeCubit = StoreCubit.of(context);
-//     final logOutCubit = LogOutCubit.of(context);
-//
-//     final storeNotifier = useState<StoreData?>(null);  // 클릭해서 선택한 가게
-//     final markerNotifier = useState<List<Marker>>([]);
-//     final crawledMarkerNotifier = useState<List<Marker>>([]);
-//     final mergedMarkerListNotifier = useState<List<Marker>>([]);
-//
-//     final crawledStoreNotifier = useState<List<dynamic>?>(null);
-//     final searchStoreSectionNotifier = useState(false);
-//
-//     return Stack(
-//       children: [
-//         NaverMap(
-//           initLocationTrackingMode: LocationTrackingMode.Follow,
-//           locationButtonEnable: true,
-//           onMapCreated: (controller) {
-//             _mapController = controller;
-//
-//             storeCubit.getStores();
-//           },
-//           onMapTap: (latLng) {
-//             storeNotifier.value = null;
-//           },
-//           rotationGestureEnable: false,
-//           markers: mergedMarkerListNotifier.value,
-//         ),
-//         Positioned(
-//           left: 30,
-//           top: 30,
-//           child: MainMenu(
-//             succeedLogIn: logInSucceed ?? false,
-//             onMainPressed: () {},
-//             onLogInPressed: () {
-//               Navigator.push(context,
-//                   MaterialPageRoute(
-//                     builder: (_) => LogInScreen(),
-//                   ));
-//             },
-//             onLogOutPressed: () {
-//               showAlertDialog(
-//                 context: context,
-//                 title: '로그아웃합니다',
-//                 onPressed: () async {
-//                   print('aaa');
-//                   await logOutCubit.logOut();
-//                   print('bbb');
-//
-//                   Navigator.pushAndRemoveUntil(
-//                     context,
-//                     MaterialPageRoute(
-//                       builder: (_) => Home(),
-//                     ),
-//                         (route) => false,
-//                   );
-//                 },
-//               );
-//             },
-//             onAddingStorePressed: () {
-//               searchStoreSectionNotifier.value = true;
-//             },
-//             onNearStoreListPressed: () {},
-//             onFavoriteListPressed: () {},
-//           ),
-//         ),
-//         StoreBox(store: storeNotifier.value),
-//         if(searchStoreSectionNotifier.value)
-//           Positioned(
-//             top: 90,
-//             child: StoreSearchSection(
-//               crawledData: crawledStoreNotifier.value,
-//               onSearchPressed: (location, storeName) async {
-//                 FocusScope.of(context).unfocus();
-//
-//                 await storeCubit.crawlStore(location, storeName);
-//               },
-//               onCloseButtonPressed: () {
-//                 searchStoreSectionNotifier.value = false;
-//               },
-//               onStoreTap: (latitude, longitude) => _moveMapCamera(
-//                 _mapController,
-//                 crawledStoreNotifier.value![0]['latitude'],
-//                 crawledStoreNotifier.value![0]['longitude'],
-//               ),
-//             ),
-//           ),
-//         if(state is StoreCrawlingState)
-//           const Center(
-//             child: CircularProgressIndicator(color: Colors.white),
-//           ),
-//       ],
-//     );
-//   }
-//
-//
-//   Widget _userSection() {
-//     return Container(
-//       width: 150,
-//       alignment: Alignment.centerLeft,
-//       decoration: BoxDecoration(
-//         color: Colors.teal.shade100,
-//         borderRadius: BorderRadius.circular(
-//           22.5,
-//           // getWidgetSizeByKey(_menuIconKey).
-//         ),
-//         border: Border.all(
-//           width: 2.5,
-//           color: Colors.white,
-//         ),
-//       ),
-//       child: Row(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           CircleAvatar(
-//             backgroundImage: AssetImage('assets/images/profile.png'),
-//             radius: 22.5,
-//           ),
-//
-//           Column(
-//             children: [
-//
-//             ],
-//           )
-//         ],
-//       ),
-//     );
-//   }
-//
-//   void _moveMapCamera(
-//       NaverMapController? mapController,
-//       double latitude,
-//       double longitude,
-//       ) {
-//     if (mapController == null) return;
-//
-//     final newPosition = CameraUpdate.toCameraPosition(
-//       CameraPosition(
-//         target: LatLng(
-//           latitude,
-//           longitude,
-//         ),
-//       ),
-//     );
-//
-//     mapController.moveCamera(newPosition);
-//   }
-// }
