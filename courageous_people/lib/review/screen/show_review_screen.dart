@@ -4,10 +4,13 @@ import 'package:courageous_people/model/review_data.dart';
 import 'package:courageous_people/review/cubit/review_cubit.dart';
 import 'package:courageous_people/review/cubit/review_state.dart';
 import 'package:courageous_people/review/screen/add_review_screen.dart';
-import 'package:courageous_people/widget/tag_widget.dart';
+import 'package:courageous_people/review/screen/rewrite_review_screen.dart';
+import 'package:courageous_people/utils/show_alert_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+
+import '../widget/review_tile.dart';
 
 class ShowReviewScreen extends StatelessWidget {
   const ShowReviewScreen({
@@ -21,26 +24,74 @@ class ShowReviewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _reviewCubit = context.read<ReviewCubit>();
-    _reviewCubit.getReviews(storeId);
+    final reviewCubit = context.read<ReviewCubit>();
+    final userId = UserHive().userId;
+
+    reviewCubit.getReviews(storeId);
 
     return Scaffold(
       appBar: AppBar(title: Text('리뷰')),
       body: BlocConsumer<ReviewCubit, ReviewState>(
-        bloc: _reviewCubit,
-        listener: (context, state) async {},
-        builder: (context, state) => Padding(
-          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-          child: _reviewListSection(state),
-        ),
+        bloc: reviewCubit,
+        listener: (context, state) async {
+          if(state is ReviewDeletedState) {
+            await showAlertDialog(
+              context: context,
+              title: state.message,
+            );
+
+            reviewCubit.getReviews(storeId);
+          }
+
+          if(state is ReviewDeleteErrorState) {
+            await showAlertDialog(context: context, title: state.message);
+          }
+
+          if(state is ReviewRewrittenState) reviewCubit.getReviews(storeId);
+
+          if(state is ReviewRewriteErrorState) reviewCubit.getReviews(storeId);
+        },
+        builder: (context, state) {
+          print('review reloading state: $state');
+
+          return _reviewListSection(
+            state: state,
+            onCorrectionPressed: (review) async {
+              Navigator.pop(context);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RewriteReviewScreen(
+                    reviewId: review.reviewId,
+                    storeId: storeId,
+                    userId: userId,
+                    menuList: menuList,
+                    initialMenuText: review.tags[0].content,
+                    initialVolume: review.tags[1].content,
+                    initialComment: review.comment,
+                    initialImageByte: null,
+                  ),
+                ),
+              );
+            },
+            onDeletionPressed: (reviewId) async {
+              await reviewCubit.deleteReview(reviewId);
+            },
+          );
+        },
+        buildWhen: (state, previousState) {
+          if(state is DeleteReviewLoadingState)  return false;
+          if(state is ReviewDeletedState)  return false;
+          if(state is ReviewDeleteErrorState)  return false;
+
+          return true;
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          // todo: user check
-          final userId = UserHive().userId;
-
-          Navigator.push(
+        child: Icon(Icons.edit),
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => AddReviewScreen(
@@ -50,12 +101,18 @@ class ShowReviewScreen extends StatelessWidget {
               ),
             ),
           );
+
+          reviewCubit.getReviews(storeId);
         },
       ),
     );
   }
 
-  Widget _reviewListSection(ReviewState state) {
+  Widget _reviewListSection({
+    required ReviewState state,
+    required void Function(ReviewData) onCorrectionPressed,
+    required void Function(int) onDeletionPressed,
+  }) {
     if (state is ReviewLoadingState) {
       return Center(child: CircularProgressIndicator());
     }
@@ -82,12 +139,16 @@ class ShowReviewScreen extends StatelessWidget {
       }
 
       final List<Widget> reviewTileList = reviews.map(
-            (review) => _ReviewTile(review: review),
+            (review) => ReviewTile(
+          review: review,
+          onCorrectionPressed: () => onCorrectionPressed(review),
+          onDeletionPressed: () => onDeletionPressed(review.reviewId),
+        ),
       ).toList();
 
       return SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 20),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -126,105 +187,4 @@ class ShowReviewScreen extends StatelessWidget {
   }
 }
 
-class _ReviewTile extends StatelessWidget {
-  final ReviewData review;
 
-  _ReviewTile({Key? key, required this.review}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(bottom: 45),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _userSection(),
-          _imageSection(context),
-          // review.imageUri.length == 0
-          //     ? SizedBox(height: 0)
-          //     : _imageSection(),
-          _commentSection(),
-          review.tags.length == 0
-              ? SizedBox(height: 0)
-              : _tagSection(),
-        ],
-      ),
-    );
-  }
-
-  Widget _userSection() => Container(
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CircleAvatar(
-          // backgroundImage: AssetImage('assets/images/user.jpg'),
-          radius: 18,
-        ),
-        SizedBox(width: 9),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              review.userNickname,
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            SizedBox(height: 5),
-            Text(
-              // todo: 날짜 수정
-              review.createAt.split('T')[0],
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
-
-  Widget _imageSection(BuildContext context) {
-    return Container(
-      // decoration: BoxDecoration(
-      //   border: Border.all(width: 2),
-      // ),
-      // width: MediaQuery.of(context).size.width*0.6,
-      // height: MediaQuery
-      //     .of(context)
-      //     .size
-      //     .width - 60,
-      margin: EdgeInsets.only(top: 15),
-      alignment: Alignment.topLeft,
-      child: review.imageUri.length > 0
-          ?
-      ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: Image.network(review.imageUri[0]),
-      )
-          : SizedBox(height: 0),
-    );
-  }
-
-  Widget _commentSection() => Container(
-    padding: EdgeInsets.only(top: 18.5),
-    alignment: Alignment.centerLeft,
-    child: Text(review.comment),
-  );
-
-  Widget _tagSection() => Container(
-    padding: EdgeInsets.only(top: 25),
-    alignment: Alignment.centerLeft,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: review.tags.map(
-            (tag) => TagWidget(tag: tag),
-      ).toList(),
-    ),
-  );
-}

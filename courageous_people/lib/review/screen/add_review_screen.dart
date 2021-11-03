@@ -5,7 +5,6 @@ import 'package:courageous_people/model/menu_data.dart';
 import 'package:courageous_people/review/cubit/review_cubit.dart';
 import 'package:courageous_people/review/cubit/review_state.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
-import 'package:courageous_people/widget/image_picker_section.dart';
 import 'package:courageous_people/widget/my_drop_down.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -36,53 +35,68 @@ class AddReviewScreen extends HookWidget {
     final pictureNotifier = useState<Uint8List?>(null);
     final picker = ImagePicker();
 
-    return BlocListener<ReviewCubit, ReviewState>(
-      bloc: reviewCubit,
-      listener: (context, state) async {
-        if(state is AddingReviewSuccessState) {
-          await showAlertDialog(
-            context: context,
-            title: state.message,
-          );
+    return Scaffold(
+      appBar: TransparentAppBar(title: '리뷰 등록'),
+      body: BlocConsumer<ReviewCubit, ReviewState>(
+        bloc: reviewCubit,
+        listener: (context, state) async {
+          if(state is AddingReviewSuccessState) {
+            await showAlertDialog(
+              context: context,
+              title: state.message,
+            );
 
-          Navigator.pop(context, true);
-        }
+            Navigator.pop(context, true);
+          }
 
-        if(state is AddingReviewErrorState) {
-          await showAlertDialog(
-            context: context,
-            title: state.message,
-          );
+          if(state is AddingReviewErrorState) {
+            await showAlertDialog(
+              context: context,
+              title: state.message,
+            );
 
-          Navigator.pop(context, false);
-        }
-      },
-      child: Scaffold(
-        appBar: TransparentAppBar(title: '리뷰 등록'),
-        body: _Body(
-          menuList: menuList,
-          storeId: storeId,
-          userId: userId,
-          pictureToByte: pictureNotifier.value,
-          onMenuChanged: (menu) => menuNotifier.value = menu,
-          onContainerChanged: (container) => containerNotifier.value = container,
-          onCommentChanged: (comment) => commentNotifier.value = comment,
-          onPhotoTap: () async {
-            final picture = await picker.pickImage(source: ImageSource.gallery);
-            if(picture != null) {
-              pictureNotifier.value = await picture.readAsBytes();
-            }
-          },
-          onSubmit: () async {
-            await reviewCubit.addReview(
+            Navigator.pop(context, false);
+          }
+        },
+        builder: (context, state) => Stack(
+          children: [
+            _Body(
+              menuList: menuList,
               storeId: storeId,
               userId: userId,
-              comment: commentNotifier.value,
-              menu: menuNotifier.value,
-              container: containerNotifier.value,
               pictureToByte: pictureNotifier.value,
-            );
-          },
+              onMenuChanged: (menu) => menuNotifier.value = menu,
+              onContainerChanged: (container) => containerNotifier.value = container,
+              onCommentChanged: (comment) => commentNotifier.value = comment,
+              onPhotoTap: () async {
+                final picture = await picker.pickImage(source: ImageSource.gallery);
+                if(picture != null) {
+                  pictureNotifier.value = await picture.readAsBytes();
+                }
+              },
+              onSubmit: () async {
+                final reviewCommitted = await showAlertDialog(
+                  context: context,
+                  title: '리뷰를 등록하시겠습니까?',
+                  onCancel: () => Navigator.pop(context, false),
+                );
+
+                if(!reviewCommitted!)  return;
+
+                await reviewCubit.addReview(
+                  storeId: storeId,
+                  userId: userId,
+                  comment: commentNotifier.value,
+                  menu: menuNotifier.value,
+                  container: containerNotifier.value,
+                  pictureToByte: pictureNotifier.value,
+                );
+              },
+            ),
+            if(state is AddingReviewLoadingState) Center(
+              child: CircularProgressIndicator(),
+            ),
+          ],
         ),
       ),
     );
