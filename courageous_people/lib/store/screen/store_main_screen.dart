@@ -174,6 +174,7 @@ class StoreMainScreen extends HookWidget {
   }
 
   Widget _simpleCommentSection() {
+    final introduction = store.introduction ?? '';
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -198,7 +199,8 @@ class StoreMainScreen extends HookWidget {
             borderRadius: BorderRadius.all(Radius.circular(4)),
             color: Colors.yellow.shade300,
           ),
-          child: Text(store.introduction ?? '한 줄 소개가 없습니다',
+          child: Text(
+            introduction == '' ? '한 줄 소개가 없습니다' : introduction,
             style: TextStyle(
               color: Colors.grey.shade500,
             ),
