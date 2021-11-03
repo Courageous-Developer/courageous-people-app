@@ -6,8 +6,6 @@ abstract class ReviewState {
 
 class ReviewInitialState extends ReviewState {}
 
-// class ReviewReadyState extends ReviewState {}
-
 class ReviewErrorState extends ReviewState {
   final String message;
 
@@ -38,4 +36,32 @@ class ReviewLoadedState extends ReviewState {
   final List<ReviewData> reviewList;
 
   const ReviewLoadedState(this.reviewList);
+}
+
+class DeleteReviewLoadingState extends ReviewState {}
+
+class ReviewDeletedState extends ReviewState {
+  final String message;
+
+  const ReviewDeletedState(this.message);
+}
+
+class ReviewDeleteErrorState extends ReviewState {
+  final String message;
+
+  const ReviewDeleteErrorState(this.message);
+}
+
+class RewriteReviewLoadingState extends ReviewState {}
+
+class ReviewRewrittenState extends ReviewState {
+  final String message;
+
+  const ReviewRewrittenState(this.message);
+}
+
+class ReviewRewriteErrorState extends ReviewState {
+  final String message;
+
+  const ReviewRewriteErrorState(this.message);
 }

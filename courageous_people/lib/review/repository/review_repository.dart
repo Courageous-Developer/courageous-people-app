@@ -89,4 +89,35 @@ class ReviewRepository {
 
     return sendingPictureResponse.statusCode!;
   }
+
+  Future<int> rewriteReview({
+    required int reviewId,
+    required int storeId,
+    required int userId,
+    required String comment,
+  }) async {
+    final reviewResponse = await httpRequestWithToken(
+      requestType: 'PUT',
+      path: '/board/review/$reviewId',
+      body: {
+        'user': userId,
+        'store': storeId,
+        'content': comment,
+      },
+    );
+
+    print(reviewResponse.body);
+    print(reviewResponse.statusCode);
+
+    return reviewResponse.statusCode;
+  }
+
+  Future<int> deleteReview(int reviewId) async {
+    final response = await httpRequestWithToken(
+      requestType: 'DELETE',
+      path: '/board/review/$reviewId',
+    );
+
+    return response.statusCode;
+  }
 }
