@@ -1,5 +1,6 @@
 
 import 'package:courageous_people/utils/http_client.dart';
+import 'package:crypt/crypt.dart';
 import 'package:http/http.dart' as http;
 
 class SignInRepository {
@@ -16,7 +17,7 @@ class SignInRepository {
       body: {
         "nickname": nickname,
         "email": email,
-        "password": password,
+        "password": digest(password),
         "date_of_birth": birthDate,
         "user_type": manageFlag,
       },
@@ -54,4 +55,6 @@ class SignInRepository {
 
     return response.statusCode;
   }
+
+  String digest(String password) => Crypt.sha256(password).toString();
 }

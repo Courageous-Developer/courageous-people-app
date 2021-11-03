@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:courageous_people/model/user_data.dart';
 import 'package:courageous_people/sign_in/repository/sign_in_repository.dart';
 import 'package:courageous_people/sign_in/cubit/sign_in_state.dart';
 
@@ -35,9 +34,9 @@ class SignInCubit extends Cubit<SignInState>{
         return;
       }
 
-      emit(SignInErrorState('잘못된 접근입니다'));
+      emit(SignInErrorState('회원가입에 실패했습니다'));
     } on Exception catch (_) {
-      emit(SignInErrorState('잘못된 접근입니다'));
+      emit(SignInErrorState('회원가입에 실패했습니다'));
     }
   }
 
