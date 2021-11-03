@@ -13,90 +13,98 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
-class AddReviewScreen extends HookWidget {
-  const AddReviewScreen({
+class RewriteReviewScreen extends HookWidget {
+  const RewriteReviewScreen({
     Key? key,
+    required this.reviewId,
     required this.storeId,
     required this.userId,
     required this.menuList,
+    required this.initialMenuText,
+    required this.initialVolume,
+    required this.initialComment,
+    required this.initialImageByte,
   }) : super(key: key);
 
+  final int reviewId;
   final int storeId;
   final int userId;
   final List<MenuData> menuList;
+  final String initialMenuText;
+  final String initialVolume;
+  final String initialComment;
+  final Uint8List? initialImageByte;
 
   @override
   Widget build(BuildContext context) {
     final reviewCubit = context.read<ReviewCubit>();
 
-    final menuNotifier = useState('');
-    final containerNotifier = useState('');
-    final commentNotifier = useState('');
-    final pictureNotifier = useState<Uint8List?>(null);
+    final menuNotifier = useState(initialMenuText);
+    final containerNotifier = useState(initialVolume);
+    final commentNotifier = useState(initialComment);
+    final pictureNotifier = useState(initialImageByte);
     final picker = ImagePicker();
 
-    return Scaffold(
-      appBar: TransparentAppBar(title: '리뷰 등록'),
-      body: BlocConsumer<ReviewCubit, ReviewState>(
-        bloc: reviewCubit,
-        listener: (context, state) async {
-          if(state is AddingReviewSuccessState) {
-            await showAlertDialog(
+    return BlocListener<ReviewCubit, ReviewState>(
+      bloc: reviewCubit,
+      listener: (context, state) async {
+        if(state is ReviewRewrittenState) {
+          await showAlertDialog(
+            context: context,
+            title: state.message,
+          );
+
+          Navigator.pop(context, true);
+        }
+
+        if(state is ReviewRewriteErrorState) {
+          await showAlertDialog(
+            context: context,
+            title: state.message,
+          );
+
+          Navigator.pop(context, false);
+        }
+      },
+      child: Scaffold(
+        appBar: TransparentAppBar(title: '수정하기'),
+        body: _Body(
+          menuList: menuList,
+          storeId: storeId,
+          userId: userId,
+          initialMenuText: initialMenuText,
+          initialVolume: initialVolume,
+          initialComment: initialComment,
+          pictureToByte: initialImageByte,
+          onMenuChanged: (menu) => menuNotifier.value = menu,
+          onContainerChanged: (container) => containerNotifier.value = container,
+          onCommentChanged: (comment) => commentNotifier.value = comment,
+          onPhotoTap: () async {
+            final picture = await picker.pickImage(source: ImageSource.gallery);
+            if(picture != null) {
+              pictureNotifier.value = await picture.readAsBytes();
+            }
+          },
+          onSubmit: () async {
+            final reviewCommitted = await showAlertDialog(
               context: context,
-              title: state.message,
+              title: '리뷰를 수정하시겠습니까?',
+              onCancel: () => Navigator.pop(context, false),
             );
 
-            Navigator.pop(context, true);
-          }
+            if(!reviewCommitted!)  return;
 
-          if(state is AddingReviewErrorState) {
-            await showAlertDialog(
-              context: context,
-              title: state.message,
-            );
+            print(reviewId);
+            print(storeId);
+            print(userId);
 
-            Navigator.pop(context, false);
-          }
-        },
-        builder: (context, state) => Stack(
-          children: [
-            _Body(
-              menuList: menuList,
+            await reviewCubit.rewriteReview(
+              reviewId: reviewId,
               storeId: storeId,
               userId: userId,
-              pictureToByte: pictureNotifier.value,
-              onMenuChanged: (menu) => menuNotifier.value = menu,
-              onContainerChanged: (container) => containerNotifier.value = container,
-              onCommentChanged: (comment) => commentNotifier.value = comment,
-              onPhotoTap: () async {
-                final picture = await picker.pickImage(source: ImageSource.gallery);
-                if(picture != null) {
-                  pictureNotifier.value = await picture.readAsBytes();
-                }
-              },
-              onSubmit: () async {
-                final reviewCommitted = await showAlertDialog(
-                  context: context,
-                  title: '리뷰를 등록하시겠습니까?',
-                  onCancel: () => Navigator.pop(context, false),
-                );
-
-                if(!reviewCommitted!)  return;
-
-                await reviewCubit.addReview(
-                  storeId: storeId,
-                  userId: userId,
-                  comment: commentNotifier.value,
-                  menu: menuNotifier.value,
-                  container: containerNotifier.value,
-                  pictureToByte: pictureNotifier.value,
-                );
-              },
-            ),
-            if(state is AddingReviewLoadingState) Center(
-              child: CircularProgressIndicator(),
-            ),
-          ],
+              comment: commentNotifier.value,
+            );
+          },
         ),
       ),
     );
@@ -108,17 +116,23 @@ class _Body extends HookWidget {
   final int storeId;
   final int userId;
   final Uint8List? pictureToByte;
+  String initialMenuText;
+  final String initialVolume;
+  final String initialComment;
   final void Function() onSubmit;
   final void Function(String) onMenuChanged;
   final void Function(String) onContainerChanged;
   final void Function(String) onCommentChanged;
   final void Function() onPhotoTap;
 
-  const _Body({
+  _Body({
     Key? key,
     required this.menuList,
     required this.storeId,
     required this.userId,
+    required this.initialMenuText,
+    required this.initialVolume,
+    required this.initialComment,
     required this.onSubmit,
     required this.onMenuChanged,
     required this.onContainerChanged,
@@ -127,9 +141,15 @@ class _Body extends HookWidget {
     this.pictureToByte,
   }) : super(key: key);
 
+  bool menuExist(List<String> menuList, String menu) {
+    return menuList.indexOf(menu) != -1;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final selectedMenuStringNotifier = useState('');
+    final menuTitleList = menuList.map((menu) => menu.title).toList();
+
+    final selectedMenuStringNotifier = useState(initialMenuText);
 
     return Stack(
       children: [
@@ -142,7 +162,11 @@ class _Body extends HookWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _menuField(
-                    selected: selectedMenuStringNotifier.value,
+                    selected: menuExist(
+                      menuTitleList,
+                      selectedMenuStringNotifier.value,
+                    )
+                        ? selectedMenuStringNotifier.value : '직접 입력',
                     onSelectedChanged: (selected) {
                       selectedMenuStringNotifier.value = selected;
                     }
@@ -233,7 +257,7 @@ class _Body extends HookWidget {
           child: Center(
             child:
             Text(
-              '등록하기',
+              '수정하기',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -254,7 +278,7 @@ class _Body extends HookWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         MyDropDown(
-          title: '메뉴를 선택해주세요',
+          title: selected,
           contents: [
             ...(menuList.map((menuData) => menuData.title).toList()),
             '직접 입력'
@@ -266,6 +290,7 @@ class _Body extends HookWidget {
         ),
         if(selected == '직접 입력')
           TextFormField(
+            initialValue: initialMenuText,
             onChanged: (menu) => onMenuChanged(menu),
             decoration: InputDecoration(
               hintText: '메뉴를 입력해주세요',
@@ -277,7 +302,7 @@ class _Body extends HookWidget {
 
   Widget _containerField() {
     return MyDropDown(
-      title: '용량을 선택해주세요',
+      title: initialVolume,
       widgetContents: _containerList,
       onSelect: (container) => onContainerChanged(container),
     );
@@ -288,6 +313,8 @@ class _Body extends HookWidget {
       maxLines: 7,
       onChanged: (menu) => onCommentChanged(menu),
       cursorWidth: 1.0,
+      initialValue: initialComment,
+      autofocus: false,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(8),
         hintText: '리뷰를 작성하세요',

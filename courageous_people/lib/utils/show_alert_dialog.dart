@@ -1,16 +1,18 @@
 import 'package:courageous_people/common/constants.dart';
 import 'package:flutter/material.dart';
 
-Future<void> showAlertDialog({
+Future<bool?> showAlertDialog({
   required BuildContext context,
   required String title,
-  void Function()? onPressed,
+  void Function()? onSubmit,
+  void Function()? onCancel,
 }) async {
-  await showDialog(
+  return await showDialog(
     context: context,
     builder: (context) => _MyAlertDialog(
       title: title,
-      onPressed: onPressed,
+      onSubmit: onSubmit,
+      onCancel: onCancel,
     ),
   );
 }
@@ -19,11 +21,13 @@ class _MyAlertDialog extends StatelessWidget {
   _MyAlertDialog({
     Key? key,
     required this.title,
-    this.onPressed,
+    this.onSubmit,
+    this.onCancel,
   }) : super(key: key);
 
   final String title;
-  void Function()? onPressed;
+  void Function()? onSubmit;
+  void Function()? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -44,29 +48,80 @@ class _MyAlertDialog extends StatelessWidget {
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: onPressed ?? () => Navigator.pop(context),
-              child: Container(
-                height: 45,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(5),
-                    bottomRight: Radius.circular(5),
-                  ),
-                  color: THEME_COLOR,
+            Container(
+              height: 45,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(5),
+                  bottomRight: Radius.circular(5),
                 ),
-                child: Center(
-                  child: Text(
-                    '확인',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+              ),
+              child: Row(
+                children: [
+                  _submitButton(
+                    borderRadius: onCancel == null
+                        ? null
+                    : BorderRadius.only(bottomLeft: Radius.circular(5)),
+                    onSubmit: onSubmit ?? () => Navigator.pop(context, true),
                   ),
-                ),
+                  if(onCancel != null)
+                    _cancelButton(onCancel: onCancel!),
+                ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _submitButton({
+    required void Function() onSubmit,
+    required BorderRadius? borderRadius,
+  }) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onSubmit,
+        child: Container(
+          decoration: BoxDecoration(
+            color: THEME_COLOR,
+            borderRadius: borderRadius ?? BorderRadius.only(
+              bottomLeft: Radius.circular(5),
+              bottomRight: Radius.circular(5),
+            ),
+          ),
+          child: Center(
+            child: Text(
+              '확인',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _cancelButton({required void Function() onCancel}) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onCancel,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.grey.shade500,
+            borderRadius: BorderRadius.only(bottomRight: Radius.circular(5)),
+          ),
+          child: Center(
+            child: Text(
+              '취소',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -396,13 +396,6 @@ class _Content extends HookWidget {
       bool birthDataCertificated,
       bool managerCertificated,
       ) {
-    print(managerFlag);
-    print(nicknameCertificated);
-    print(emailCertificated);
-    print(passwordCertificated);
-    print(birthDataCertificated);
-    print(managerCertificated);
-
     if (managerFlag == 1) {
       return nicknameCertificated && emailCertificated
           && passwordCertificated && birthDataCertificated;
