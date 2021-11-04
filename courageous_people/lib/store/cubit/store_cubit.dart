@@ -45,7 +45,7 @@ class StoreCubit extends Cubit<StoreState> {
         menuList,
       );
 
-      resultCode == 201
+      resultCode == 200 || resultCode == 201
           ? emit(AddingStoreSuccessState('가게가 등록 되었습니다'))
           : emit(AddingStoreErrorState('가게 등록에 실패했습니다'));
     } on Exception catch (exception) {
