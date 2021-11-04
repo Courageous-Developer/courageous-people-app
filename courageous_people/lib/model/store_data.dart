@@ -8,7 +8,7 @@ class StoreData {
   final double latitude;
   final double longitude;
   final String? businessNumber;
-  final String? imageUrl;
+  final List<String> imageUrl;
   final List<MenuData> menuList;
 
   const StoreData(
