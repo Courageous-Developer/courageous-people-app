@@ -16,10 +16,6 @@ class LogOutRepository {
       },
     );
 
-    print('logout response');
-    print(response.statusCode);
-    print(response.body);
-
     if(response.statusCode == 205) {
       await TokenService().clearTokens();
       await UserHive().clearUser();
