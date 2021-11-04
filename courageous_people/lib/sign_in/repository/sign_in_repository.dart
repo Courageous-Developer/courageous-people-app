@@ -1,7 +1,8 @@
-
 import 'package:courageous_people/utils/http_client.dart';
 import 'package:crypt/crypt.dart';
 import 'package:http/http.dart' as http;
+
+import '../../common/constants.dart';
 
 class SignInRepository {
   Future<int> signIn(
@@ -17,14 +18,15 @@ class SignInRepository {
       body: {
         "nickname": nickname,
         "email": email,
-        "password": digest(password),
+        "password": password,
+        // "password": digest(password),
         "date_of_birth": birthDate,
         "user_type": manageFlag,
       },
     );
 
     print(response.statusCode);
-    print(response.body);
+    print("body: ${response.body}");
 
     return response.statusCode;
   }
@@ -56,5 +58,5 @@ class SignInRepository {
     return response.statusCode;
   }
 
-  String digest(String password) => Crypt.sha256(password).toString();
+  String digest(String password) => Crypt.sha256(password, salt: SALT).toString();
 }
