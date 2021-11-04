@@ -21,12 +21,12 @@ class UserHive {
   }
 
   String? get userEmail {
-    String email = _box.get(USER_HIVE_EMAIL_FIELD, defaultValue: null);
+    String? email = _box.get(USER_HIVE_EMAIL_FIELD, defaultValue: null);
     return email;
   }
 
   String? get userNickname {
-    String nickname = _box.get(USER_HIVE_NICKNAME_FIELD, defaultValue: null);
+    String? nickname = _box.get(USER_HIVE_NICKNAME_FIELD, defaultValue: null);
     return nickname;
   }
 
@@ -72,6 +72,7 @@ class UserHive {
   }
 
   Future<void> clearUser() async {
+    print('clear');
     await setId(-1);
     await setNickname(null);
     await setEmail(null);

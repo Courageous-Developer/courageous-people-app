@@ -27,8 +27,10 @@ Future<bool> verifyUser() async {
   if(noRefreshToken) return false;
 
   final isRefreshTokenVerified = await _verifyRefreshToken(refreshToken!);
+
   if(!isRefreshTokenVerified) {
-    UserHive().clearUser();
+    await TokenService().clearTokens();
+    await UserHive().clearUser();
     return false;
   }
 
@@ -81,6 +83,9 @@ Future<bool> _setUser(String email) async {
   );
 
   if(response.statusCode != 200) return false;
+
+  print('user response: ${response.statusCode}');
+  print('user response: ${response.body}');
 
   final userData = toUser(response.body);
   UserHive().setUser(userData);

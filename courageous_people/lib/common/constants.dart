@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 // theme
 const THEME_COLOR = Color.fromRGBO(153, 205, 50, 1);
 
+// salt
+const SALT = 'courageous_key';
+
 // naver api
 const NAVER_API_CLINET_ID = 'urZ9JPDMKhTzoEHs95Kf';
 const NAVER_API_CLINET_SECRET = 'PotBDueQ_J';
