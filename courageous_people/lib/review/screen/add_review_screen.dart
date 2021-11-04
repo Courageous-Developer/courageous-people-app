@@ -75,6 +75,26 @@ class AddReviewScreen extends HookWidget {
                 }
               },
               onSubmit: () async {
+                if(menuNotifier.value == '') {
+                  await showAlertDialog(
+                    context: context,
+                    title: '메뉴 이름을 입력해주세요',
+                    onSubmit: () => Navigator.pop(context, false),
+                  );
+
+                  return;
+                }
+
+                if(containerNotifier.value == '') {
+                  await showAlertDialog(
+                    context: context,
+                    title: '용량을 입력해주세요',
+                    onSubmit: () => Navigator.pop(context, false),
+                  );
+
+                  return;
+                }
+
                 final reviewCommitted = await showAlertDialog(
                   context: context,
                   title: '리뷰를 등록하시겠습니까?',

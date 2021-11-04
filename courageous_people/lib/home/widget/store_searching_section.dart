@@ -236,8 +236,6 @@ class _CrawledStoreBox extends HookWidget {
                   builder: (context) =>
                       StoreAddScreen(
                         storeData: crawledData[indexNotifier.value],
-                        managerFlag: 1,
-                        // todo: managerFLag 변경
                       ),
                 ),
               );
@@ -273,7 +271,6 @@ class _CrawledStoreBox extends HookWidget {
     final String address = store['address'];
     final double latitude = store['latitude'];
     final double longitude = store['longitude'];
-    // final bool isDuplicated = store['duplicated'];
 
     return Container(
       decoration: BoxDecoration(
@@ -316,28 +313,35 @@ class _CrawledStoreBox extends HookWidget {
             SizedBox(width: 0),
           ),
           Container(
-            // padding: EdgeInsets.symmetric(horizontal: 30),
             padding: EdgeInsets.all(30).copyWith(top: 0, bottom: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      storeName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16.5
+                    Flexible(
+                      flex: 3,
+                      child: Text(
+                        storeName,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.5
+                        ),
                       ),
                     ),
                     SizedBox(width: 10),
-                    Text(
-                      category,
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey
+                    Flexible(
+                      child: Text(
+                        category,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey
+                        ),
                       ),
                     ),
                   ],
@@ -345,6 +349,7 @@ class _CrawledStoreBox extends HookWidget {
                 SizedBox(height: 10),
                 Text(
                   address,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 13,
                   ),

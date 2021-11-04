@@ -1,4 +1,5 @@
 import 'package:courageous_people/common/hive/user_hive.dart';
+import 'package:courageous_people/log_in/log_In_screen.dart';
 import 'package:courageous_people/model/menu_data.dart';
 import 'package:courageous_people/model/review_data.dart';
 import 'package:courageous_people/review/cubit/review_cubit.dart';
@@ -91,6 +92,21 @@ class ShowReviewScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: () async {
+          if(UserHive().userId == -1) {
+            await showAlertDialog(
+              context: context,
+              title: '로그인이 필요합니다',
+              onSubmit: () async {
+                Navigator.pop(context);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LogInScreen()),
+                );
+              },
+            );
+          }
+
           await Navigator.push(
             context,
             MaterialPageRoute(
@@ -127,12 +143,14 @@ class ShowReviewScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('등록된 리뷰가 없습니다!'),
-              Text('아래의 아이콘을 눌러 리뷰를 등록해보세요!'),
-              SizedBox(height: 70),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.playlist_add, color: Colors.grey.shade700, size: 80),
-              ),
+
+              // Text('등록된 리뷰가 없습니다!'),
+              // Text('아래의 아이콘을 눌러 리뷰를 등록해보세요!'),
+              // SizedBox(height: 70),
+              // IconButton(
+              //   onPressed: () {},
+              //   icon: Icon(Icons.playlist_add, color: Colors.grey.shade700, size: 80),
+              // ),
             ],
           ),
         );

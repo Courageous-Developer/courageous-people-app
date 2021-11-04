@@ -69,6 +69,24 @@ class SignInSelectScreen extends StatelessWidget {
                   ),
                 );
               },
+              child: Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        '손님으로 회원가입',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 30
+                        ),
+                      ),
+                      Text('손님으로 회원가입'),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

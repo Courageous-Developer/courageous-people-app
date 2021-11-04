@@ -49,7 +49,6 @@ class StoreRepository {
       final multiPartData = MultipartFile.fromBytes(
         imageToByte,
         filename: 'store_img_$storeId.jpg',
-        // use the real name if available, or omit
         contentType: MediaType('image', 'png'),
       );
 
@@ -73,7 +72,7 @@ class StoreRepository {
       print('code: ${sendingPictureResponse.statusCode}');
       print('body: ${sendingPictureResponse.data}');
 
-      if (sendingPictureResponse.statusCode != 201) {
+      if (sendingPictureResponse.statusCode != 200) {
         return sendingPictureResponse.statusCode!;
       }
     }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/service/token_service.dart';
 import 'package:courageous_people/utils/http_client.dart';
@@ -14,12 +15,10 @@ class LogInRepository {
       path: '/account/login',
       body: {
         "email": email,
-        "password": digest(password),
+        "password": password,
+        // "password": digest(password),
       },
     );
-
-    print(password);
-    print(digest(password));
 
     final result = jsonDecode(response.body);
 
@@ -35,5 +34,5 @@ class LogInRepository {
     return response.statusCode;
   }
 
-  String digest(String password) => Crypt.sha256(password).toString();
+  String digest(String password) => Crypt.sha256(password, salt: SALT).toString();
 }

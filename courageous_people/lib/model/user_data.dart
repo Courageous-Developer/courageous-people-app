@@ -1,5 +1,3 @@
-import 'package:courageous_people/common/hive/token_hive.dart';
-
 class UserData {
   final int id;
   final String nickname;

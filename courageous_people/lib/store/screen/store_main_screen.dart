@@ -28,7 +28,13 @@ class StoreMainScreen extends HookWidget {
             ),
             titleTextStyle: TextStyle(color: Colors.black),
             centerTitle: true,
-            leading: Icon(Icons.arrow_back, color: Colors.grey),
+            leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+                child: Icon(
+                    Icons.arrow_back, 
+                    color: Colors.grey,
+                ),
+            ),
             actions: [
               _favoriteIcon(
                 onPressed: () {
@@ -51,13 +57,15 @@ class StoreMainScreen extends HookWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _storeIntroduceSection(),
+          _storeIntroduceSection(
+            sectionMaxWidth: MediaQuery.of(context).size.width * 3 / 4,
+          ),
           InkWell(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ShowReviewScreen(
-                    storeId: store.id,
+                  storeId: store.id,
                   menuList: store.menuList,
                 ),
               ),
@@ -97,10 +105,12 @@ class StoreMainScreen extends HookWidget {
     );
   }
 
-  Widget _storeIntroduceSection() => Stack(
+  Widget _storeIntroduceSection({required double sectionMaxWidth}) => Stack(
     children: [
       _storeSubInformationBox(),
-      _storeNameSection(),
+      _storeNameSection(
+          maxWidth: sectionMaxWidth
+      ),
     ],
   );
 
@@ -143,6 +153,7 @@ class StoreMainScreen extends HookWidget {
               children: [
                 Text(
                   store.address,
+                  overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,
                   style: TextStyle(
                     fontSize: 14,
@@ -159,12 +170,13 @@ class StoreMainScreen extends HookWidget {
     );
   }
 
-  Widget _storeNameSection() {
+  Widget _storeNameSection({required double maxWidth}) {
     return Container(
       color: Colors.white,
       margin: EdgeInsets.only(left: 20),
       child: Text(
         ' ${store.name} ',
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.bold,
@@ -291,8 +303,8 @@ class _MenuTile extends StatelessWidget {
           ),
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              'assets/images/picture.png',
+            child: Image.network(
+              menu.imageUrl ?? 'assets/images/picture.png',
               width: 70,
               height: 70,
             ),

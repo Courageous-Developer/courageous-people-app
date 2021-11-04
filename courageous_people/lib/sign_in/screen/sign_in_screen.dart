@@ -156,6 +156,15 @@ class _Content extends HookWidget {
                   errorText: nicknameErrorNotifier.value,
                   helperText: nicknameHelperNotifier.value,
                   checkNicknameDuplicated: () async {
+                    if(nicknameNotifier.value == '') {
+                      await showAlertDialog(
+                          context: context,
+                          title: '닉네임을 입력해주세요',
+                      );
+
+                      return;
+                    }
+
                     await signInCubit.checkNicknameDuplicated(
                       nicknameNotifier.value,
                     );
@@ -166,6 +175,7 @@ class _Content extends HookWidget {
                     nicknameErrorNotifier.value = _nicknameErrorString(nickname);
                   },
                 ),
+                SizedBox(height: 20),
                 _emailSection(
                   errorText: emailErrorNotifier.value,
                   onChanged:  (email) {
@@ -173,6 +183,7 @@ class _Content extends HookWidget {
                     emailErrorNotifier.value = _emailErrorString(email);
                   },
                 ),
+                SizedBox(height: 20),
                 _birthDateInputSection(
                   onYearChanged: (year) => yearNotifier.value = year,
                   onMonthChanged: (month) => monthNotifier.value = month,
@@ -180,6 +191,7 @@ class _Content extends HookWidget {
                   year: yearNotifier.value,
                   month: monthNotifier.value,
                 ),
+                SizedBox(height: 20),
                 _passwordSection(
                   errorText: passwordErrorNotifier.value,
                   onChanged: (password) {
@@ -197,6 +209,7 @@ class _Content extends HookWidget {
                     }
                   },
                 ),
+                SizedBox(height: 20),
                 _passwordCertificateSection(
                   errorText: password2ErrorNotifier.value,
                   helperText: password2HelperNotifier.value,
@@ -214,6 +227,7 @@ class _Content extends HookWidget {
                     }
                   },
                 ),
+                SizedBox(height: 20),
                 _businessNumberSection(
                     errorText: businessNumberErrorNotifier.value,
                     helperText: businessNumberHelperNotifier.value,
@@ -229,6 +243,7 @@ class _Content extends HookWidget {
                           _businessNumberErrorString(businessNumber);
                     }
                 ),
+                SizedBox(height: 20),
                 SizedBox(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -311,6 +326,7 @@ class _Content extends HookWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('생년월일'),
+        SizedBox(height: 5),
         Row(
           children: [
             MyDropDown(

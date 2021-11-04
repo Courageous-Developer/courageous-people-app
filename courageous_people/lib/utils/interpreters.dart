@@ -23,7 +23,7 @@ List<StoreData> toStoreList(String source) {
           double.parse(store['latitude']),
           double.parse(store['longitude']),
           store['biz_num'],
-          store['picture'],
+          toImageList(jsonEncode(store['store_img'])),
           toMenuList(jsonEncode(store['menu'])),
         );
       }
@@ -37,8 +37,8 @@ UserData toUser(String source) {
   final Json user = data;
 
   return UserData(
-    user['id'],    //user['id'],
-    user['nickname'],   // user['nickname'],
+    user['id'],
+    user['nickname'],
     user['email'],
     user['user_type'],
   );
@@ -115,7 +115,6 @@ List<MenuData> toMenuList(String source) {
 }
 
 StoreData toStore(String source) {
-  print('source: $source');
   final Json store = jsonDecode(source);
 
   return StoreData(
@@ -126,7 +125,24 @@ StoreData toStore(String source) {
     double.parse(store['latitude']),
     double.parse(store['longitude']),
     store['biz_num'],
-    store['picture'],
+    toImageList(jsonEncode(store['store_img'])),
     toMenuList(jsonEncode(store['menu'])),
   );
+}
+
+List<String> toImageList(String source) {
+  final List<dynamic> dataList = jsonDecode(source);
+
+  if(dataList.length == 0)  return [];
+
+  final imageList = dataList.map(
+          (data) {
+        Json imageUrl = data;
+
+        final String image = imageUrl['store_img'];
+        return image;
+      }
+  ).toList();
+
+  return imageList;
 }

@@ -1,6 +1,5 @@
 import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/log_out/cubit/log_out_cubit.dart';
-import 'package:courageous_people/store/screen/store_add_screen.dart';
 import 'package:courageous_people/store/cubit/store_cubit.dart';
 import 'package:courageous_people/store/cubit/store_state.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
@@ -21,13 +20,12 @@ class Home extends HookWidget {
 
   String myCurrentLocation = '';  // 내 현재 위치
 
-  NaverMapController? _mapController;
-
   @override
   Widget build(BuildContext context) {
     final storeCubit = StoreCubit.of(context);
     final logOutCubit = LogOutCubit.of(context);
 
+    final mapControllerNotifier = useState<NaverMapController?>(null);
     final storeNotifier = useState<StoreData?>(null);  // 클릭해서 선택한 가게
     final markerNotifier = useState<List<Marker>>([]);
     final crawledMarkerNotifier = useState<List<Marker>>([]);
@@ -61,6 +59,8 @@ class Home extends HookWidget {
                           markerId: 'store${store.id}',
                           position: LatLng(store.latitude, store.longitude),
                           icon: image,
+                          width: 35,
+                          height: 35,
                           onMarkerTab: (a, b) {
                             storeNotifier.value = store;
                           },
@@ -95,6 +95,8 @@ class Home extends HookWidget {
                   for (dynamic store in crawledStoreNotifier.value!) {
                     final index = crawledStoreNotifier.value!.indexOf(store);
 
+                    if(duplicatedListNotifier.value[index] != null) continue;
+
                     crawledMarkerNotifier.value.add(
                       Marker(
                         markerId: 'crawl$index',
@@ -109,7 +111,7 @@ class Home extends HookWidget {
                   ];
 
                   _moveMapCamera(
-                    _mapController,
+                    mapControllerNotifier.value,
                     crawledStoreNotifier.value![0]['latitude'],
                     crawledStoreNotifier.value![0]['longitude'],
                   );
@@ -128,7 +130,7 @@ class Home extends HookWidget {
                     initLocationTrackingMode: LocationTrackingMode.Follow,
                     locationButtonEnable: true,
                     onMapCreated: (controller) {
-                      _mapController = controller;
+                      mapControllerNotifier.value = controller;
 
                       storeCubit.getStores();
                     },
@@ -143,24 +145,26 @@ class Home extends HookWidget {
                     Positioned(
                       top: 60,
                       child: StoreSearchSection(
-                        crawledData: crawledStoreNotifier.value,
-                        duplicatedStoreList: duplicatedListNotifier.value,
-                        onSearchPressed: (location, storeName) async {
-                          FocusScope.of(context).unfocus();
+                          crawledData: crawledStoreNotifier.value,
+                          duplicatedStoreList: duplicatedListNotifier.value,
+                          onSearchPressed: (location, storeName) async {
+                            FocusScope.of(context).unfocus();
 
-                          await storeCubit.crawlStore(location, storeName);
-                        },
-                        onCloseButtonPressed: () {
-                          searchStoreSectionNotifier.value = false;
-                          crawledStoreNotifier.value = [];
-                          duplicatedListNotifier.value = [];
-                          mergedMarkerListNotifier.value = markerNotifier.value;
-                        },
-                        onStoreTap: (latitude, longitude) => _moveMapCamera(
-                          _mapController,
-                          crawledStoreNotifier.value![0]['latitude'],
-                          crawledStoreNotifier.value![0]['longitude'],
-                        ),
+                            await storeCubit.crawlStore(location, storeName);
+                          },
+                          onCloseButtonPressed: () {
+                            searchStoreSectionNotifier.value = false;
+                            crawledStoreNotifier.value = [];
+                            duplicatedListNotifier.value = [];
+                            mergedMarkerListNotifier.value = markerNotifier.value;
+                          },
+                          onStoreTap: (latitude, longitude) {
+                            _moveMapCamera(
+                              mapControllerNotifier.value,
+                              latitude,
+                              longitude,
+                            );
+                          }
                       ),
                     ),
                   if(state is StoreCrawlingState)

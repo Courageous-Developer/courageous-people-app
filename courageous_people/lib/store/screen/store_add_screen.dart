@@ -16,21 +16,20 @@ import '../../home/screen/home.dart';
 
 class StoreAddScreen extends HookWidget {
   final Map<String, dynamic> storeData;
-  final managerFlag;
 
   StoreAddScreen({
     Key? key,
     required this.storeData,
-    required this.managerFlag,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final storeCubit = StoreCubit.of(context);
     final userId = UserHive().userId;
+    final managerFlag = UserHive().userManagerFlag;
 
-    final commentNotifier = useState('');
     final storeImageByteNotifier = useState<Uint8List?>(null);
+    final introductionNotifier = useState('');
 
     final menuWidgetListNotifier = useState<List<_MenuWidget>>([]);
 
@@ -87,7 +86,10 @@ class StoreAddScreen extends HookWidget {
                   ],
                 ),
                 SizedBox(height: 40),
-                _managerSection(
+                if(managerFlag == 2) _managerSection(
+                  onIntroductionChanged: (introduction) {
+                    introductionNotifier.value = introduction;
+                  },
                   addMenuSection: () {
                     final newMenuList = [
                       ...menuWidgetListNotifier.value,
@@ -145,7 +147,7 @@ class StoreAddScreen extends HookWidget {
                     await storeCubit.addStore(
                       storeData['title'],
                       storeData['address'],
-                      commentNotifier.value,
+                      introductionNotifier.value,
                       storeImageByteNotifier.value,
                       storeData['latitude'],
                       storeData['longitude'],
@@ -222,16 +224,19 @@ class StoreAddScreen extends HookWidget {
   }
 
   Widget _managerSection({
+    required void Function(String) onIntroductionChanged,
     required void Function() addMenuSection,
     required List<_MenuWidget> menus,
   }) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         MyInputForm(
           title: Text(
             '한 줄 소개',
             style: TextStyle(fontSize: 12),
           ),
+          onChanged: (introduction) => onIntroductionChanged(introduction),
         ),
         SizedBox(height: 15),
         _menuSection(
@@ -258,6 +263,7 @@ class StoreAddScreen extends HookWidget {
         GestureDetector(
           onTap: addMenuSection,
           child: Container(
+            margin: EdgeInsets.only(top: 15),
             width: 30,
             height: 30,
             alignment: Alignment.center,
@@ -381,11 +387,13 @@ class _MenuWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('이름'),
                         SizedBox(width: 10),
                         Container(
-                          width: 30,
+                          width: 150,
+                          height: 25,
                           child: TextFormField(
                             initialValue: menuInitialText ?? '',
                             onChanged: (name) => this.name = name,
@@ -393,12 +401,15 @@ class _MenuWidget extends StatelessWidget {
                         ),
                       ],
                     ),
+                    SizedBox(height: 15),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text('가격'),
                         SizedBox(width: 10),
                         Container(
-                          width: 30,
+                          width: 150,
+                          height: 25,
                           child: TextFormField(
                             initialValue: priceInitialText ?? '',
                             onChanged: (price) => this.price = price,
