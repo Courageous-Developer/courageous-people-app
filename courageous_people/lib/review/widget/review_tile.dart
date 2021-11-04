@@ -1,3 +1,4 @@
+import 'package:courageous_people/common/hive/user_hive.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -19,13 +20,13 @@ class ReviewTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Container(
       padding: EdgeInsets.only(bottom: 45),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // _userSection(),
           _topSection(
             onCorrectionPressed: () async {
               await showAlertDialog(
@@ -59,15 +60,24 @@ class ReviewTile extends StatelessWidget {
     required void Function()? onCorrectionPressed,
     required void Function()? onDeletionPressed,
   }) {
+    final userNickname = UserHive().userNickname ?? '';
+    final isMyReview = review.userNickname == userNickname;
+
+    print(UserHive().userNickname);
+    print(UserHive().userEmail);
+    print(UserHive().userId);
+    print(UserHive().userManagerFlag);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _userSection(),
-        _correctionButtonSection(
-          onCorrectionPressed: onCorrectionPressed,
-          onDeletionPressed: onDeletionPressed,
-        ),
+          if(isMyReview)
+          _correctionButtonSection(
+            onCorrectionPressed: onCorrectionPressed,
+            onDeletionPressed: onDeletionPressed,
+          ),
       ],
     );
   }
@@ -78,7 +88,8 @@ class ReviewTile extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CircleAvatar(
-          // backgroundImage: AssetImage('assets/images/user.jpg'),
+          backgroundImage: AssetImage('assets/images/user.png'),
+          backgroundColor: Colors.transparent,
           radius: 18,
         ),
         SizedBox(width: 9),
