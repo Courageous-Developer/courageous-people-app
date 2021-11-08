@@ -36,12 +36,14 @@
 <img src="https://user-images.githubusercontent.com/28240529/140702806-59726640-7800-4108-953e-cb096439ecae.png" width="300" height="630"/>
 
 -> 패널 클릭 시 가게 페이지 이동  
-<img src="https://user-images.githubusercontent.com/28240529/140702951-7f20dcb1-61c8-4916-a8d4-6dfaf1553f08.png" width="300" height="630"/>
+<img src="https://user-images.githubusercontent.com/28240529/140705494-3bb086d8-73e5-479c-bf76-267800b4541d.jpg" width="300" height="630"/>
 
-#### 리뷰 조회: 등록된 리뷰 리스트  
-
+#### 리뷰 조회  
+-> 리뷰 리스트 보여줌
+<img src="https://user-images.githubusercontent.com/28240529/140705494-3bb086d8-73e5-479c-bf76-267800b4541d.jpg" width="300" height="630"/>
 
 #### 리뷰 등록: 로그인 후 리뷰를 등록할 수 있습니다.  
+<img src="https://user-images.githubusercontent.com/28240529/140705592-d19086aa-2a05-400a-9ad0-5acf4285aaa7.jpg" width="300" height="630"/>
 
 <!-- ![image](https://user-images.githubusercontent.com/55770848/132479981-ef1a9c51-3ec1-4b28-9efa-8d6b5395a3e8.png)
 
