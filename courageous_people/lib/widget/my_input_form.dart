@@ -36,6 +36,7 @@ class MyInputForm extends StatelessWidget {
       children: [
         title ?? SizedBox(height: 0),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Container(

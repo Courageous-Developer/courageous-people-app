@@ -85,13 +85,11 @@ class StoreBox extends StatelessWidget {
                 height: MediaQuery.of(context).size.height / 4 - 90,
                 padding: EdgeInsets.all(15),
                 child: store!.imageUrl.length != 0
-                    ?
-                ClipRRect(
-                  child: Image.network(store!.imageUrl[0]),
-                )
+                    ? ClipRRect(child: Image.network(store!.imageUrl[0]))
                     :
                 Container(
                   decoration: BoxDecoration(
+                    color: Colors.teal.shade100,
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(width: 2, color: Colors.grey.shade400),
                   ),

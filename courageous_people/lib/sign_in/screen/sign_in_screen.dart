@@ -1,3 +1,4 @@
+import 'package:courageous_people/common/constants.dart';
 import 'package:courageous_people/sign_in/screen/sign_in_success_screen.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
 import 'package:courageous_people/widget/my_drop_down.dart';
@@ -25,30 +26,6 @@ class SignInScreen extends StatelessWidget {
       body: _Content(managerFlag: managerFlag),
     );
   }
-
-// String _encryptedPassword(String password) {
-//   final key = encrypt.Key.fromUtf8(ENCRYPT_KEY);
-//   final iv = encrypt.IV.fromLength(16);
-//
-//   final encrypter = encrypt.Encrypter(encrypt.AES(key));
-//   final encrypted = encrypter.encrypt(password, iv: iv);
-//
-//   print(encrypted.base64);
-//
-//   return encrypted.base64;
-// }
-//
-// String _decryptedPassword(String encrypted) {
-//   final key = encrypt.Key.fromUtf8(ENCRYPT_KEY);
-//   final iv = encrypt.IV.fromLength(16);
-//
-//   final decrypter = encrypt.Encrypter(encrypt.AES(key));
-//   final decrypted = decrypter.decrypt64(encrypted, iv: iv);
-//
-//   print(decrypted);
-//
-//   return decrypted;
-// }
 }
 
 class _Content extends HookWidget {
@@ -60,17 +37,17 @@ class _Content extends HookWidget {
   Widget build(BuildContext context) {
     final signInCubit = context.read<SignInCubit>();
 
-    final nicknameNotifier = useState('');
-    final emailNotifier = useState('');
-    final passwordNotifier = useState('');
-    final password2Notifier = useState('');
-    final businessNumberNotifier = useState('');
+    final nicknameNotifier = useState('닉네임 중복 검사를 해주세요');
+    final emailNotifier = useState('이메일을 입력해주세요');
+    final passwordNotifier = useState('비밀번호를 입력해주세요');
+    final password2Notifier = useState('비밀번호 확인란을 입력해주세요');
+    final businessNumberNotifier = useState('사업자 등록 번호를 인증해주세요');
 
-    final nicknameErrorNotifier = useState<String?>(null);
-    final emailErrorNotifier = useState<String?>(null);
-    final passwordErrorNotifier = useState<String?>(null);
-    final password2ErrorNotifier = useState<String?>(null);
-    final businessNumberErrorNotifier = useState<String?>(null);
+    final nicknameErrorNotifier = useState<String?>('닉네임 중복 검사를 해주세요');
+    final emailErrorNotifier = useState<String?>('이메일을 입력해주세요');
+    final passwordErrorNotifier = useState<String?>('비밀번호를 입력해주세요');
+    final password2ErrorNotifier = useState<String?>('비밀번호 확인란을 입력해주세요');
+    final businessNumberErrorNotifier = useState<String?>('사업자 등록 번호를 인증해주세요');
 
     final nicknameHelperNotifier = useState<String?>(null);
     final password2HelperNotifier = useState<String?>(null);
@@ -107,8 +84,8 @@ class _Content extends HookWidget {
 
           if(state is SignInSuccessState) {
             await showAlertDialog(
-                context: context,
-                title: state.message,
+              context: context,
+              title: state.message,
             );
 
             Navigator.pushAndRemoveUntil(
@@ -153,13 +130,15 @@ class _Content extends HookWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _nicknameSection(
-                  errorText: nicknameErrorNotifier.value,
-                  helperText: nicknameHelperNotifier.value,
+                  // errorText: nicknameErrorNotifier.value,
+                  errorText: null,
+                  // helperText: nicknameHelperNotifier.value,
+                  helperText: null,
                   checkNicknameDuplicated: () async {
                     if(nicknameNotifier.value == '') {
                       await showAlertDialog(
-                          context: context,
-                          title: '닉네임을 입력해주세요',
+                        context: context,
+                        title: '닉네임을 입력해주세요',
                       );
 
                       return;
@@ -175,15 +154,16 @@ class _Content extends HookWidget {
                     nicknameErrorNotifier.value = _nicknameErrorString(nickname);
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 _emailSection(
-                  errorText: emailErrorNotifier.value,
+                  // errorText: emailErrorNotifier.value,
+                  errorText: null,
                   onChanged:  (email) {
                     emailNotifier.value = email;
                     emailErrorNotifier.value = _emailErrorString(email);
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 _birthDateInputSection(
                   onYearChanged: (year) => yearNotifier.value = year,
                   onMonthChanged: (month) => monthNotifier.value = month,
@@ -191,9 +171,10 @@ class _Content extends HookWidget {
                   year: yearNotifier.value,
                   month: monthNotifier.value,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 _passwordSection(
-                  errorText: passwordErrorNotifier.value,
+                  // errorText: passwordErrorNotifier.value,
+                  errorText: null,
                   onChanged: (password) {
                     passwordNotifier.value = password;
                     passwordErrorNotifier.value = _passwordErrorString(password);
@@ -209,10 +190,12 @@ class _Content extends HookWidget {
                     }
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 _passwordCertificateSection(
-                  errorText: password2ErrorNotifier.value,
-                  helperText: password2HelperNotifier.value,
+                  // errorText: password2ErrorNotifier.value,
+                  errorText: null,
+                  helperText: null,
+                  // helperText: password2HelperNotifier.value,
                   onChanged: (password2) {
                     if(passwordNotifier.value == '')  return;
 
@@ -227,9 +210,10 @@ class _Content extends HookWidget {
                     }
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 _businessNumberSection(
-                    errorText: businessNumberErrorNotifier.value,
+                  // errorText: businessNumberErrorNotifier.value,
+                    errorText: null,
                     helperText: businessNumberHelperNotifier.value,
                     checkBusinessNumber: () async {
                       await signInCubit.checkRegisterNumber(
@@ -252,24 +236,87 @@ class _Content extends HookWidget {
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                       ),
                     ),
-                    onPressed: !_satisfied(
-                      nicknameHelperNotifier.value != null,
-                      emailNotifier.value != ''
-                          && emailErrorNotifier.value == null,
-                      passwordNotifier.value != ''
-                          && password2Notifier.value != ''
-                          && password2ErrorNotifier.value == null,
-                      dayNotifier.value != null,
-                      businessNumberHelperNotifier.value != null,
-                    )
-                        ? null
-                        : () async => await signInCubit.signIn(
-                      nicknameNotifier.value,
-                      emailNotifier.value,
-                      passwordNotifier.value,
-                      '${yearNotifier.value}-${monthNotifier.value}-${dayNotifier.value}',
-                      managerFlag,
-                    ),
+                    onPressed: () async {
+                      if(nicknameHelperNotifier.value == null) {
+                        await showAlertDialog(
+                          context: context,
+                          title: '닉네임 중복 검사를 해주세요',
+                        );
+
+                        return;
+                      }
+
+                      if(emailErrorNotifier.value != null) {
+                        await showAlertDialog(
+                          context: context,
+                          title: emailErrorNotifier.value!,
+                        );
+
+                        return;
+                      }
+
+                      if(dayNotifier.value == null) {
+                        await showAlertDialog(
+                          context: context,
+                          title: '생년월일을 입력해주세요',
+                        );
+
+                        return;
+                      }
+
+                      if(passwordErrorNotifier.value != null) {
+                        await showAlertDialog(
+                          context: context,
+                          title: passwordErrorNotifier.value!,
+                        );
+
+                        return;
+                      }
+
+                      if(password2ErrorNotifier.value != null) {
+                        await showAlertDialog(
+                          context: context,
+                          title: password2ErrorNotifier.value!,
+                        );
+
+                        return;
+                      }
+
+                      if(managerFlag == 2 && businessNumberErrorNotifier.value != null) {
+                        await showAlertDialog(
+                          context: context,
+                          title: businessNumberErrorNotifier.value!,
+                        );
+
+                        return;
+                      }
+
+                      await signInCubit.signIn(
+                        nicknameNotifier.value,
+                        emailNotifier.value,
+                        passwordNotifier.value,
+                        '${yearNotifier.value}-${monthNotifier.value}-${dayNotifier.value}',
+                        managerFlag,
+                      );
+                    },
+                    // onPressed: !_satisfied(
+                    //   nicknameHelperNotifier.value != null,
+                    //   emailNotifier.value != ''
+                    //       && emailErrorNotifier.value == null,
+                    //   passwordNotifier.value != ''
+                    //       && password2Notifier.value != ''
+                    //       && password2ErrorNotifier.value == null,
+                    //   dayNotifier.value != null,
+                    //   businessNumberHelperNotifier.value != null,
+                    // )
+                    //     ? null
+                    //     : () async => await signInCubit.signIn(
+                    //   nicknameNotifier.value,
+                    //   emailNotifier.value,
+                    //   passwordNotifier.value,
+                    //   '${yearNotifier.value}-${monthNotifier.value}-${dayNotifier.value}',
+                    //   managerFlag,
+                    // ),
                     child: Text('가입하기'),
                   ),
                   width: MediaQuery.of(context).size.width*0.9 ,
@@ -295,9 +342,12 @@ class _Content extends HookWidget {
       errorText: errorText,
       helperText: helperText,
       onChanged: onChanged,
-      additionalButton: ElevatedButton(
-        child: Text('중복 확인'),
-        onPressed: checkNicknameDuplicated,
+      additionalButton: SizedBox(
+        height: 30,
+        child: ElevatedButton(
+          child: Text('중복 확인'),
+          onPressed: checkNicknameDuplicated,
+        ),
       ),
     );
   }
@@ -389,20 +439,24 @@ class _Content extends HookWidget {
     required void Function(String) onChanged,
     required void Function() checkBusinessNumber,
   }) {
-    return managerFlag == 2
-        ?
-    MyInputForm(
-      title: Text('사업자 등록 번호 인증'),
-      textInputType: TextInputType.phone,
-      errorText: errorText,
-      helperText: helperText,
-      onChanged: onChanged,
-      additionalButton: ElevatedButton(
-        onPressed: checkBusinessNumber,
-        child: Text('인증'),
-      ),
-    )
-        :SizedBox(height: 0);
+    if (managerFlag == 2) {
+      return MyInputForm(
+        title: Text('사업자 등록 번호 인증'),
+        textInputType: TextInputType.phone,
+        errorText: errorText,
+        helperText: helperText,
+        onChanged: onChanged,
+        additionalButton: SizedBox(
+          height: 30,
+          child: ElevatedButton(
+            onPressed: checkBusinessNumber,
+            child: Text('인증'),
+          ),
+        ),
+      );
+    } else {
+      return SizedBox(height: 0);
+    }
   }
 
   bool _satisfied(
@@ -487,5 +541,14 @@ class _Content extends HookWidget {
     for(int day = 1; day <= daysInMonth.day; day++) dayList.add(day.toString());
 
     return dayList;
+  }
+}
+
+class _InputForm extends HookWidget {
+  const _InputForm({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }

@@ -227,6 +227,13 @@ class StoreRepository {
       refined += (slashBTagSplit[0] + slashBTagSplit[1]);
     }
 
+    List<String> splitByAmp = refined.split('amp;');
+    refined = '';
+
+    for(String split in splitByAmp) {
+      refined += split;
+    }
+
     return refined;
   }
 

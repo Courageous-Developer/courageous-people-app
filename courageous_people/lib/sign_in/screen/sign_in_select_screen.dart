@@ -8,16 +8,16 @@ class SignInSelectScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 1,
-        centerTitle: true,
-        title: Text(
-          '회원가입',
-          style: TextStyle(color: Colors.black),
-        ),
-        leading: Icon(Icons.arrow_back, color: Colors.black),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   elevation: 1,
+      //   centerTitle: true,
+      //   title: Text(
+      //     '회원가입',
+      //     style: TextStyle(color: Colors.black),
+      //   ),
+      //   leading: Icon(Icons.arrow_back, color: Colors.black),
+      // ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -36,22 +36,18 @@ class SignInSelectScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        '사장님으로 회원가입',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30
-                        ),
-                      ),
-                      Text('사장님으로 회원가입'),
-                    ],
+                  Text(
+                    '사장님으로 회원가입',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30
+                    ),
                   ),
+                  Text(''),
                 ],
               ),
             ),
@@ -69,22 +65,18 @@ class SignInSelectScreen extends StatelessWidget {
                   ),
                 );
               },
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        '손님으로 회원가입',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30
-                        ),
-                      ),
-                      Text('손님으로 회원가입'),
-                    ],
+                  Text(
+                    '손님으로 회원가입',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30
+                    ),
                   ),
+                  Text(''),
                 ],
               ),
             ),
@@ -102,9 +94,11 @@ class SignInSelectScreen extends StatelessWidget {
     Widget? child,
   }) {
     return Expanded(
-      child: Stack(
-        children: [
-          Padding(
+      child:
+      // child: Stack(
+      //   children: [
+          Container(
+            width: double.maxFinite,
             padding: padding,
             child: GestureDetector(
               onTap: onTap,
@@ -114,38 +108,38 @@ class SignInSelectScreen extends StatelessWidget {
                   color: Colors.lightGreen.shade100,
                   border: Border.all(width: 0.2, color: Colors.grey.shade500),
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.shade200,
-                      offset: const Offset(2.4, 2.4),
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: Colors.grey.shade200,
+                  //     offset: const Offset(2.4, 2.4),
+                  //   ),
+                  // ],
                 ),
                 child: child,
               ),
             ),
           ),
-          Positioned(
-            right: right,
-            bottom: bottom,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.green.shade200,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade200,
-                    offset: const Offset(2, 2),
-                  ),
-                ],
-              ),
-              child: Icon(Icons.arrow_forward, color: Colors.white),
-            ),
-          ),
-        ],
-      ),
+          // Positioned(
+          //   right: right,
+          //   bottom: bottom,
+          //   child: Container(
+          //     width: 40,
+          //     height: 40,
+          //     decoration: BoxDecoration(
+          //       color: Colors.green.shade200,
+          //       borderRadius: BorderRadius.circular(20),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: Colors.grey.shade200,
+          //           offset: const Offset(2, 2),
+          //         ),
+          //       ],
+          //     ),
+          //     child: Icon(Icons.arrow_forward, color: Colors.white),
+          //   ),
+          // ),
+        // ],
+      // ),
     );
   }
 }

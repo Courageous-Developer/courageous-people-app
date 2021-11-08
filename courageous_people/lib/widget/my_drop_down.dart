@@ -5,6 +5,7 @@ class MyDropDown extends HookWidget{
   final void Function(String) onSelect;
   List<String>? contents;
   List<String>? widgetContents;
+  List<String>? contentImageUrl;
   String title;
   double? width;
 
@@ -13,6 +14,7 @@ class MyDropDown extends HookWidget{
     required this.onSelect,
     this.contents,
     this.widgetContents,
+    this.contentImageUrl,
     this.width,
   });
 
@@ -63,7 +65,13 @@ class MyDropDown extends HookWidget{
                   },
                   child: contents != null
                       ? _contentItem(_contents[index])
-                      : _widgetContentItem(_contents[index], 'assets/images/pukka.png'),
+                      :
+                  _widgetContentItem(
+                    _contents[index],
+                    contentImageUrl == null
+                        ? 'assets/images/pukka.png'
+                        : contentImageUrl![index],
+                  ),
                 ),
                 separatorBuilder: (context, index) => Divider(thickness: 1),
               ),

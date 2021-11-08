@@ -30,10 +30,10 @@ class StoreMainScreen extends HookWidget {
             centerTitle: true,
             leading: GestureDetector(
               onTap: () => Navigator.pop(context),
-                child: Icon(
-                    Icons.arrow_back, 
-                    color: Colors.grey,
-                ),
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.grey,
+              ),
             ),
             actions: [
               _favoriteIcon(
@@ -296,7 +296,7 @@ class _MenuTile extends StatelessWidget {
                 ),
               ),
               Text(
-                menu.price.toString(),
+                '${menu.price.toString()}원',
                 style: TextStyle(fontSize: 17),
               ),
             ],
