@@ -5,6 +5,7 @@ import 'package:courageous_people/model/menu_data.dart';
 import 'package:courageous_people/review/cubit/review_cubit.dart';
 import 'package:courageous_people/review/cubit/review_state.dart';
 import 'package:courageous_people/utils/show_alert_dialog.dart';
+import 'package:courageous_people/widget/image_picker_section.dart';
 import 'package:courageous_people/widget/my_drop_down.dart';
 import 'package:courageous_people/widget/transparent_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,6 @@ class AddReviewScreen extends HookWidget {
     final containerNotifier = useState('');
     final commentNotifier = useState('');
     final pictureNotifier = useState<Uint8List?>(null);
-    final picker = ImagePicker();
 
     return Scaffold(
       appBar: TransparentAppBar(title: '리뷰 등록'),
@@ -68,11 +68,13 @@ class AddReviewScreen extends HookWidget {
               onMenuChanged: (menu) => menuNotifier.value = menu,
               onContainerChanged: (container) => containerNotifier.value = container,
               onCommentChanged: (comment) => commentNotifier.value = comment,
-              onPhotoTap: () async {
-                final picture = await picker.pickImage(source: ImageSource.gallery);
-                if(picture != null) {
-                  pictureNotifier.value = await picture.readAsBytes();
+              onPhotoTap: (imageByteList) {
+                if(imageByteList == null) {
+                  pictureNotifier.value = null;
+                  return;
                 }
+
+                pictureNotifier.value = imageByteList[0];
               },
               onSubmit: () async {
                 if(menuNotifier.value == '') {
@@ -132,7 +134,7 @@ class _Body extends HookWidget {
   final void Function(String) onMenuChanged;
   final void Function(String) onContainerChanged;
   final void Function(String) onCommentChanged;
-  final void Function() onPhotoTap;
+  final void Function(List<Uint8List>?) onPhotoTap;
 
   const _Body({
     Key? key,
@@ -172,9 +174,11 @@ class _Body extends HookWidget {
                 SizedBox(height: 25),
                 _reviewSection(onCommentChanged: onCommentChanged),
                 SizedBox(height: 25),
-                Text('사진'),
-                SizedBox(height: 5),
-                _pictureSection(),
+                ImagePickerSection(
+                  size: 100,
+                  maxImageNumber: 1,
+                  onImageChanged: (imageByteList) => onPhotoTap(imageByteList),
+                ),
                 SizedBox(height: kToolbarHeight),
               ],
             ),
@@ -188,56 +192,56 @@ class _Body extends HookWidget {
     );
   }
 
-  Widget _pictureSection() {
-    return GestureDetector(
-      onTap: onPhotoTap,
-      child: Container(
-        padding: pictureToByte != null
-            ? null
-            : EdgeInsets.all(15),
-        width: 200,
-        height: 200,
-        decoration: pictureToByte != null
-            ? null
-            : BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(width: 1),
-          color: Colors.white,
-        ),
-        child: pictureToByte != null
-            ? Image.memory(pictureToByte!)
-            : _nonPictureForm(),
-      ),
-    );
-  }
-
-  Widget _nonPictureForm() {
-    return Stack(
-      children: [
-        Center(child: Icon(Icons.camera_alt_outlined, size: 80)),
-        Container(
-          alignment: Alignment.bottomCenter,
-          child: Text(
-            "No Image",
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 25
-            ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.topCenter,
-          child: Text(
-            "사진을 추가하려면 터치하세요",
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade700,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _pictureSection() {
+  //   return GestureDetector(
+  //     onTap: onPhotoTap,
+  //     child: Container(
+  //       padding: pictureToByte != null
+  //           ? null
+  //           : EdgeInsets.all(15),
+  //       width: 200,
+  //       height: 200,
+  //       decoration: pictureToByte != null
+  //           ? null
+  //           : BoxDecoration(
+  //         borderRadius: BorderRadius.all(Radius.circular(10)),
+  //         border: Border.all(width: 1),
+  //         color: Colors.white,
+  //       ),
+  //       child: pictureToByte != null
+  //           ? Image.memory(pictureToByte!)
+  //           : _nonPictureForm(),
+  //     ),
+  //   );
+  // }
+  //
+  // Widget _nonPictureForm() {
+  //   return Stack(
+  //     children: [
+  //       Center(child: Icon(Icons.camera_alt_outlined, size: 80)),
+  //       Container(
+  //         alignment: Alignment.bottomCenter,
+  //         child: Text(
+  //           "No Image",
+  //           style: TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               fontSize: 25
+  //           ),
+  //         ),
+  //       ),
+  //       Container(
+  //         alignment: Alignment.topCenter,
+  //         child: Text(
+  //           "사진을 추가하려면 터치하세요",
+  //           style: TextStyle(
+  //             fontSize: 12,
+  //             color: Colors.grey.shade700,
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _bottomButton({
     required BuildContext context,
@@ -299,6 +303,7 @@ class _Body extends HookWidget {
     return MyDropDown(
       title: '용량을 선택해주세요',
       widgetContents: _containerList,
+      contentImageUrl: _containerImageList,
       onSelect: (container) => onContainerChanged(container),
     );
   }
@@ -326,5 +331,14 @@ class _Body extends HookWidget {
 
   List<String> get _containerList {
     return ['300ml 미만', '300ml - 500ml', '500ml - 1L', '1L 이상'];
+  }
+
+  List<String> get _containerImageList {
+    return [
+      'assets/images/300ml.png',
+      'assets/images/500ml.png',
+      'assets/images/1L.png',
+      'assets/images/2L.png',
+    ];
   }
 }

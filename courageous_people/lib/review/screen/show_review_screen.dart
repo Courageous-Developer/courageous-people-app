@@ -105,6 +105,8 @@ class ShowReviewScreen extends StatelessWidget {
                 );
               },
             );
+
+            return;
           }
 
           await Navigator.push(
@@ -143,14 +145,6 @@ class ShowReviewScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('등록된 리뷰가 없습니다!'),
-
-              // Text('등록된 리뷰가 없습니다!'),
-              // Text('아래의 아이콘을 눌러 리뷰를 등록해보세요!'),
-              // SizedBox(height: 70),
-              // IconButton(
-              //   onPressed: () {},
-              //   icon: Icon(Icons.playlist_add, color: Colors.grey.shade700, size: 80),
-              // ),
             ],
           ),
         );
