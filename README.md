@@ -7,11 +7,11 @@
 
 #### 용기내 캠페인 앱 '용기낸 사람들'은 사용자가 직접 가게를 등록하고 리뷰를 쓰는 사용자 정보 기반의 앱입니다.
 
-
 ## 기능
 #### 회원가입 & 로그인: 손님 사용자 / 사장님 사용자 둘로 구분하여 가입합니다.  
 
-<img scr="https://user-images.githubusercontent.com/28240529/140691816-5ce45cc1-d082-4615-8159-e8fa820b8070.jpg" width="150px" height="300px"/>
+<img scr="https://user-images.githubusercontent.com/28240529/140697335-ad6e3a48-05cf-488d-9ce3-b98d3eef2689.jpg" width="150px" height="300px"/>
+<img scr="http://user-images.githubusercontent.com/28240529/140697335-ad6e3a48-05cf-488d-9ce3-b98d3eef2689.jpg" width="150px" height="300px"/>
 ![KakaoTalk_20211108_150040598_01](https://user-images.githubusercontent.com/28240529/140691816-5ce45cc1-d082-4615-8159-e8fa820b8070.jpg  width="30px" height="60px")
 ![KakaoTalk_20211108_150040598](https://user-images.githubusercontent.com/28240529/140691836-6e215047-31eb-47b8-9757-47206f8a211a.jpg)  
   
