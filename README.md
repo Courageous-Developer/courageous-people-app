@@ -39,7 +39,7 @@
 <img src="https://user-images.githubusercontent.com/28240529/140705494-3bb086d8-73e5-479c-bf76-267800b4541d.jpg" width="300" height="630"/>
 
 #### 리뷰 조회  
--> 리뷰 리스트 보여줌
+-> 리뷰 리스트 보여줌  
 <img src="https://user-images.githubusercontent.com/28240529/140705494-3bb086d8-73e5-479c-bf76-267800b4541d.jpg" width="300" height="630"/>
 
 #### 리뷰 등록: 로그인 후 리뷰를 등록할 수 있습니다.  
