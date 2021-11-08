@@ -28,8 +28,8 @@
 -> 일반 사용자: 가게 썸네일 사진 추가 등록 가능  
 <img src="https://user-images.githubusercontent.com/28240529/140704921-018e7ea0-400e-41fb-9df0-9ff405bbb0f8.png" width="300" height="630"/>
 
--> 가게 주인: 가게 썸네일 사진, 한 줄 소개, 메뉴 등록 가능
-<img src="" width="300" height="630"/>
+-> 가게 주인: 가게 썸네일 사진, 한 줄 소개, 메뉴 등록 가능  
+<img src="https://user-images.githubusercontent.com/28240529/140705141-6dcf0d9c-ed63-4af5-a243-cde9c0f611f3.jpg" width="300" height="630"/>
 
 #### 가게 조회: 지도에 띄워진 등록된 가게들에 들어가서 메뉴 / 리뷰를 볼 수 있습니다.  
 -> 가게 클릭 시 가게 패널 노출  
