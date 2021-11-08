@@ -10,8 +10,9 @@
 ## 기능
 #### 회원가입 & 로그인: 손님 사용자 / 사장님 사용자 둘로 구분하여 가입합니다.  
 
+<img src="https://user-images.githubusercontent.com/51365114/119627750-716f3100-be47-11eb-8e83-686b23c2c161.png  width="200" height="400"/>
 <img scr="user-images.githubusercontent.com/28240529/140697335-ad6e3a48-05cf-488d-9ce3-b98d3eef2689.jpg" width="160" height="320"/>
-![KakaoTalk_20211108_150040598_01](https://user-images.githubusercontent.com/28240529/140691816-5ce45cc1-d082-4615-8159-e8fa820b8070.jpg  width="30px" height="60px")
+![KakaoTalk_20211108_150040598_01](https://user-images.githubusercontent.com/28240529/140691816-5ce45cc1-d082-4615-8159-e8fa820b8070.jpg)
 ![KakaoTalk_20211108_150040598](https://user-images.githubusercontent.com/28240529/140691836-6e215047-31eb-47b8-9757-47206f8a211a.jpg)  
   
 #### 가게 등록: 로그인 후 사용자가 직접 가게를 검색하여 등록할 수 있습니다.  
