@@ -15,13 +15,11 @@
   
 #### 가게 등록: 로그인 후 사용자가 직접 가게를 검색하여 등록할 수 있습니다.  
 -> 왼쪽 상단  
-<img src="https://user-images.githubusercontent.com/28240529/140691836-6e215047-31eb-47b8-9757-47206f8a211a.jpg" width="300" height="630"/>
-
--> 지역(시 / 구 / 동) 입력  
 <img src="https://user-images.githubusercontent.com/28240529/140693993-13bfbe5a-c6c5-41b1-b63b-049fee580dcc.png" width="300" height="630"/>
 
-![image](https://user-images.githubusercontent.com/28240529/140694001-a94d8aae-3d14-498d-be8e-6bf6d1f47db3.png)  
-  
+-> 지역(시 / 구 / 동) 입력  
+<img src="https://user-images.githubusercontent.com/28240529/140694001-a94d8aae-3d14-498d-be8e-6bf6d1f47db3.png" width="300" height="630"/>
+
 -> 가게 패널 등장 & 하단에 나타난 가게 패널 상단 숫자를 클릭하면 해당 가게 위치로 이동  
 <img src="https://user-images.githubusercontent.com/28240529/140693491-29934387-347f-4318-a60c-d04a582db949.jpg" width="300" height="630"/>
 
