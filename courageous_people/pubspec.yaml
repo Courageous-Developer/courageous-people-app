@@ -83,6 +83,12 @@ flutter:
     - assets/images/picture.png
     - assets/images/logo_color.png
     - assets/images/user.png
+    - assets/images/300ml.png
+    - assets/images/500ml.png
+    - assets/images/1L.png
+    - assets/images/2L.png
+    - assets/images/customer.png
+    - assets/images/manager.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
