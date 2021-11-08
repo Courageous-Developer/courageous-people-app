@@ -50,7 +50,7 @@ class Home extends HookWidget {
               listener: (context, state) async {
                 if (state is StoreLoadedState) {
                   final image = await OverlayImage.fromAssetImage(
-                    assetName: 'assets/images/container.png',
+                    assetName: 'assets/images/store.png',
                   );
 
                   markerNotifier.value = state.storeList.map(
