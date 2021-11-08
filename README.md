@@ -11,6 +11,7 @@
 ## 기능
 #### 회원가입 & 로그인: 손님 사용자 / 사장님 사용자 둘로 구분하여 가입합니다.  
   
+<img scr="https://user-images.githubusercontent.com/28240529/140691816-5ce45cc1-d082-4615-8159-e8fa820b8070.jpg" width="30px">
 ![KakaoTalk_20211108_150040598_01](https://user-images.githubusercontent.com/28240529/140691816-5ce45cc1-d082-4615-8159-e8fa820b8070.jpg){: width="30%"}
 ![KakaoTalk_20211108_150040598](https://user-images.githubusercontent.com/28240529/140691836-6e215047-31eb-47b8-9757-47206f8a211a.jpg)  
   
