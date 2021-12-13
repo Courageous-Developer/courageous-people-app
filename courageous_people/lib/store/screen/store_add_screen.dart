@@ -88,7 +88,7 @@ class StoreAddScreen extends HookWidget {
                 ),
               ),
               SizedBox(height: 50),
-              Container(
+              if(managerFlag == 2) Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Colors.grey.shade700,
